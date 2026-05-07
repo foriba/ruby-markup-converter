@@ -1,0 +1,50 @@
+.rubymarkup-bouten {
+	display: inline;
+}
+
+.rubymarkup-bouten--custom {
+	display: inline;
+
+	.rubymarkup-bouten__char {
+		position: relative;
+		display: inline-block;
+
+		&::before {
+			position: absolute;
+			left: 50%;
+			top: -0.65em;
+			transform: translateX(-50%);
+			font-size: 0.5em;
+			line-height: 1;
+			white-space: nowrap;
+			pointer-events: none;
+		}
+	}
+
+	&.rubymarkup-bouten--dot {
+		.rubymarkup-bouten__char::before {
+			content: "•";
+		}
+	}
+
+	&.rubymarkup-bouten--sesame {
+		.rubymarkup-bouten__char::before {
+			content: "﹅";
+		}
+	}
+}
+
+.rubymarkup-bouten--text-emphasis {
+	-webkit-text-emphasis-position: over right;
+	text-emphasis-position: over right;
+
+	&.rubymarkup-bouten--dot {
+		-webkit-text-emphasis: filled dot;
+		text-emphasis: filled dot;
+	}
+
+	&.rubymarkup-bouten--sesame {
+		-webkit-text-emphasis: filled sesame;
+		text-emphasis: filled sesame;
+	}
+}

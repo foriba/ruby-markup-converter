@@ -1,0 +1,75 @@
+<?php
+
+declare(strict_types=1);
+
+if (! defined('ABSPATH')) {
+    exit;
+}
+
+require_once __DIR__ . '/settings-controller.php';
+require_once __DIR__ . '/settings-components.php';
+require_once __DIR__ . '/settings-view.php';
+
+/**
+ * WordPress Hooks
+ */
+
+add_action('admin_menu', 'rbmkup_add_settings_page');
+add_action('admin_init', 'rbmkup_register_settings');
+add_action('admin_enqueue_scripts', 'rbmkup_enqueue_admin_assets');
+
+/**
+ * Admin Page
+ */
+
+/**
+ * 設定画面を管理画面に登録する。
+ */
+function rbmkup_add_settings_page(): void
+{
+    add_options_page(
+        __('Ruby Markup Converter', 'ruby-markup-converter'),
+        __('Ruby Markup Converter', 'ruby-markup-converter'),
+        'manage_options',
+        RBMKUP_SETTINGS_PAGE_SLUG,
+        'rbmkup_render_settings_page'
+    );
+}
+
+/**
+ * Assets
+ */
+
+/**
+ * 設定ページ用の CSS と JavaScript を読み込む。
+ *
+ * @param string $hook_suffix 現在の管理画面フック名
+ */
+function rbmkup_enqueue_admin_assets(string $hook_suffix): void
+{
+    if ('settings_page_' . RBMKUP_SETTINGS_PAGE_SLUG !== $hook_suffix) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'ruby-markup-converter',
+        RBMKUP_PLUGIN_URL . 'public/css/ruby-markup-converter.css',
+        [],
+        RBMKUP_VERSION
+    );
+
+    wp_enqueue_style(
+        'rbmkup-admin',
+        RBMKUP_PLUGIN_URL . 'admin/css/settings.css',
+        ['ruby-markup-converter'],
+        (string) filemtime(RBMKUP_PLUGIN_DIR . 'admin/css/settings.css')
+    );
+
+    wp_enqueue_script(
+        'rbmkup-admin',
+        RBMKUP_PLUGIN_URL . 'admin/js/settings.js',
+        [],
+        (string) filemtime(RBMKUP_PLUGIN_DIR . 'admin/js/settings.js'),
+        true
+    );
+}

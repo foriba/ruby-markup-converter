@@ -1,0 +1,208 @@
+# Copyright (C) 2026 Foriba
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ruby Markup Converter 0.9.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ruby-markup-converter\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-07T02:20:40+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: ruby-markup-converter\n"
+
+#. Plugin Name of the plugin
+#: ruby-markup-converter.php
+#: admin/settings-page.php:31
+#: admin/settings-page.php:32
+#: admin/settings-view.php:30
+msgid "Ruby Markup Converter"
+msgstr ""
+
+#. Description of the plugin
+#: ruby-markup-converter.php
+msgid "Automatically convert plain-text ruby notations into display-ready HTML."
+msgstr ""
+
+#. Author of the plugin
+#: ruby-markup-converter.php
+msgid "Foriba"
+msgstr ""
+
+#: admin/settings-components.php:105
+msgid "Selected"
+msgstr ""
+
+#: admin/settings-components.php:139
+msgid "Enabled"
+msgstr ""
+
+#: admin/settings-components.php:140
+msgid "Disabled"
+msgstr ""
+
+#: admin/settings-view.php:23
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: admin/settings-view.php:31
+msgid "Configure the conversion scope and the ruby/bouten markup rules to use."
+msgstr ""
+
+#: admin/settings-view.php:43
+#: admin/settings-view.php:97
+msgid "Conversion Scope"
+msgstr ""
+
+#: admin/settings-view.php:48
+msgid "Markup Rules"
+msgstr ""
+
+#: admin/settings-view.php:51
+msgid "Notes"
+msgstr ""
+
+#: admin/settings-view.php:53
+msgid "Nested markup structures are not supported. For example, placing one markup rule inside another, such as \"｜BaseText1{{ruby|BaseText2|RubyAnnotation2}}《RubyAnnotation1》\", may produce unexpected conversion results."
+msgstr ""
+
+#: admin/settings-view.php:55
+msgid "If the displayed result is not as expected, please review the markup content and rule combinations. Complex structures in particular may lead to unintended conversion results."
+msgstr ""
+
+#: admin/settings-view.php:64
+msgid "Advanced Settings"
+msgstr ""
+
+#: admin/settings-view.php:70
+msgid "Save Settings"
+msgstr ""
+
+#: admin/settings-view.php:139
+msgid "Ruby"
+msgstr ""
+
+#: admin/settings-view.php:149
+msgid "Bouten"
+msgstr ""
+
+#: admin/settings-view.php:244
+msgid "Markup Example"
+msgstr ""
+
+#: admin/settings-view.php:258
+msgid "Output Result"
+msgstr ""
+
+#: admin/settings-view.php:290
+#: admin/settings-view.php:319
+msgid "Bouten Style"
+msgstr ""
+
+#: admin/settings-view.php:294
+msgid "Select the type of mark used for bouten markup."
+msgstr ""
+
+#: admin/settings-view.php:342
+#: admin/settings-view.php:373
+msgid "Bouten Rendering Method"
+msgstr ""
+
+#: admin/settings-view.php:346
+msgid "Select how bouten marks are rendered. In most cases, the custom renderer is recommended."
+msgstr ""
+
+#: includes/constants.php:122
+msgid "Apply Only Within Shortcodes"
+msgstr ""
+
+#: includes/constants.php:123
+msgid "Converts markup only within [rubymarkup]...[/rubymarkup] blocks. This helps prevent unintended conversions and reduces processing overhead."
+msgstr ""
+
+#: includes/constants.php:130
+msgid "Apply to Entire Post Content"
+msgstr ""
+
+#: includes/constants.php:131
+msgid "Automatically converts markup throughout the post content without requiring shortcodes. This is more convenient, but unintended text may also be converted."
+msgstr ""
+
+#: includes/constants.php:182
+msgid "dot"
+msgstr ""
+
+#: includes/constants.php:185
+msgid "sesame"
+msgstr ""
+
+#: includes/constants.php:234
+msgid "Custom Renderer"
+msgstr ""
+
+#: includes/constants.php:235
+msgid "Renders bouten marks by wrapping each character in separate HTML elements. Recommended when you want finer control over positioning and appearance via CSS."
+msgstr ""
+
+#: includes/constants.php:241
+msgid "CSS text-emphasis"
+msgstr ""
+
+#: includes/constants.php:242
+msgid "Renders bouten marks using the W3C-standard text-emphasis property. The appearance, including mark position and line spacing, depends on each browser’s implementation."
+msgstr ""
+
+#: includes/markup-rules.php:43
+msgid "｜BaseText《RubyAnnotation》 Markup"
+msgstr ""
+
+#: includes/markup-rules.php:44
+msgid "BaseText《RubyAnnotation》 Markup"
+msgstr ""
+
+#: includes/markup-rules.php:50
+msgid "Supports both the \"｜BaseText《RubyAnnotation》\" and \"BaseText《RubyAnnocation》\" markup styles. The former explicitly specifies both the base text and ruby annotation, with no restrictions on character types. Both full-width and half-width vertical bars are supported. The latter automatically treats the preceding kanji characters as the base text, so the base text is limited to kanji."
+msgstr ""
+
+#: includes/markup-rules.php:73
+msgid "BaseText(RubyAnnotation) Markup"
+msgstr ""
+
+#: includes/markup-rules.php:78
+msgid "Uses the \"BaseText(RubyAnnotation)\" markup style. Parentheses must be half-width characters. The kanji characters immediately preceding \"(RubyAnnotation)\" are automatically treated as the base text, so the base text is limited to kanji. Ruby annotation supports hiragana, katakana, prolonged sound marks, and middle dots."
+msgstr ""
+
+#: includes/markup-rules.php:96
+msgid "[[rb:BaseText > RubyAnnotation]] Markup"
+msgstr ""
+
+#: includes/markup-rules.php:102
+msgid "Uses the \"[[rb:BaseText > RubyAnnotation]]\" markup style to explicitly specify both the base text and ruby annotation. There are no character type restrictions for either the base text or the ruby annotation."
+msgstr ""
+
+#: includes/markup-rules.php:120
+msgid "#BaseText__RubyAnnotation__# Markup"
+msgstr ""
+
+#: includes/markup-rules.php:126
+msgid "Uses the \"#BaseText__RubyAnnotation__#\" markup style to explicitly specify both the base text and ruby annotation. There are no character type restrictions for either the base text or the ruby annotation."
+msgstr ""
+
+#: includes/markup-rules.php:144
+msgid "{{ruby|BaseText|RubyAnnotation}} Markup"
+msgstr ""
+
+#: includes/markup-rules.php:150
+msgid "Uses the \"{{ruby|BaseText|RubyAnnotation}}\" markup style to explicitly specify both the base text and ruby annotation. There are no character type restrictions for either the base text or the ruby annotation."
+msgstr ""
+
+#: includes/markup-rules.php:168
+msgid "《《Emphasis》》 Markup"
+msgstr ""
+
+#: includes/markup-rules.php:173
+msgid "Adds bouten marks to each character enclosed by \"《《\" and \"》》\"."
+msgstr ""
