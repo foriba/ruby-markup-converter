@@ -1,6 +1,6 @@
 === Ruby Markup Converter ===
 Contributors: Foriba
-Tags: ruby, furigana, japanese, typography, shortcode
+Tags: ruby, japanese, typography, shortcode, converter
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -77,7 +77,7 @@ When the plugin is uninstalled, its saved settings are removed.
 
 = 0.9.0 =
 
-* Initial public release candidate 1
+* IInitial review submission
 * Added support for multiple ruby markup styles
 * Added bouten markup support
 * Added shortcode-only and full-content conversion modes
@@ -88,4 +88,4 @@ When the plugin is uninstalled, its saved settings are removed.
 
 = 0.9.0 =
 
-Initial public release candidate 1.
+Initial review submission.
