@@ -29,7 +29,9 @@ function rbmkup_filter_the_content(string $content): string
 {
     $content = wp_kses_post($content);
 
-    return rbmkup_get_apply_mode() === RBMKUP_APPLY_MODE_ALL
-        ? rbmkup_transform_content_markup($content)
-        : $content;
+    if (rbmkup_get_apply_mode() !== RBMKUP_APPLY_MODE_ALL) {
+        return $content;
+    }
+
+    return wp_kses_post(rbmkup_transform_content_markup($content));
 }

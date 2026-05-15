@@ -25,7 +25,7 @@ add_shortcode('rubymarkup', 'rbmkup_shortcode');
  */
 function rbmkup_shortcode(array $atts, ?string $content = null): string
 {
-    $content = wp_kses_post($content);
+    $content = wp_kses_post((string) $content);
 
-    return rbmkup_transform_content_markup((string) $content);
+    return wp_kses_post(rbmkup_transform_content_markup($content));
 }
