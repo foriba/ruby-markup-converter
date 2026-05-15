@@ -10,13 +10,13 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Ruby Markup Converter
- * Plugin URI:        https://github.com/foriba/ruby-markup-converter
+ * Plugin URI:        https://github.com/foriba/ruby-markup-converter/
  * Description:       Automatically convert plain-text ruby notations into display-ready HTML.
  * Version:           0.9.0
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Foriba
- * Author URI:        https://github.com/foriba
+ * Author URI:        https://github.com/foriba/
  * Text Domain:       ruby-markup-converter
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.txt
@@ -34,17 +34,6 @@ if (! defined('ABSPATH')) {
  *
  * Define plugin-wide constants and load feature modules.
  */
-
-add_action('plugins_loaded', 'my_plugin_load_textdomain');
-
-function my_plugin_load_textdomain()
-{
-	load_plugin_textdomain(
-		'ruby-markup-converter',
-		false,
-		dirname(plugin_basename(__FILE__)) . '/languages'
-	);
-}
 
 define('RBMKUP_PLUGIN_FILE', __FILE__);
 define('RBMKUP_PLUGIN_DIR', plugin_dir_path(__FILE__));
