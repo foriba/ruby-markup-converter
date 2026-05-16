@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name
  *
@@ -22,10 +21,9 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-
 declare(strict_types=1);
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -35,9 +33,9 @@ if (! defined('ABSPATH')) {
  * Define plugin-wide constants and load feature modules.
  */
 
-define('RUBYMACO_PLUGIN_FILE', __FILE__);
-define('RUBYMACO_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('RUBYMACO_PLUGIN_URL', plugin_dir_url(__FILE__));
+define( 'RUBYMACO_PLUGIN_FILE', __FILE__ );
+define( 'RUBYMACO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'RUBYMACO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 const RUBYMACO_VERSION = '0.9.0';
 
@@ -52,6 +50,6 @@ require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/settings-helpers.php';
 
-if (is_admin()) {
+if ( is_admin() ) {
 	require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-page.php';
 }

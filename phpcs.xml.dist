@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ruleset name="Ruby Markup Converter">
+
+    <description>
+        PHPCS configuration for Ruby Markup Converter.
+    </description>
+
+    <!-- WordPress Coding Standards -->
+    <rule ref="WordPress-Core" />
+    <rule ref="WordPress-Docs" />
+    <rule ref="WordPress-Extra" />
+
+    <!-- Scan current directory -->
+    <file>.</file>
+
+    <!-- Exclude -->
+    <exclude-pattern>/vendor/*</exclude-pattern>
+
+    <!-- Encoding -->
+    <arg name="encoding" value="utf-8"/>
+
+    <!-- Show progress -->
+    <arg value="p"/>
+
+    <!-- Colors -->
+    <arg name="colors"/>
+
+</ruleset>
