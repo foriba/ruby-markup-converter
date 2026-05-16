@@ -1,0 +1,13 @@
+/.git
+/.github
+/.vscode
+/vendor
+/node_modules
+
+composer.json
+composer.lock
+phpcs.xml.dist
+
+.gitignore
+.distignore
+TODO.md
