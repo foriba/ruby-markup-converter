@@ -17,45 +17,45 @@ if (! defined('ABSPATH')) {
 /**
  * 設定項目を WordPress Settings API に登録する。
  */
-function rbmkup_register_settings(): void
+function rubymaco_register_settings(): void
 {
     register_setting(
-        RBMKUP_SETTINGS_GROUP,
-        RBMKUP_OPTION_ENABLED_MARKUP_RULES,
+        RUBYMACO_SETTINGS_GROUP,
+        RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
         [
             'type'              => 'array',
-            'sanitize_callback' => 'rbmkup_sanitize_enabled_markup_rules',
-            'default'           => rbmkup_get_default_enabled_rule_ids(),
+            'sanitize_callback' => 'rubymaco_sanitize_enabled_markup_rules',
+            'default'           => rubymaco_get_default_enabled_rule_ids(),
         ]
     );
 
     register_setting(
-        RBMKUP_SETTINGS_GROUP,
-        RBMKUP_OPTION_BOUTEN_STYLE,
+        RUBYMACO_SETTINGS_GROUP,
+        RUBYMACO_OPTION_BOUTEN_STYLE,
         [
             'type'              => 'string',
-            'sanitize_callback' => 'rbmkup_sanitize_bouten_style',
-            'default'           => RBMKUP_DEFAULT_BOUTEN_STYLE,
+            'sanitize_callback' => 'rubymaco_sanitize_bouten_style',
+            'default'           => RUBYMACO_DEFAULT_BOUTEN_STYLE,
         ]
     );
 
     register_setting(
-        RBMKUP_SETTINGS_GROUP,
-        RBMKUP_OPTION_BOUTEN_RENDERER,
+        RUBYMACO_SETTINGS_GROUP,
+        RUBYMACO_OPTION_BOUTEN_RENDERER,
         [
             'type'              => 'string',
-            'sanitize_callback' => 'rbmkup_sanitize_bouten_renderer',
-            'default'           => RBMKUP_DEFAULT_BOUTEN_RENDERER,
+            'sanitize_callback' => 'rubymaco_sanitize_bouten_renderer',
+            'default'           => RUBYMACO_DEFAULT_BOUTEN_RENDERER,
         ]
     );
 
     register_setting(
-        RBMKUP_SETTINGS_GROUP,
-        RBMKUP_OPTION_APPLY_MODE,
+        RUBYMACO_SETTINGS_GROUP,
+        RUBYMACO_OPTION_APPLY_MODE,
         [
             'type'              => 'string',
-            'sanitize_callback' => 'rbmkup_sanitize_apply_mode',
-            'default'           => RBMKUP_DEFAULT_APPLY_MODE,
+            'sanitize_callback' => 'rubymaco_sanitize_apply_mode',
+            'default'           => RUBYMACO_DEFAULT_APPLY_MODE,
         ]
     );
 }
@@ -70,10 +70,10 @@ function rbmkup_register_settings(): void
  * @param mixed $value Settings API から渡される値
  * @return string[]
  */
-function rbmkup_sanitize_enabled_markup_rules($value): array
+function rubymaco_sanitize_enabled_markup_rules($value): array
 {
     if (! is_array($value)) {
-        return rbmkup_get_default_enabled_rule_ids();
+        return rubymaco_get_default_enabled_rule_ids();
     }
 
     $rule_ids = array_values(
@@ -82,7 +82,7 @@ function rbmkup_sanitize_enabled_markup_rules($value): array
         )
     );
 
-    return rbmkup_normalize_enabled_rule_ids($rule_ids);
+    return rubymaco_normalize_enabled_rule_ids($rule_ids);
 }
 
 /**
@@ -91,9 +91,9 @@ function rbmkup_sanitize_enabled_markup_rules($value): array
  * @param mixed $value Settings API から渡される値
  * @return string
  */
-function rbmkup_sanitize_bouten_style($value): string
+function rubymaco_sanitize_bouten_style($value): string
 {
-    return rbmkup_normalize_bouten_style(
+    return rubymaco_normalize_bouten_style(
         sanitize_text_field(wp_unslash((string) $value))
     );
 }
@@ -104,9 +104,9 @@ function rbmkup_sanitize_bouten_style($value): string
  * @param mixed $value Settings API から渡される値
  * @return string
  */
-function rbmkup_sanitize_bouten_renderer($value): string
+function rubymaco_sanitize_bouten_renderer($value): string
 {
-    return rbmkup_normalize_bouten_renderer(
+    return rubymaco_normalize_bouten_renderer(
         sanitize_text_field(wp_unslash((string) $value))
     );
 }
@@ -117,9 +117,9 @@ function rbmkup_sanitize_bouten_renderer($value): string
  * @param mixed $value Settings API から渡される値
  * @return string
  */
-function rbmkup_sanitize_apply_mode($value): string
+function rubymaco_sanitize_apply_mode($value): string
 {
-    return rbmkup_normalize_apply_mode(
+    return rubymaco_normalize_apply_mode(
         sanitize_text_field(wp_unslash((string) $value))
     );
 }
@@ -173,58 +173,58 @@ function rbmkup_sanitize_apply_mode($value): string
  *     current_apply_mode: string
  * }
  */
-function rbmkup_get_admin_settings_view_data(): array
+function rubymaco_get_admin_settings_view_data(): array
 {
     $enabled_rule_ids = get_option(
-        RBMKUP_OPTION_ENABLED_MARKUP_RULES,
-        rbmkup_get_default_enabled_rule_ids()
+        RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+        rubymaco_get_default_enabled_rule_ids()
     );
 
     if (! is_array($enabled_rule_ids)) {
-        $enabled_rule_ids = rbmkup_get_default_enabled_rule_ids();
+        $enabled_rule_ids = rubymaco_get_default_enabled_rule_ids();
     }
 
-    $enabled_rule_ids = rbmkup_normalize_enabled_rule_ids(
+    $enabled_rule_ids = rubymaco_normalize_enabled_rule_ids(
         array_map('strval', $enabled_rule_ids)
     );
 
-    $current_bouten_style = rbmkup_get_option_choice(
-        RBMKUP_OPTION_BOUTEN_STYLE,
-        rbmkup_get_allowed_bouten_styles(),
-        RBMKUP_DEFAULT_BOUTEN_STYLE
+    $current_bouten_style = rubymaco_get_option_choice(
+        RUBYMACO_OPTION_BOUTEN_STYLE,
+        rubymaco_get_allowed_bouten_styles(),
+        RUBYMACO_DEFAULT_BOUTEN_STYLE
     );
 
-    $current_bouten_renderer = rbmkup_get_option_choice(
-        RBMKUP_OPTION_BOUTEN_RENDERER,
-        rbmkup_get_allowed_bouten_renderers(),
-        RBMKUP_DEFAULT_BOUTEN_RENDERER
+    $current_bouten_renderer = rubymaco_get_option_choice(
+        RUBYMACO_OPTION_BOUTEN_RENDERER,
+        rubymaco_get_allowed_bouten_renderers(),
+        RUBYMACO_DEFAULT_BOUTEN_RENDERER
     );
 
-    $current_apply_mode = rbmkup_get_option_choice(
-        RBMKUP_OPTION_APPLY_MODE,
-        rbmkup_get_allowed_apply_modes(),
-        RBMKUP_DEFAULT_APPLY_MODE
+    $current_apply_mode = rubymaco_get_option_choice(
+        RUBYMACO_OPTION_APPLY_MODE,
+        rubymaco_get_allowed_apply_modes(),
+        RUBYMACO_DEFAULT_APPLY_MODE
     );
 
     return [
-        'rules'                   => rbmkup_prepare_admin_rule_view_data(
-            rbmkup_get_markup_rules_for_settings_view(),
+        'rules'                   => rubymaco_prepare_admin_rule_view_data(
+            rubymaco_get_markup_rules_for_settings_view(),
             $enabled_rule_ids
         ),
-        'apply_mode_choices'      => rbmkup_prepare_choice_view_data(
-            rbmkup_get_apply_mode_definitions(),
+        'apply_mode_choices'      => rubymaco_prepare_choice_view_data(
+            rubymaco_get_apply_mode_definitions(),
             $current_apply_mode,
-            'rbmkup-apply-mode-'
+            'rubymaco-apply-mode-'
         ),
-        'bouten_style_choices'    => rbmkup_prepare_choice_view_data(
-            rbmkup_get_bouten_style_definitions(),
+        'bouten_style_choices'    => rubymaco_prepare_choice_view_data(
+            rubymaco_get_bouten_style_definitions(),
             $current_bouten_style,
-            'rbmkup-bouten-style-'
+            'rubymaco-bouten-style-'
         ),
-        'bouten_renderer_choices' => rbmkup_prepare_choice_view_data(
-            rbmkup_get_bouten_renderer_definitions(),
+        'bouten_renderer_choices' => rubymaco_prepare_choice_view_data(
+            rubymaco_get_bouten_renderer_definitions(),
             $current_bouten_renderer,
-            'rbmkup-bouten-renderer-'
+            'rubymaco-bouten-renderer-'
         ),
         'enabled_rule_ids'        => $enabled_rule_ids,
         'current_bouten_style'    => $current_bouten_style,
@@ -253,7 +253,7 @@ function rbmkup_get_admin_settings_view_data(): array
  *     is_enabled:bool
  * }>
  */
-function rbmkup_prepare_admin_rule_view_data(array $rules, array $enabled_rule_ids): array
+function rubymaco_prepare_admin_rule_view_data(array $rules, array $enabled_rule_ids): array
 {
     $prepared_rules = [];
 
@@ -267,7 +267,7 @@ function rbmkup_prepare_admin_rule_view_data(array $rules, array $enabled_rule_i
         $prepared_rules[] = [
             'id'                 => $rule_id,
             'type'               => (string) ($rule['type'] ?? ''),
-            'titles'             => rbmkup_normalize_admin_rule_titles(
+            'titles'             => rubymaco_normalize_admin_rule_titles(
                 (array) ($rule['title'] ?? [])
             ),
             'examples'           => array_values(
@@ -278,7 +278,7 @@ function rbmkup_prepare_admin_rule_view_data(array $rules, array $enabled_rule_i
             ),
             'description'        => (string) ($rule['description'] ?? ''),
             'enabled_by_default' => ! empty($rule['enabled_by_default']),
-            'transform_rules'    => rbmkup_normalize_transform_rules(
+            'transform_rules'    => rubymaco_normalize_transform_rules(
                 (array) ($rule['transform_rules'] ?? [])
             ),
             'is_enabled'         => in_array($rule_id, $enabled_rule_ids, true),
@@ -302,7 +302,7 @@ function rbmkup_prepare_admin_rule_view_data(array $rules, array $enabled_rule_i
  *     is_selected:bool
  * }>
  */
-function rbmkup_prepare_choice_view_data(
+function rubymaco_prepare_choice_view_data(
     array $definitions,
     string $current_value,
     string $id_prefix
@@ -334,7 +334,7 @@ function rbmkup_prepare_choice_view_data(
  * @param string[] $titles
  * @return string[]
  */
-function rbmkup_normalize_admin_rule_titles(array $titles): array
+function rubymaco_normalize_admin_rule_titles(array $titles): array
 {
     return array_values(
         array_filter(

@@ -10,7 +10,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-add_shortcode('rubymarkup', 'rbmkup_shortcode');
+add_shortcode('rubymarkup', 'rubymaco_shortcode');
 
 /**
  * WordPress Hooks
@@ -23,9 +23,9 @@ add_shortcode('rubymarkup', 'rbmkup_shortcode');
  * @param string|null          $content ショートコード本文
  * @return string 変換後の本文
  */
-function rbmkup_shortcode(array $atts, ?string $content = null): string
+function rubymaco_shortcode(array $atts, ?string $content = null): string
 {
     $content = wp_kses_post((string) $content);
 
-    return wp_kses_post(rbmkup_transform_content_markup($content));
+    return wp_kses_post(rubymaco_transform_content_markup($content));
 }

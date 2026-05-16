@@ -1,11 +1,11 @@
-.rubymarkup-bouten {
+.rubymaco-bouten {
 	display: inline;
 }
 
-.rubymarkup-bouten--custom {
+.rubymaco-bouten--custom {
 	display: inline;
 
-	.rubymarkup-bouten__char {
+	.rubymaco-bouten__char {
 		position: relative;
 		display: inline-block;
 
@@ -21,29 +21,29 @@
 		}
 	}
 
-	&.rubymarkup-bouten--dot {
-		.rubymarkup-bouten__char::before {
+	&.rubymaco-bouten--dot {
+		.rubymaco-bouten__char::before {
 			content: "•";
 		}
 	}
 
-	&.rubymarkup-bouten--sesame {
-		.rubymarkup-bouten__char::before {
+	&.rubymaco-bouten--sesame {
+		.rubymaco-bouten__char::before {
 			content: "﹅";
 		}
 	}
 }
 
-.rubymarkup-bouten--text-emphasis {
+.rubymaco-bouten--text-emphasis {
 	-webkit-text-emphasis-position: over right;
 	text-emphasis-position: over right;
 
-	&.rubymarkup-bouten--dot {
+	&.rubymaco-bouten--dot {
 		-webkit-text-emphasis: filled dot;
 		text-emphasis: filled dot;
 	}
 
-	&.rubymarkup-bouten--sesame {
+	&.rubymaco-bouten--sesame {
 		-webkit-text-emphasis: filled sesame;
 		text-emphasis: filled sesame;
 	}

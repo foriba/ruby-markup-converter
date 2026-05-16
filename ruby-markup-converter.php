@@ -35,23 +35,23 @@ if (! defined('ABSPATH')) {
  * Define plugin-wide constants and load feature modules.
  */
 
-define('RBMKUP_PLUGIN_FILE', __FILE__);
-define('RBMKUP_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('RBMKUP_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('RUBYMACO_PLUGIN_FILE', __FILE__);
+define('RUBYMACO_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('RUBYMACO_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-const RBMKUP_VERSION = '0.9.0';
+const RUBYMACO_VERSION = '0.9.0';
 
-require_once RBMKUP_PLUGIN_DIR . '/includes/constants.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
 
-require_once RBMKUP_PLUGIN_DIR . '/includes/markup-rules.php';
-require_once RBMKUP_PLUGIN_DIR . '/includes/markup-transformer.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-rules.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-transformer.php';
 
-require_once RBMKUP_PLUGIN_DIR . '/includes/content-filter.php';
-require_once RBMKUP_PLUGIN_DIR . '/includes/shortcode.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/content-filter.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
 
-require_once RBMKUP_PLUGIN_DIR . '/includes/frontend-assets.php';
-require_once RBMKUP_PLUGIN_DIR . '/includes/settings-helpers.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/settings-helpers.php';
 
 if (is_admin()) {
-	require_once RBMKUP_PLUGIN_DIR . '/admin/settings-page.php';
+	require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-page.php';
 }

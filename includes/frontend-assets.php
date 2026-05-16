@@ -10,7 +10,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-add_action('wp_enqueue_scripts', 'rbmkup_enqueue_styles');
+add_action('wp_enqueue_scripts', 'rubymaco_enqueue_styles');
 
 /**
  * WordPress Hooks
@@ -19,12 +19,12 @@ add_action('wp_enqueue_scripts', 'rbmkup_enqueue_styles');
 /**
  * フロントエンド用の CSS を読み込む。
  */
-function rbmkup_enqueue_styles(): void
+function rubymaco_enqueue_styles(): void
 {
     wp_enqueue_style(
         'ruby-markup-converter',
-        RBMKUP_PLUGIN_URL . '/public/css/ruby-markup-converter.css',
+        RUBYMACO_PLUGIN_URL . '/public/css/ruby-markup-converter.css',
         [],
-        RBMKUP_VERSION
+        RUBYMACO_VERSION
     );
 }

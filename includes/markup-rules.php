@@ -33,12 +33,12 @@ if (! defined('ABSPATH')) {
  *     }>
  * }>
  */
-function rbmkup_get_markup_rules(): array
+function rubymaco_get_markup_rules(): array
 {
     return [
         [
             'id'                 => 'ruby_double_angle',
-            'type'               => RBMKUP_RULE_TYPE_RUBY,
+            'type'               => RUBYMACO_RULE_TYPE_RUBY,
             'title'              => [
                 __('｜BaseText《RubyAnnotation》 Markup', 'ruby-markup-converter'), // ja-jp: '｜親文字《ルビ》 記法',
                 __('BaseText《RubyAnnotation》 Markup', 'ruby-markup-converter'), // ja-jp: '親文字《ルビ》 記法',
@@ -55,12 +55,12 @@ function rbmkup_get_markup_rules(): array
             'transform_rules'    => [
                 [
                     'id'      => 'ruby_double_angle_explicit',
-                    'type'    => RBMKUP_RULE_TYPE_RUBY,
+                    'type'    => RUBYMACO_RULE_TYPE_RUBY,
                     'pattern' => '/[|｜]([^<>|｜]+?)《([^<>]+?)》/u',
                 ],
                 [
                     'id'      => 'ruby_double_angle_implicit',
-                    'type'    => RBMKUP_RULE_TYPE_RUBY,
+                    'type'    => RUBYMACO_RULE_TYPE_RUBY,
                     'pattern' => '/([一-龯々〆〤]+)《([^<>]+?)》/u',
                 ],
             ],
@@ -68,7 +68,7 @@ function rbmkup_get_markup_rules(): array
 
         [
             'id'                 => 'ruby_parenthesis',
-            'type'               => RBMKUP_RULE_TYPE_RUBY,
+            'type'               => RUBYMACO_RULE_TYPE_RUBY,
             'title'              => [
                 __('BaseText(RubyAnnotation) Markup', 'ruby-markup-converter'), // ja-jp: '親文字(ルビ) 記法'
             ],
@@ -83,7 +83,7 @@ function rbmkup_get_markup_rules(): array
             'transform_rules'    => [
                 [
                     'id'      => 'ruby_parenthesis',
-                    'type'    => RBMKUP_RULE_TYPE_RUBY,
+                    'type'    => RUBYMACO_RULE_TYPE_RUBY,
                     'pattern' => '/([一-龯々〆〤]+)\(([ぁ-ゖァ-ヺー・]+)\)/u',
                 ],
             ],
@@ -91,7 +91,7 @@ function rbmkup_get_markup_rules(): array
 
         [
             'id'                 => 'ruby_rb',
-            'type'               => RBMKUP_RULE_TYPE_RUBY,
+            'type'               => RUBYMACO_RULE_TYPE_RUBY,
             'title'              => [
                 __('[[rb:BaseText > RubyAnnotation]] Markup', 'ruby-markup-converter'), // ja-jp: '[[rb:親文字 > ルビ]] 記法',
             ],
@@ -107,7 +107,7 @@ function rbmkup_get_markup_rules(): array
             'transform_rules'    => [
                 [
                     'id'      => 'ruby_rb',
-                    'type'    => RBMKUP_RULE_TYPE_RUBY,
+                    'type'    => RUBYMACO_RULE_TYPE_RUBY,
                     'pattern' => '/\[\[rb:([^>\[\]]+?)\s*>\s*([^\[\]]+?)\]\]/u',
                 ],
             ],
@@ -115,7 +115,7 @@ function rbmkup_get_markup_rules(): array
 
         [
             'id'                 => 'ruby_double_underscore',
-            'type'               => RBMKUP_RULE_TYPE_RUBY,
+            'type'               => RUBYMACO_RULE_TYPE_RUBY,
             'title'              => [
                 __('#BaseText__RubyAnnotation__# Markup', 'ruby-markup-converter'), // ja-jp: '#親文字__ルビ__# 記法',
             ],
@@ -131,7 +131,7 @@ function rbmkup_get_markup_rules(): array
             'transform_rules'    => [
                 [
                     'id'      => 'ruby_double_underscore',
-                    'type'    => RBMKUP_RULE_TYPE_RUBY,
+                    'type'    => RUBYMACO_RULE_TYPE_RUBY,
                     'pattern' => '/#(.+?)__(.+?)__#/u',
                 ],
             ],
@@ -139,7 +139,7 @@ function rbmkup_get_markup_rules(): array
 
         [
             'id'                 => 'ruby_mediawiki',
-            'type'               => RBMKUP_RULE_TYPE_RUBY,
+            'type'               => RUBYMACO_RULE_TYPE_RUBY,
             'title'              => [
                 __('{{ruby|BaseText|RubyAnnotation}} Markup', 'ruby-markup-converter'), // ja-jp: '{{ruby|親文字|ルビ}} 記法',
             ],
@@ -155,7 +155,7 @@ function rbmkup_get_markup_rules(): array
             'transform_rules'    => [
                 [
                     'id'      => 'ruby_mediawiki',
-                    'type'    => RBMKUP_RULE_TYPE_RUBY,
+                    'type'    => RUBYMACO_RULE_TYPE_RUBY,
                     'pattern' => '/\{\{ruby\|(.+?)\|(.+?)\}\}/u',
                 ],
             ],
@@ -163,7 +163,7 @@ function rbmkup_get_markup_rules(): array
 
         [
             'id'                 => 'bouten_double_bracket',
-            'type'               => RBMKUP_RULE_TYPE_BOUTEN,
+            'type'               => RUBYMACO_RULE_TYPE_BOUTEN,
             'title'              => [
                 __('《《Emphasis》》 Markup', 'ruby-markup-converter') // ja-jp: '《《強調》》 記法',
             ],
@@ -179,7 +179,7 @@ function rbmkup_get_markup_rules(): array
             'transform_rules'    => [
                 [
                     'id'      => 'bouten_double_bracket',
-                    'type'    => RBMKUP_RULE_TYPE_BOUTEN,
+                    'type'    => RUBYMACO_RULE_TYPE_BOUTEN,
                     'pattern' => '/《《([^<>]+?)》》/u',
                 ],
             ],
@@ -199,7 +199,7 @@ function rbmkup_get_markup_rules(): array
  *     pattern:string
  * }>
  */
-function rbmkup_get_transform_rules_for_rule_ids(array $rule_ids): array
+function rubymaco_get_transform_rules_for_rule_ids(array $rule_ids): array
 {
     $rule_ids = array_values(
         array_filter(
@@ -210,7 +210,7 @@ function rbmkup_get_transform_rules_for_rule_ids(array $rule_ids): array
 
     $transform_rules = [];
 
-    foreach (rbmkup_get_markup_rules() as $rule) {
+    foreach (rubymaco_get_markup_rules() as $rule) {
         $rule_id = (string) ($rule['id'] ?? '');
 
         if (! in_array($rule_id, $rule_ids, true)) {
@@ -219,7 +219,7 @@ function rbmkup_get_transform_rules_for_rule_ids(array $rule_ids): array
 
         $transform_rules = array_merge(
             $transform_rules,
-            rbmkup_normalize_transform_rules((array) ($rule['transform_rules'] ?? []))
+            rubymaco_normalize_transform_rules((array) ($rule['transform_rules'] ?? []))
         );
     }
 
@@ -238,10 +238,10 @@ function rbmkup_get_transform_rules_for_rule_ids(array $rule_ids): array
  *     pattern:string
  * }>
  */
-function rbmkup_normalize_transform_rules(array $transform_rules): array
+function rubymaco_normalize_transform_rules(array $transform_rules): array
 {
     $rules = [];
-    $allowed_types = rbmkup_get_allowed_rule_types();
+    $allowed_types = rubymaco_get_allowed_rule_types();
 
     foreach ($transform_rules as $rule) {
         if (
@@ -275,7 +275,7 @@ function rbmkup_normalize_transform_rules(array $transform_rules): array
 /**
  * 管理画面に表示する記法ルール一覧を返す。
  *
- * 現在は rbmkup_get_markup_rules() と同じ内容を返すが、
+ * 現在は rubymaco_get_markup_rules() と同じ内容を返すが、
  * 管理画面用の表示制御を将来追加できるよう、呼び出し口を分けておく。
  * 
  * @return array<int, array{
@@ -292,9 +292,9 @@ function rbmkup_normalize_transform_rules(array $transform_rules): array
  *     }>
  * }>
  */
-function rbmkup_get_markup_rules_for_settings_view(): array
+function rubymaco_get_markup_rules_for_settings_view(): array
 {
-    return rbmkup_get_markup_rules();
+    return rubymaco_get_markup_rules();
 }
 
 /**
@@ -302,11 +302,11 @@ function rbmkup_get_markup_rules_for_settings_view(): array
  *
  * @return string[]
  */
-function rbmkup_get_default_enabled_rule_ids(): array
+function rubymaco_get_default_enabled_rule_ids(): array
 {
     $default_enabled_rule_ids = [];
 
-    foreach (rbmkup_get_markup_rules() as $rule) {
+    foreach (rubymaco_get_markup_rules() as $rule) {
         if (! empty($rule['enabled_by_default'])) {
             $default_enabled_rule_ids[] = (string) $rule['id'];
         }

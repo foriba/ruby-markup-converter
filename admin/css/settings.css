@@ -3,20 +3,20 @@
  */
 /* Colors */
 /* Layout */
-.rbmkup-settings-page {
+.rubymaco-settings-page {
   max-width: 960px;
 }
 
-.rbmkup-settings-form {
+.rubymaco-settings-form {
   margin-top: 1.25rem;
 }
 
-.rbmkup-settings-layout {
+.rubymaco-settings-layout {
   display: grid;
   gap: 1.5rem;
 }
 
-.rbmkup-settings-section {
+.rubymaco-settings-section {
   background: #fff;
   border: 1px solid #dcdcde;
   border-radius: 1rem;
@@ -24,24 +24,24 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.rbmkup-section-title {
+.rubymaco-section-title {
   margin: 0 0 1rem;
   font-size: 1.2rem;
   line-height: 1.4;
 }
 
-.rbmkup-section-body {
+.rubymaco-section-body {
   display: grid;
   gap: 1.25rem;
 }
 
 /* Choice Cards */
-.rbmkup-choice-group {
+.rubymaco-choice-group {
   display: grid;
   gap: 0.75rem;
 }
 
-.rbmkup-choice-card {
+.rubymaco-choice-card {
   display: flex;
   align-items: flex-start;
   gap: 0.625rem;
@@ -53,59 +53,59 @@
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
-.rbmkup-choice-card:hover {
+.rubymaco-choice-card:hover {
   border-color: #8c8f94;
 }
-.rbmkup-choice-card:has(input[type=radio]:checked) {
+.rubymaco-choice-card:has(input[type=radio]:checked) {
   border-color: #2271b1;
   box-shadow: 0 0 0 1px #2271b1 inset;
   background: #f6fbff;
 }
-.rbmkup-choice-card > input[type=radio] {
+.rubymaco-choice-card > input[type=radio] {
   flex: 0 0 auto;
   margin-top: 0.25rem;
 }
 
-.rbmkup-choice-card-body {
+.rubymaco-choice-card-body {
   display: grid;
   gap: 0.375rem;
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.rbmkup-choice-card-title-row {
+.rubymaco-choice-card-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
 }
 
-.rbmkup-choice-card-title {
+.rubymaco-choice-card-title {
   font-weight: 600;
   font-size: 0.85rem;
   line-height: 1.5;
 }
 
-.rbmkup-choice-card-state {
+.rubymaco-choice-card-state {
   font-size: 0.75rem;
   font-weight: 600;
   color: #2271b1;
   white-space: nowrap;
 }
 
-.rbmkup-choice-card-description {
+.rubymaco-choice-card-description {
   color: #50575e;
   font-size: 0.85rem;
   line-height: 1.6;
 }
 
 /* Rule Groups */
-.rbmkup-rule-group {
+.rubymaco-rule-group {
   display: grid;
   gap: 0.75rem;
 }
 
-.rbmkup-rule-group-title {
+.rubymaco-rule-group-title {
   margin: 0;
   font-size: 1rem;
   line-height: 1.5;
@@ -113,25 +113,25 @@
 }
 
 /* Rule Cards */
-.rbmkup-rule-card-list {
+.rubymaco-rule-card-list {
   display: grid;
   gap: 0.85rem;
 }
 
-.rbmkup-rule-card {
+.rubymaco-rule-card {
   border: 1px solid #dcdcde;
   border-radius: 1rem;
   background: #fff;
   padding: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
-.rbmkup-rule-card.is-enabled {
+.rubymaco-rule-card.is-enabled {
   border-color: #2271b1;
   box-shadow: 0 0 0 1px #2271b1 inset;
   background: #f6fbff;
 }
 
-.rbmkup-rule-card-selector {
+.rubymaco-rule-card-selector {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1rem;
@@ -140,11 +140,11 @@
   text-decoration: none;
   color: inherit;
 }
-.rbmkup-rule-card-selector:has(.rbmkup-rule-card-checkbox:checked) .rbmkup-rule-card-checkmark {
+.rubymaco-rule-card-selector:has(.rubymaco-rule-card-checkbox:checked) .rubymaco-rule-card-checkmark {
   border-color: #2271b1;
   background: #2271b1;
 }
-.rbmkup-rule-card-selector:has(.rbmkup-rule-card-checkbox:checked) .rbmkup-rule-card-checkmark::after {
+.rubymaco-rule-card-selector:has(.rubymaco-rule-card-checkbox:checked) .rubymaco-rule-card-checkmark::after {
   content: "";
   position: absolute;
   left: 6px;
@@ -156,13 +156,13 @@
   transform: rotate(45deg);
 }
 
-.rbmkup-rule-card-checkbox {
+.rubymaco-rule-card-checkbox {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
 
-.rbmkup-rule-card-checkmark {
+.rubymaco-rule-card-checkmark {
   width: 22px;
   height: 22px;
   border: 2px solid #8c8f94;
@@ -173,20 +173,20 @@
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.rbmkup-rule-card-content {
+.rubymaco-rule-card-content {
   display: grid;
   gap: 12px;
   min-width: 0;
 }
 
-.rbmkup-rule-card-title-row {
+.rubymaco-rule-card-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.rbmkup-rule-card-title {
+.rubymaco-rule-card-title {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -195,23 +195,23 @@
   line-height: 1.5;
 }
 
-.rbmkup-rule-card-title-item {
+.rubymaco-rule-card-title-item {
   display: block;
 }
 
-.rbmkup-rule-card-state {
+.rubymaco-rule-card-state {
   font-size: 0.75rem;
   font-weight: 600;
   color: #2271b1;
   white-space: nowrap;
 }
 
-.rbmkup-rule-card-meta {
+.rubymaco-rule-card-meta {
   display: grid;
   gap: 8px;
 }
 
-.rbmkup-rule-card-meta-label {
+.rubymaco-rule-card-meta-label {
   font-size: 0.75rem;
   font-weight: 600;
   color: #50575e;
@@ -219,14 +219,14 @@
   letter-spacing: 0.04em;
 }
 
-.rbmkup-rule-card-example-list,
-.rbmkup-rule-card-preview-list {
+.rubymaco-rule-card-example-list,
+.rubymaco-rule-card-preview-list {
   display: grid;
   gap: 8px;
 }
 
-.rbmkup-rule-card-example,
-.rbmkup-rule-card-preview {
+.rubymaco-rule-card-example,
+.rubymaco-rule-card-preview {
   display: inline-block;
   width: -moz-fit-content;
   width: fit-content;
@@ -236,7 +236,7 @@
   border: 1px solid #e0e0e0;
 }
 
-.rbmkup-rule-card-example {
+.rubymaco-rule-card-example {
   background: #f6f7f7;
   font-size: 0.75rem;
   line-height: 1.5;
@@ -244,47 +244,47 @@
   word-break: break-word;
 }
 
-.rbmkup-rule-card-preview {
+.rubymaco-rule-card-preview {
   background: #fff;
   font-size: 1rem;
   line-height: 1.7;
 }
 
-.rbmkup-rule-card-description {
+.rubymaco-rule-card-description {
   color: #50575e;
   font-size: 0.75rem;
   line-height: 1.6;
 }
 
 /* Subfields */
-.rbmkup-subfield,
-.rbmkup-bouten-style-group-field {
+.rubymaco-subfield,
+.rubymaco-bouten-style-group-field {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid #e0e0e0;
 }
 
-.rbmkup-subfield {
+.rubymaco-subfield {
   display: grid;
   gap: 10px;
 }
 
-.rbmkup-subfield-title {
+.rubymaco-subfield-title {
   font-size: 0.75rem;
   font-weight: 600;
   color: #50575e;
 }
 
-.rbmkup-bouten-style-subfield.is-disabled {
+.rubymaco-bouten-style-subfield.is-disabled {
   opacity: 0.45;
 }
-.rbmkup-bouten-style-subfield.is-disabled .rbmkup-choice-card {
+.rubymaco-bouten-style-subfield.is-disabled .rubymaco-choice-card {
   cursor: not-allowed;
   pointer-events: none;
 }
 
 /* Notes */
-.rbmkup-settings-note {
+.rubymaco-settings-note {
   display: block;
   padding: 14px 16px;
   border-radius: 12px;
@@ -292,19 +292,19 @@
   background: #fff8e5;
   color: #1d2327;
 }
-.rbmkup-settings-note ul {
+.rubymaco-settings-note ul {
   margin: 0;
   padding-left: 1.2em;
 }
-.rbmkup-settings-note li {
+.rubymaco-settings-note li {
   margin-bottom: 6px;
   line-height: 1.6;
 }
-.rbmkup-settings-note li:last-child {
+.rubymaco-settings-note li:last-child {
   margin-bottom: 0;
 }
 
-.rbmkup-settings-note-title {
+.rubymaco-settings-note-title {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -312,44 +312,44 @@
   font-weight: 600;
   font-size: 0.85rem;
 }
-.rbmkup-settings-note-title .dashicons {
+.rubymaco-settings-note-title .dashicons {
   color: #dba617;
   font-size: 1.2rem;
   width: 18px;
   height: 18px;
 }
 
-.rbmkup-settings-page {
+.rubymaco-settings-page {
   max-width: 960px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.rbmkup-settings-section,
-.rbmkup-rule-card,
-.rbmkup-choice-card {
+.rubymaco-settings-section,
+.rubymaco-rule-card,
+.rubymaco-choice-card {
   box-sizing: border-box;
 }
 
-.rbmkup-rule-card-example,
-.rbmkup-rule-card-preview {
+.rubymaco-rule-card-example,
+.rubymaco-rule-card-preview {
   overflow-wrap: anywhere;
 }
 
 /* Responsive */
 @media (max-width: 782px) {
-  .rbmkup-settings-section {
+  .rubymaco-settings-section {
     padding: 16px;
   }
-  .rbmkup-rule-card-selector {
+  .rubymaco-rule-card-selector {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  .rbmkup-rule-card-checkmark {
+  .rubymaco-rule-card-checkmark {
     margin-top: 0;
   }
-  .rbmkup-rule-card-title-row,
-  .rbmkup-choice-card-title-row {
+  .rubymaco-rule-card-title-row,
+  .rubymaco-choice-card-title-row {
     align-items: flex-start;
     flex-direction: column;
   }

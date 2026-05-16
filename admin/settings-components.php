@@ -12,12 +12,12 @@ if (! defined('ABSPATH')) {
  * @param string   $title    セクションタイトル
  * @param callable $callback コンテンツを描画するコールバック関数
  */
-function rbmkup_render_settings_section(string $title, callable $callback): void
+function rubymaco_render_settings_section(string $title, callable $callback): void
 {
 ?>
-    <section class="rbmkup-settings-section">
-        <h2 class="rbmkup-section-title"><?php echo esc_html($title); ?></h2>
-        <div class="rbmkup-section-body">
+    <section class="rubymaco-settings-section">
+        <h2 class="rubymaco-section-title"><?php echo esc_html($title); ?></h2>
+        <div class="rubymaco-section-body">
             <?php $callback(); ?>
         </div>
     </section>
@@ -30,14 +30,14 @@ function rbmkup_render_settings_section(string $title, callable $callback): void
  * @param string   $title 注意事項のタイトル
  * @param string[] $notes 注意事項のリスト
  */
-function rbmkup_render_settings_note(string $title, array $notes): void
+function rubymaco_render_settings_note(string $title, array $notes): void
 {
     if ($notes === []) {
         return;
     }
 ?>
-    <div class="rbmkup-settings-note">
-        <p class="rbmkup-settings-note-title">
+    <div class="rubymaco-settings-note">
+        <p class="rubymaco-settings-note-title">
             <span class="dashicons dashicons-warning"></span>
             <?php echo esc_html($title); ?>
         </p>
@@ -63,12 +63,12 @@ function rbmkup_render_settings_note(string $title, array $notes): void
  * @param string $option_name option 名
  * @param string $aria_label aria-label
  */
-function rbmkup_render_choice_group(array $choices, string $option_name, string $aria_label): void
+function rubymaco_render_choice_group(array $choices, string $option_name, string $aria_label): void
 {
 ?>
-    <div class="rbmkup-choice-group" role="radiogroup" aria-label="<?php echo esc_attr($aria_label); ?>">
+    <div class="rubymaco-choice-group" role="radiogroup" aria-label="<?php echo esc_attr($aria_label); ?>">
         <?php foreach ($choices as $choice) : ?>
-            <?php rbmkup_render_choice_card($choice, $option_name); ?>
+            <?php rubymaco_render_choice_card($choice, $option_name); ?>
         <?php endforeach; ?>
     </div>
 <?php
@@ -86,10 +86,10 @@ function rbmkup_render_choice_group(array $choices, string $option_name, string 
  * } $choice
  * @param string $option_name option 名
  */
-function rbmkup_render_choice_card(array $choice, string $option_name): void
+function rubymaco_render_choice_card(array $choice, string $option_name): void
 {
 ?>
-    <label class="rbmkup-choice-card" for="<?php echo esc_attr($choice['id']); ?>">
+    <label class="rubymaco-choice-card" for="<?php echo esc_attr($choice['id']); ?>">
         <input
             id="<?php echo esc_attr($choice['id']); ?>"
             type="radio"
@@ -97,10 +97,10 @@ function rbmkup_render_choice_card(array $choice, string $option_name): void
             value="<?php echo esc_attr($choice['value']); ?>"
             <?php checked($choice['is_selected']); ?>>
 
-        <span class="rbmkup-choice-card-body">
-            <span class="rbmkup-choice-card-title-row">
-                <span class="rbmkup-choice-card-title"><?php echo esc_html($choice['label']); ?></span>
-                <span class="rbmkup-choice-card-state">
+        <span class="rubymaco-choice-card-body">
+            <span class="rubymaco-choice-card-title-row">
+                <span class="rubymaco-choice-card-title"><?php echo esc_html($choice['label']); ?></span>
+                <span class="rubymaco-choice-card-state">
                     <?php echo $choice['is_selected']
                         ? esc_html__('Selected', 'ruby-markup-converter') // ja-jp: '選択中'
                         : ''; ?>
@@ -108,7 +108,7 @@ function rbmkup_render_choice_card(array $choice, string $option_name): void
             </span>
 
             <?php if ($choice['description'] !== '') : ?>
-                <span class="rbmkup-choice-card-description">
+                <span class="rubymaco-choice-card-description">
                     <?php echo esc_html($choice['description']); ?>
                 </span>
             <?php endif; ?>
@@ -123,18 +123,18 @@ function rbmkup_render_choice_card(array $choice, string $option_name): void
  * @param string[] $titles ルールタイトル一覧
  * @param bool     $is_enabled 現在有効かどうか
  */
-function rbmkup_render_rule_card_title(array $titles, bool $is_enabled): void
+function rubymaco_render_rule_card_title(array $titles, bool $is_enabled): void
 {
 ?>
-    <span class="rbmkup-rule-card-title-row">
-        <span class="rbmkup-rule-card-title">
+    <span class="rubymaco-rule-card-title-row">
+        <span class="rubymaco-rule-card-title">
             <?php foreach ($titles as $title) : ?>
-                <span class="rbmkup-rule-card-title-item">
+                <span class="rubymaco-rule-card-title-item">
                     <?php echo esc_html($title); ?>
                 </span>
             <?php endforeach; ?>
         </span>
-        <span class="rbmkup-rule-card-state">
+        <span class="rubymaco-rule-card-state">
             <?php echo $is_enabled
                 ? esc_html__('Enabled', 'ruby-markup-converter') // ja-jp: '有効'
                 : esc_html__('Disabled', 'ruby-markup-converter'); // ja-jp: '無効'
@@ -152,14 +152,14 @@ function rbmkup_render_rule_card_title(array $titles, bool $is_enabled): void
  * @param string   $label    表示ラベル
  * @param string[] $examples 記法例一覧
  */
-function rbmkup_render_rule_card_example_meta(string $label, array $examples): void
+function rubymaco_render_rule_card_example_meta(string $label, array $examples): void
 {
 ?>
-    <span class="rbmkup-rule-card-meta">
-        <span class="rbmkup-rule-card-meta-label"><?php echo esc_html($label); ?></span>
-        <span class="rbmkup-rule-card-example-list">
+    <span class="rubymaco-rule-card-meta">
+        <span class="rubymaco-rule-card-meta-label"><?php echo esc_html($label); ?></span>
+        <span class="rubymaco-rule-card-example-list">
             <?php foreach ($examples as $example) : ?>
-                <code class="rbmkup-rule-card-example"><?php echo esc_html($example); ?></code>
+                <code class="rubymaco-rule-card-example"><?php echo esc_html($example); ?></code>
             <?php endforeach; ?>
         </span>
     </span>
@@ -174,14 +174,14 @@ function rbmkup_render_rule_card_example_meta(string $label, array $examples): v
  * @param string   $label 表示ラベル
  * @param string[] $previews プレビューHTML一覧
  */
-function rbmkup_render_rule_card_preview_meta(string $label, array $previews): void
+function rubymaco_render_rule_card_preview_meta(string $label, array $previews): void
 {
 ?>
-    <span class="rbmkup-rule-card-meta">
-        <span class="rbmkup-rule-card-meta-label"><?php echo esc_html($label); ?></span>
-        <span class="rbmkup-rule-card-preview-list">
+    <span class="rubymaco-rule-card-meta">
+        <span class="rubymaco-rule-card-meta-label"><?php echo esc_html($label); ?></span>
+        <span class="rubymaco-rule-card-preview-list">
             <?php foreach ($previews as $preview) : ?>
-                <span class="rbmkup-rule-card-preview">
+                <span class="rubymaco-rule-card-preview">
                     <?php echo wp_kses_post($preview); ?>
                 </span>
             <?php endforeach; ?>

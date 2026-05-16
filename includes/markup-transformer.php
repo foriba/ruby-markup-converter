@@ -20,11 +20,11 @@ if (! defined('ABSPATH')) {
  * @param string $content 変換対象本文
  * @return string 変換後の本文
  */
-function rbmkup_transform_content_markup(string $content): string
+function rubymaco_transform_content_markup(string $content): string
 {
-    return rbmkup_apply_markup_rules(
+    return rubymaco_apply_markup_rules(
         $content,
-        rbmkup_get_enabled_rules()
+        rubymaco_get_enabled_rules()
     );
 }
 
@@ -36,7 +36,7 @@ function rbmkup_transform_content_markup(string $content): string
  * 保存済み設定から有効な変換ルール一覧を返す。
  *
  * 保存されている値は管理画面用の親ルールID一覧。
- * rbmkup_get_transform_rules_for_rule_ids() 側で、
+ * rubymaco_get_transform_rules_for_rule_ids() 側で、
  * 親ルールIDに対応する transform_rules を展開して返す。
  *
  * @return array<int, array{
@@ -45,15 +45,15 @@ function rbmkup_transform_content_markup(string $content): string
  *     pattern:string
  * }>
  */
-function rbmkup_get_enabled_rules(): array
+function rubymaco_get_enabled_rules(): array
 {
     $enabled_rule_ids = get_option(
-        RBMKUP_OPTION_ENABLED_MARKUP_RULES,
-        rbmkup_get_default_enabled_rule_ids()
+        RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+        rubymaco_get_default_enabled_rule_ids()
     );
 
     if (! is_array($enabled_rule_ids)) {
-        $enabled_rule_ids = rbmkup_get_default_enabled_rule_ids();
+        $enabled_rule_ids = rubymaco_get_default_enabled_rule_ids();
     }
 
     $enabled_rule_ids = array_values(
@@ -63,7 +63,7 @@ function rbmkup_get_enabled_rules(): array
         )
     );
 
-    return rbmkup_get_transform_rules_for_rule_ids($enabled_rule_ids);
+    return rubymaco_get_transform_rules_for_rule_ids($enabled_rule_ids);
 }
 
 /**
@@ -83,7 +83,7 @@ function rbmkup_get_enabled_rules(): array
  * @param string|null $bouten_renderer 傍点描画方式。null の場合は保存済み設定を使う
  * @return string
  */
-function rbmkup_apply_markup_rules(
+function rubymaco_apply_markup_rules(
     string $content,
     array $rules,
     ?string $bouten_style = null,
@@ -93,12 +93,12 @@ function rbmkup_apply_markup_rules(
         return $content;
     }
 
-    $bouten_style = rbmkup_normalize_bouten_style(
-        $bouten_style ?? rbmkup_get_bouten_style()
+    $bouten_style = rubymaco_normalize_bouten_style(
+        $bouten_style ?? rubymaco_get_bouten_style()
     );
 
-    $bouten_renderer = rbmkup_normalize_bouten_renderer(
-        $bouten_renderer ?? rbmkup_get_bouten_renderer()
+    $bouten_renderer = rubymaco_normalize_bouten_renderer(
+        $bouten_renderer ?? rubymaco_get_bouten_renderer()
     );
 
     foreach ($rules as $rule) {
@@ -110,10 +110,10 @@ function rbmkup_apply_markup_rules(
         $type = (string)($rule['type'] ?? '');
 
         switch ($type) {
-            case RBMKUP_RULE_TYPE_RUBY:
+            case RUBYMACO_RULE_TYPE_RUBY:
                 $content = preg_replace_callback(
                     $pattern,
-                    fn($matches) => rbmkup_render_ruby(
+                    fn($matches) => rubymaco_render_ruby(
                         $matches[1] ?? '',
                         $matches[2] ?? ''
                     ),
@@ -121,10 +121,10 @@ function rbmkup_apply_markup_rules(
                 ) ?? $content;
                 break;
 
-            case RBMKUP_RULE_TYPE_BOUTEN:
+            case RUBYMACO_RULE_TYPE_BOUTEN:
                 $content = preg_replace_callback(
                     $pattern,
-                    fn($matches) => rbmkup_render_bouten(
+                    fn($matches) => rubymaco_render_bouten(
                         $matches[1] ?? '',
                         $bouten_style,
                         $bouten_renderer
@@ -149,9 +149,9 @@ function rbmkup_apply_markup_rules(
  * @param string $ruby_text ルビ文字列
  * @return string ルビ HTML
  */
-function rbmkup_render_ruby(string $base_text, string $ruby_text): string
+function rubymaco_render_ruby(string $base_text, string $ruby_text): string
 {
-    return '<ruby class="rubymarkup-ruby" data-rt="' .
+    return '<ruby class="rubymaco-ruby" data-rt="' .
         esc_attr($ruby_text) .
         '">' .
         esc_html($base_text) .
@@ -168,17 +168,17 @@ function rbmkup_render_ruby(string $base_text, string $ruby_text): string
  * @param string $bouten_renderer 傍点描画方式
  * @return string 傍点 HTML
  */
-function rbmkup_render_bouten(
+function rubymaco_render_bouten(
     string $text,
     string $bouten_style,
-    string $bouten_renderer = RBMKUP_DEFAULT_BOUTEN_RENDERER
+    string $bouten_renderer = RUBYMACO_DEFAULT_BOUTEN_RENDERER
 ): string {
-    $bouten_style = rbmkup_normalize_bouten_style($bouten_style);
-    $bouten_renderer = rbmkup_normalize_bouten_renderer($bouten_renderer);
+    $bouten_style = rubymaco_normalize_bouten_style($bouten_style);
+    $bouten_renderer = rubymaco_normalize_bouten_renderer($bouten_renderer);
 
-    return $bouten_renderer === RBMKUP_BOUTEN_RENDERER_TEXT_EMPHASIS
-        ? rbmkup_render_text_emphasis_bouten($text, $bouten_style)
-        : rbmkup_render_custom_bouten($text, $bouten_style);
+    return $bouten_renderer === RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS
+        ? rubymaco_render_text_emphasis_bouten($text, $bouten_style)
+        : rubymaco_render_custom_bouten($text, $bouten_style);
 }
 
 /**
@@ -188,18 +188,18 @@ function rbmkup_render_bouten(
  * @param string $bouten_style 傍点スタイル
  * @return string 傍点 HTML
  */
-function rbmkup_render_custom_bouten(string $text, string $bouten_style): string
+function rubymaco_render_custom_bouten(string $text, string $bouten_style): string
 {
-    $chars = rbmkup_split_chars($text);
+    $chars = rubymaco_split_chars($text);
     $html  = '';
 
     foreach ($chars as $char) {
-        $html .= '<span class="rubymarkup-bouten__char">' .
+        $html .= '<span class="rubymaco-bouten__char">' .
             esc_html($char) .
             '</span>';
     }
 
-    return '<span class="rubymarkup-bouten rubymarkup-bouten--custom rubymarkup-bouten--' .
+    return '<span class="rubymaco-bouten rubymaco-bouten--custom rubymaco-bouten--' .
         esc_attr($bouten_style) .
         '">' .
         $html .
@@ -213,9 +213,9 @@ function rbmkup_render_custom_bouten(string $text, string $bouten_style): string
  * @param string $bouten_style 傍点スタイル
  * @return string 傍点 HTML
  */
-function rbmkup_render_text_emphasis_bouten(string $text, string $bouten_style): string
+function rubymaco_render_text_emphasis_bouten(string $text, string $bouten_style): string
 {
-    return '<span class="rubymarkup-bouten rubymarkup-bouten--text-emphasis rubymarkup-bouten--' .
+    return '<span class="rubymaco-bouten rubymaco-bouten--text-emphasis rubymaco-bouten--' .
         esc_attr($bouten_style) .
         '">' .
         esc_html($text) .
@@ -228,7 +228,7 @@ function rbmkup_render_text_emphasis_bouten(string $text, string $bouten_style):
  * @param string $text 対象文字列
  * @return array<int, string>
  */
-function rbmkup_split_chars(string $text): array
+function rubymaco_split_chars(string $text): array
 {
     $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
 

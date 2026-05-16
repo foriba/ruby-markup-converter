@@ -10,7 +10,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-add_filter('the_content', 'rbmkup_filter_the_content', 9);
+add_filter('the_content', 'rubymaco_filter_the_content', 9);
 
 /**
  * WordPress Hooks
@@ -25,13 +25,13 @@ add_filter('the_content', 'rbmkup_filter_the_content', 9);
  * @param string $content 投稿本文
  * @return string 変換後、または未変換の投稿本文
  */
-function rbmkup_filter_the_content(string $content): string
+function rubymaco_filter_the_content(string $content): string
 {
     $content = wp_kses_post($content);
 
-    if (rbmkup_get_apply_mode() !== RBMKUP_APPLY_MODE_ALL) {
+    if (rubymaco_get_apply_mode() !== RUBYMACO_APPLY_MODE_ALL) {
         return $content;
     }
 
-    return wp_kses_post(rbmkup_transform_content_markup($content));
+    return wp_kses_post(rubymaco_transform_content_markup($content));
 }

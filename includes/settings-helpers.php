@@ -18,7 +18,7 @@ if (! defined('ABSPATH')) {
  *
  * @return string 正規化済みの設定値
  */
-function rbmkup_get_option_choice(string $key, array $allowed_values, string $default): string
+function rubymaco_get_option_choice(string $key, array $allowed_values, string $default): string
 {
     $value = get_option($key, $default);
 
@@ -35,7 +35,7 @@ function rbmkup_get_option_choice(string $key, array $allowed_values, string $de
  * @param string[] $rule_ids 正規化対象のルールID一覧
  * @return string[] 正規化済みのルールID一覧
  */
-function rbmkup_normalize_enabled_rule_ids(array $rule_ids): array
+function rubymaco_normalize_enabled_rule_ids(array $rule_ids): array
 {
     $rule_ids = array_values(
         array_filter(
@@ -46,7 +46,7 @@ function rbmkup_normalize_enabled_rule_ids(array $rule_ids): array
 
     $allowed_rule_ids = array_map(
         static fn(array $rule): string => (string) $rule['id'],
-        rbmkup_get_markup_rules_for_settings_view()
+        rubymaco_get_markup_rules_for_settings_view()
     );
 
     return array_values(array_intersect($rule_ids, $allowed_rule_ids));
@@ -57,12 +57,12 @@ function rbmkup_normalize_enabled_rule_ids(array $rule_ids): array
  *
  * @return string 'dot' または 'sesame'
  */
-function rbmkup_get_bouten_style(): string
+function rubymaco_get_bouten_style(): string
 {
-    return rbmkup_normalize_bouten_style(
+    return rubymaco_normalize_bouten_style(
         (string) get_option(
-            RBMKUP_OPTION_BOUTEN_STYLE,
-            RBMKUP_DEFAULT_BOUTEN_STYLE
+            RUBYMACO_OPTION_BOUTEN_STYLE,
+            RUBYMACO_DEFAULT_BOUTEN_STYLE
         )
     );
 }
@@ -73,11 +73,11 @@ function rbmkup_get_bouten_style(): string
  * @param string $style 傍点スタイル
  * @return string 'dot' または 'sesame'
  */
-function rbmkup_normalize_bouten_style(string $style): string
+function rubymaco_normalize_bouten_style(string $style): string
 {
-    return in_array($style, rbmkup_get_allowed_bouten_styles(), true)
+    return in_array($style, rubymaco_get_allowed_bouten_styles(), true)
         ? $style
-        : RBMKUP_DEFAULT_BOUTEN_STYLE;
+        : RUBYMACO_DEFAULT_BOUTEN_STYLE;
 }
 
 /**
@@ -85,12 +85,12 @@ function rbmkup_normalize_bouten_style(string $style): string
  *
  * @return string 'custom' または 'text_emphasis'
  */
-function rbmkup_get_bouten_renderer(): string
+function rubymaco_get_bouten_renderer(): string
 {
-    return rbmkup_normalize_bouten_renderer(
+    return rubymaco_normalize_bouten_renderer(
         (string) get_option(
-            RBMKUP_OPTION_BOUTEN_RENDERER,
-            RBMKUP_DEFAULT_BOUTEN_RENDERER
+            RUBYMACO_OPTION_BOUTEN_RENDERER,
+            RUBYMACO_DEFAULT_BOUTEN_RENDERER
         )
     );
 }
@@ -101,11 +101,11 @@ function rbmkup_get_bouten_renderer(): string
  * @param string $renderer 傍点描画方式
  * @return string 'custom' または 'text_emphasis'
  */
-function rbmkup_normalize_bouten_renderer(string $renderer): string
+function rubymaco_normalize_bouten_renderer(string $renderer): string
 {
-    return in_array($renderer, rbmkup_get_allowed_bouten_renderers(), true)
+    return in_array($renderer, rubymaco_get_allowed_bouten_renderers(), true)
         ? $renderer
-        : RBMKUP_DEFAULT_BOUTEN_RENDERER;
+        : RUBYMACO_DEFAULT_BOUTEN_RENDERER;
 }
 
 /**
@@ -113,12 +113,12 @@ function rbmkup_normalize_bouten_renderer(string $renderer): string
  *
  * @return string 'shortcode' または 'all'
  */
-function rbmkup_get_apply_mode(): string
+function rubymaco_get_apply_mode(): string
 {
-    return rbmkup_normalize_apply_mode(
+    return rubymaco_normalize_apply_mode(
         (string) get_option(
-            RBMKUP_OPTION_APPLY_MODE,
-            RBMKUP_DEFAULT_APPLY_MODE
+            RUBYMACO_OPTION_APPLY_MODE,
+            RUBYMACO_DEFAULT_APPLY_MODE
         )
     );
 }
@@ -131,9 +131,9 @@ function rbmkup_get_apply_mode(): string
  * @param string $apply_mode 適用モードID
  * @return string 正規化済みの適用モードID
  */
-function rbmkup_normalize_apply_mode(string $apply_mode): string
+function rubymaco_normalize_apply_mode(string $apply_mode): string
 {
-    return in_array($apply_mode, rbmkup_get_allowed_apply_modes(), true)
+    return in_array($apply_mode, rubymaco_get_allowed_apply_modes(), true)
         ? $apply_mode
-        : RBMKUP_DEFAULT_APPLY_MODE;
+        : RUBYMACO_DEFAULT_APPLY_MODE;
 }
