@@ -8,6 +8,9 @@ composer.json
 composer.lock
 phpcs.xml.dist
 
+phpstan.neon.dist
+phpstan-stubs.php
+
 .gitignore
 .distignore
 TODO.md
