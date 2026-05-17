@@ -11,27 +11,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_filter( 'the_content', 'rubymaco_filter_the_content', 9 );
+add_action( 'init', 'rubymaco_maybe_add_content_filter' );
 
 /**
- * WordPressフック
+ * WordPressフックを登録する。
  */
+
+/**
+ * 適用モードが投稿本文全体の場合のみ、本文変換フィルターを登録する。
+ */
+function rubymaco_maybe_add_content_filter(): void {
+	if ( RUBYMACO_APPLY_MODE_ALL !== rubymaco_get_apply_mode() ) {
+		return;
+	}
+
+	add_filter( 'the_content', 'rubymaco_filter_the_content', 9 );
+}
 
 /**
  * 投稿本文にルビ・傍点変換を適用する。
  *
- * 適用モードが投稿本文全体に設定されている場合のみ、
- * 本文を変換して返す。その他の場合は元の本文をそのまま返す。
- *
  * @param string $content 投稿本文.
- * @return string 変換後、または未変換の投稿本文.
+ * @return string 変換後の投稿本文.
  */
 function rubymaco_filter_the_content( string $content ): string {
 	$content = wp_kses_post( $content );
-
-	if ( rubymaco_get_apply_mode() !== RUBYMACO_APPLY_MODE_ALL ) {
-		return $content;
-	}
 
 	return wp_kses_post( rubymaco_transform_content_markup( $content ) );
 }
