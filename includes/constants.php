@@ -217,7 +217,7 @@ const RUBYMACO_DEFAULT_BOUTEN_RENDERER = RUBYMACO_BOUTEN_RENDERER_CUSTOM;
  *
  * 配列キーは保存値として使用する傍点描画方式ID。
  *
- * @var array<string, array{
+ * @return array<string, array{
  *     label:string,
  *     description:string
  * }>

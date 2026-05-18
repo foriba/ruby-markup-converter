@@ -101,12 +101,12 @@ function rubymaco_apply_markup_rules(
 	);
 
 	foreach ( $rules as $rule ) {
-		$pattern = (string) ( $rule['pattern'] ?? '' );
+		$pattern = $rule['pattern'];
 		if ( '' === $pattern ) {
 			continue;
 		}
 
-		$type = (string) ( $rule['type'] ?? '' );
+		$type = $rule['type'];
 
 		switch ( $type ) {
 			case RUBYMACO_RULE_TYPE_RUBY:

@@ -136,11 +136,11 @@ function rubymaco_render_markup_rules_field( array $rules, array $view_data ): v
 /**
  * 記法ルールのグループ（ルビまたは傍点）を描画する。
  *
- * @param string                               $type ルール種別（ruby / bouten）.
- * @param string                               $label グループ表示名.
- * @param array[]                              $rules このグループに属する整形済みのルール配列.
- * @param array{style:string, renderer:string} $preview_settings プレビュー用の設定値.
- * @param array[]                              $bouten_choices 傍点セクションの場合のみ使用する選択肢データ（デフォルトは空配列）.
+ * @param string                                                                                           $type             ルール種別（ruby / bouten）.
+ * @param string                                                                                           $label            グループ表示名.
+ * @param array<int, array<string, mixed>>                                                                 $rules            このグループに属する整形済みのルール配列.
+ * @param array{style:string, renderer:string}                                                             $preview_settings プレビュー用の設定値.
+ * @param array<int, array{ id:string, value:string, label:string, description:string, is_selected:bool }> $bouten_choices   傍点セクションの場合のみ使用する選択肢データ.
  */
 function rubymaco_render_markup_rule_group(
 	string $type,

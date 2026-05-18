@@ -26,9 +26,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 function rubymaco_get_option_choice( string $key, array $allowed_values, string $default_value ): string {
 	$value = get_option( $key, $default_value );
 
+	if ( ! is_string( $value ) ) {
+		return $default_value;
+	}
+
 	return in_array( $value, $allowed_values, true )
-		? $value
-		: $default_value;
+	? $value
+	: $default_value;
 }
 
 /**
@@ -61,11 +65,10 @@ function rubymaco_normalize_enabled_rule_ids( array $rule_ids ): array {
  * @return string 'dot' または 'sesame'
  */
 function rubymaco_get_bouten_style(): string {
-	return rubymaco_normalize_bouten_style(
-		(string) get_option(
-			RUBYMACO_OPTION_BOUTEN_STYLE,
-			RUBYMACO_DEFAULT_BOUTEN_STYLE
-		)
+	return rubymaco_get_option_choice(
+		RUBYMACO_OPTION_BOUTEN_STYLE,
+		rubymaco_get_allowed_bouten_styles(),
+		RUBYMACO_DEFAULT_BOUTEN_STYLE
 	);
 }
 
@@ -87,11 +90,10 @@ function rubymaco_normalize_bouten_style( string $style ): string {
  * @return string 'custom' または 'text_emphasis'
  */
 function rubymaco_get_bouten_renderer(): string {
-	return rubymaco_normalize_bouten_renderer(
-		(string) get_option(
-			RUBYMACO_OPTION_BOUTEN_RENDERER,
-			RUBYMACO_DEFAULT_BOUTEN_RENDERER
-		)
+	return rubymaco_get_option_choice(
+		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		rubymaco_get_allowed_bouten_renderers(),
+		RUBYMACO_DEFAULT_BOUTEN_RENDERER
 	);
 }
 
@@ -113,11 +115,10 @@ function rubymaco_normalize_bouten_renderer( string $renderer ): string {
  * @return string 'shortcode' または 'all'
  */
 function rubymaco_get_apply_mode(): string {
-	return rubymaco_normalize_apply_mode(
-		(string) get_option(
-			RUBYMACO_OPTION_APPLY_MODE,
-			RUBYMACO_DEFAULT_APPLY_MODE
-		)
+	return rubymaco_get_option_choice(
+		RUBYMACO_OPTION_APPLY_MODE,
+		rubymaco_get_allowed_apply_modes(),
+		RUBYMACO_DEFAULT_APPLY_MODE
 	);
 }
 

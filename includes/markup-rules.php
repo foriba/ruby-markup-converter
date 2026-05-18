@@ -214,7 +214,7 @@ function rubymaco_get_transform_rules_for_rule_ids( array $rule_ids ): array {
 	$transform_rules = array();
 
 	foreach ( rubymaco_get_markup_rules() as $rule ) {
-		$rule_id = (string) ( $rule['id'] ?? '' );
+		$rule_id = $rule['id'];
 
 		if ( ! in_array( $rule_id, $rule_ids, true ) ) {
 			continue;
@@ -222,7 +222,7 @@ function rubymaco_get_transform_rules_for_rule_ids( array $rule_ids ): array {
 
 		$transform_rules = array_merge(
 			$transform_rules,
-			rubymaco_normalize_transform_rules( (array) ( $rule['transform_rules'] ?? array() ) )
+			rubymaco_normalize_transform_rules( $rule['transform_rules'] )
 		);
 	}
 
