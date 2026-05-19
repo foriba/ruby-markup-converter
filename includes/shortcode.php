@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_shortcode( 'rubymarkup', 'rubymaco_shortcode' );
+add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
 
 /**
  * WordPress フックを登録する
