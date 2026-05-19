@@ -120,7 +120,7 @@ msgid "Apply Only Within Shortcodes"
 msgstr ""
 
 #: includes/constants.php:123
-msgid "Converts markup only within [rubymarkup]...[/rubymarkup] blocks. This helps prevent unintended conversions and reduces processing overhead."
+msgid "Converts markup only within [rubymaco]...[/rubymaco] blocks. This helps prevent unintended conversions and reduces processing overhead."
 msgstr ""
 
 #: includes/constants.php:130

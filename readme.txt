@@ -49,7 +49,7 @@ Whether you are migrating existing text files or looking for a way to write ruby
 
 = How do I use the plugin safely at first? =
 
-Start with the shortcode-only mode. In this mode, markup is converted only inside `[rubymarkup]...[/rubymarkup]` blocks.
+Start with the shortcode-only mode. In this mode, markup is converted only inside `[rubymaco]...[/rubymaco]` blocks.
 
 = Can I apply conversions to the entire post content? =
 

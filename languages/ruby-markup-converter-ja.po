@@ -6,7 +6,6 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ruby-markup-converter\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,7 +25,7 @@ msgstr "Ruby Markup Converter"
 #. Description of the plugin
 #: ruby-markup-converter.php
 msgid "Automatically convert plain-text ruby notations into display-ready HTML."
-msgstr ""
+msgstr "プレーンテキストのRuby表記を、表示可能なHTMLに自動的に変換します。"
 
 #. Author of the plugin
 #: ruby-markup-converter.php
@@ -121,8 +120,8 @@ msgid "Apply Only Within Shortcodes"
 msgstr "ショートコード内のみ適用"
 
 #: includes/constants.php:123
-msgid "Converts markup only within [rubymarkup]...[/rubymarkup] blocks. This helps prevent unintended conversions and reduces processing overhead."
-msgstr "[rubymarkup]〜[/rubymarkup] で囲まれた範囲内の記法のみを変換します。誤変換を防ぎやすく、変換処理の負荷も抑えられます。"
+msgid "Converts markup only within [rubymaco]...[/rubymaco] blocks. This helps prevent unintended conversions and reduces processing overhead."
+msgstr "[rubymaco]〜[/rubymaco] で囲まれた範囲内の記法のみを変換します。誤変換を防ぎやすく、変換処理の負荷も抑えられます。"
 
 #: includes/constants.php:130
 msgid "Apply to Entire Post Content"

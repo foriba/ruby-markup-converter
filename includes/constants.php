@@ -120,7 +120,7 @@ function rubymaco_get_apply_mode_definitions(): array {
 			'label'       => __( 'Apply Only Within Shortcodes', 'ruby-markup-converter' ), // ja-jp: 'ショートコード内のみ適用'.
 			'description' => __(
 				'Converts markup only within [rubymaco]...[/rubymaco] blocks. This helps prevent unintended conversions and reduces processing overhead.',
-				// ja-jp: '[rubymarkup]〜[/rubymarkup] で囲まれた範囲内の記法のみを変換します。誤変換を防ぎやすく、変換処理の負荷も抑えられます。'.
+				// ja-jp: '[rubymaco]〜[/rubymaco] で囲まれた範囲内の記法のみを変換します。誤変換を防ぎやすく、変換処理の負荷も抑えられます。'.
 				'ruby-markup-converter'
 			),
 		),
