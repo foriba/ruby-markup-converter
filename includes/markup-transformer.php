@@ -149,13 +149,15 @@ function rubymaco_apply_markup_rules(
  * @return string ルビ HTML
  */
 function rubymaco_render_ruby( string $base_text, string $ruby_text ): string {
-	return '<ruby class="rubymaco-ruby" data-rt="' .
+	$html = '<ruby class="rubymaco-ruby" data-rt="' .
 		esc_attr( $ruby_text ) .
 		'">' .
 		esc_html( $base_text ) .
 		'<rp>（</rp><rt>' .
 		esc_html( $ruby_text ) .
 		'</rt><rp>）</rp></ruby>';
+
+		return wp_kses( $html, rubymaco_get_allowed_generated_html() );
 }
 
 /**
@@ -196,11 +198,13 @@ function rubymaco_render_custom_bouten( string $text, string $bouten_style ): st
 			'</span>';
 	}
 
-	return '<span class="rubymaco-bouten rubymaco-bouten--custom rubymaco-bouten--' .
+	$html = '<span class="rubymaco-bouten rubymaco-bouten--custom rubymaco-bouten--' .
 		esc_attr( $bouten_style ) .
 		'">' .
 		$html .
 		'</span>';
+
+		return wp_kses( $html, rubymaco_get_allowed_generated_html() );
 }
 
 /**
@@ -211,11 +215,35 @@ function rubymaco_render_custom_bouten( string $text, string $bouten_style ): st
  * @return string 傍点 HTML
  */
 function rubymaco_render_text_emphasis_bouten( string $text, string $bouten_style ): string {
-	return '<span class="rubymaco-bouten rubymaco-bouten--text-emphasis rubymaco-bouten--' .
+	$html = '<span class="rubymaco-bouten rubymaco-bouten--text-emphasis rubymaco-bouten--' .
 		esc_attr( $bouten_style ) .
 		'">' .
 		esc_html( $text ) .
 		'</span>';
+
+		return wp_kses( $html, rubymaco_get_allowed_generated_html() );
+}
+
+/**
+ * プラグインが生成する HTML 断片で許可するタグと属性を返す。
+ *
+ * ルビ変換および傍点変換で組み立てた HTML を wp_kses() に通すための
+ * 許可リストとして使用する。
+ *
+ * @return array<string, array<string, bool>>
+ */
+function rubymaco_get_allowed_generated_html(): array {
+	return array(
+		'ruby' => array(
+			'class'   => true,
+			'data-rt' => true,
+		),
+		'rt'   => array(),
+		'rp'   => array(),
+		'span' => array(
+			'class' => true,
+		),
+	);
 }
 
 /**

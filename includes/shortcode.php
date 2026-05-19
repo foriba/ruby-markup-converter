@@ -25,7 +25,7 @@ add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
  * @return string 変換後の本文
  */
 function rubymaco_shortcode( array $atts, ?string $content = null ): string {
-	$content = wp_kses_post( (string) $content );
+	$content = (string) $content;
 
-	return wp_kses_post( rubymaco_transform_content_markup( $content ) );
+	return rubymaco_transform_content_markup( $content );
 }
