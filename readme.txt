@@ -4,7 +4,7 @@ Tags: ruby, japanese, typography, shortcode, converter
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.9.0
+Stable tag: 0.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,9 +75,13 @@ When the plugin is uninstalled, its saved settings are removed.
 
 == Changelog ==
 
+= 0.9.1 =
+
+* Addressed WordPress.org review feedback.
+
 = 0.9.0 =
 
-* IInitial review submission
+* Initial review submission
 * Added support for multiple ruby markup styles
 * Added bouten markup support
 * Added shortcode-only and full-content conversion modes
@@ -85,6 +89,10 @@ When the plugin is uninstalled, its saved settings are removed.
 * Added selectable bouten style and rendering method
 
 == Upgrade Notice ==
+
+= 0.9.1 =
+
+* Addressed WordPress.org review feedback.
 
 = 0.9.0 =
 
