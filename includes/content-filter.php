@@ -35,7 +35,5 @@ function rubymaco_maybe_add_content_filter(): void {
  * @return string 変換後の投稿本文.
  */
 function rubymaco_filter_the_content( string $content ): string {
-	$content = $content;
-
 	return rubymaco_transform_content_markup( $content );
 }
