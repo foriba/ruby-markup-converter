@@ -2,7 +2,7 @@
 Contributors: Foriba
 Tags: ruby, japanese, typography, shortcode, converter
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv2 or later
@@ -76,7 +76,7 @@ When the plugin is uninstalled, its saved settings are removed.
 == Changelog ==
 
 = 1.0.0 =
-Initial public release.
+* Initial public release.
 
 = 0.9.1 =
 
@@ -94,7 +94,7 @@ Initial public release.
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial public release.
+* Initial public release.
 
 = 0.9.1 =
 
