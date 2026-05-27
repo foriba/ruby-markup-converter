@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -117,21 +119,7 @@ function rubymaco_normalize_bouten_renderer( string $renderer ): string {
 function rubymaco_get_apply_mode(): string {
 	return rubymaco_get_option_choice(
 		RUBYMACO_OPTION_APPLY_MODE,
-		rubymaco_get_allowed_apply_modes(),
-		RUBYMACO_DEFAULT_APPLY_MODE
+		RUBYMACO_Apply_Mode::values(),
+		RUBYMACO_Apply_Mode::default()
 	);
-}
-
-/**
- * 適用モードIDを正規化する。
- *
- * 未定義の適用モードIDが渡された場合はデフォルト値を返す。
- *
- * @param string $apply_mode 適用モードID.
- * @return string 正規化済みの適用モードID
- */
-function rubymaco_normalize_apply_mode( string $apply_mode ): string {
-	return in_array( $apply_mode, rubymaco_get_allowed_apply_modes(), true )
-		? $apply_mode
-		: RUBYMACO_DEFAULT_APPLY_MODE;
 }

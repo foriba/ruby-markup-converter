@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -59,7 +61,7 @@ function rubymaco_register_settings(): void {
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_apply_mode',
-			'default'           => RUBYMACO_DEFAULT_APPLY_MODE,
+			'default'           => RUBYMACO_Apply_Mode::default(),
 		)
 	);
 }
@@ -119,7 +121,7 @@ function rubymaco_sanitize_bouten_renderer( $value ): string {
  * @return string
  */
 function rubymaco_sanitize_apply_mode( $value ): string {
-	return rubymaco_normalize_apply_mode(
+	return RUBYMACO_Apply_Mode::normalize(
 		sanitize_text_field( wp_unslash( (string) $value ) )
 	);
 }
@@ -199,11 +201,7 @@ function rubymaco_get_admin_settings_view_data(): array {
 		RUBYMACO_DEFAULT_BOUTEN_RENDERER
 	);
 
-	$current_apply_mode = rubymaco_get_option_choice(
-		RUBYMACO_OPTION_APPLY_MODE,
-		rubymaco_get_allowed_apply_modes(),
-		RUBYMACO_DEFAULT_APPLY_MODE
-	);
+	$current_apply_mode = rubymaco_get_apply_mode();
 
 	return array(
 		'rules'                   => rubymaco_prepare_admin_rule_view_data(
@@ -211,7 +209,7 @@ function rubymaco_get_admin_settings_view_data(): array {
 			$enabled_rule_ids
 		),
 		'apply_mode_choices'      => rubymaco_prepare_choice_view_data(
-			rubymaco_get_apply_mode_definitions(),
+			RUBYMACO_Apply_Mode::definitions(),
 			$current_apply_mode,
 			'rubymaco-apply-mode-'
 		),

@@ -41,6 +41,8 @@ const RUBYMACO_VERSION = '1.0.0';
 
 require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
 
+require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-apply-mode.php';
+
 require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-rules.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-transformer.php';
 

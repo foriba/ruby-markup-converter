@@ -84,66 +84,6 @@ function rubymaco_get_allowed_rule_types(): array {
 	return RUBYMACO_ALLOWED_RULE_TYPES;
 }
 
-
-/**
- * Apply Modes
- */
-
-/**
- * ショートコード内のみを変換対象にする適用モード。
- */
-const RUBYMACO_APPLY_MODE_SHORTCODE = 'shortcode';
-
-/**
- * 投稿本文全体を変換対象にする適用モード。
- */
-const RUBYMACO_APPLY_MODE_ALL = 'all';
-
-/**
- * 適用モードのデフォルト値。
- */
-const RUBYMACO_DEFAULT_APPLY_MODE = RUBYMACO_APPLY_MODE_SHORTCODE;
-
-/**
- * 適用モードの定義一覧を返す。
- *
- * 配列キーは保存値として使用する適用モードID。
- *
- * @return array<string, array{
- *     label:string,
- *     description:string
- * }>
- */
-function rubymaco_get_apply_mode_definitions(): array {
-	return array(
-		RUBYMACO_APPLY_MODE_SHORTCODE => array(
-			'label'       => __( 'Apply Only Within Shortcodes', 'ruby-markup-converter' ), // ja-jp: 'ショートコード内のみ適用'.
-			'description' => __(
-				'Converts markup only within [rubymaco]...[/rubymaco] blocks. This helps prevent unintended conversions and reduces processing overhead.',
-				// ja-jp: '[rubymaco]〜[/rubymaco] で囲まれた範囲内の記法のみを変換します。誤変換を防ぎやすく、変換処理の負荷も抑えられます。'.
-				'ruby-markup-converter'
-			),
-		),
-		RUBYMACO_APPLY_MODE_ALL       => array(
-			'label'       => __( 'Apply to Entire Post Content', 'ruby-markup-converter' ), // ja-jp: '投稿本文全体に適用'.
-			'description' => __(
-				'Automatically converts markup throughout the post content without requiring shortcodes. This is more convenient, but unintended text may also be converted.',
-				// ja-jp: 'ショートコードを使わず、投稿本文内の記法を自動的に変換します。手軽に使用できますが、意図しない箇所まで変換される場合があります。'.
-				'ruby-markup-converter'
-			),
-		),
-	);
-}
-
-/**
- * 許可されている適用モードID一覧を返す。
- *
- * @return string[]
- */
-function rubymaco_get_allowed_apply_modes(): array {
-	return array_keys( rubymaco_get_apply_mode_definitions() );
-}
-
 /**
  * Bouten Styles
  */

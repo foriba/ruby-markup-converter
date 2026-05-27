@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -21,7 +23,7 @@ add_action( 'init', 'rubymaco_maybe_add_content_filter' );
  * 適用モードが投稿本文全体の場合のみ、本文変換フィルターを登録する。
  */
 function rubymaco_maybe_add_content_filter(): void {
-	if ( RUBYMACO_APPLY_MODE_ALL !== rubymaco_get_apply_mode() ) {
+	if ( ! RUBYMACO_Apply_Mode::is_all( rubymaco_get_apply_mode() ) ) {
 		return;
 	}
 
