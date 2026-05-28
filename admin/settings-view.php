@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Rule_Type;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -108,24 +110,24 @@ function rubymaco_render_markup_rules_field( array $rules, array $view_data ): v
 	);
 
 	rubymaco_render_markup_rule_group(
-		RUBYMACO_RULE_TYPE_RUBY,
+		RUBYMACO_Rule_Type::RUBY,
 		__( 'Ruby', 'ruby-markup-converter' ), // ja-jp: 'ルビ'.
 		array_values(
 			array_filter(
 				$rules,
-				static fn( array $r ): bool => RUBYMACO_RULE_TYPE_RUBY === $r['type']
+				static fn( array $r ): bool => RUBYMACO_Rule_Type::RUBY === $r['type']
 			)
 		),
 		$preview_settings
 	);
 
 	rubymaco_render_markup_rule_group(
-		RUBYMACO_RULE_TYPE_BOUTEN,
+		RUBYMACO_Rule_Type::BOUTEN,
 		__( 'Bouten', 'ruby-markup-converter' ), // ja-jp: '傍点'.
 		array_values(
 			array_filter(
 				$rules,
-				static fn( array $r ): bool => RUBYMACO_RULE_TYPE_BOUTEN === $r['type']
+				static fn( array $r ): bool => RUBYMACO_Rule_Type::BOUTEN === $r['type']
 			)
 		),
 		$preview_settings,
@@ -170,7 +172,7 @@ function rubymaco_render_markup_rule_group(
 		</div>
 
 		<?php
-		if ( RUBYMACO_RULE_TYPE_BOUTEN === $type && array() !== $bouten_choices ) :
+		if ( RUBYMACO_Rule_Type::BOUTEN === $type && array() !== $bouten_choices ) :
 			?>
 			<?php rubymaco_render_bouten_style_group_field( $bouten_choices ); ?>
 		<?php endif; ?>

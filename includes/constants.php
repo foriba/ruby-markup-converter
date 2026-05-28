@@ -50,40 +50,6 @@ const RUBYMACO_SETTINGS_GROUP = 'rubymaco_settings';
  */
 const RUBYMACO_SETTINGS_PAGE_SLUG = 'rubymaco-settings';
 
-
-/**
- * Rule Types
- */
-
-/**
- * ルビ変換ルールを表すルール種別。
- */
-const RUBYMACO_RULE_TYPE_RUBY = 'ruby';
-
-/**
- * 傍点変換ルールを表すルール種別。
- */
-const RUBYMACO_RULE_TYPE_BOUTEN = 'bouten';
-
-/**
- * 許可されているルール種別一覧。
- *
- * @var string[]
- */
-const RUBYMACO_ALLOWED_RULE_TYPES = array(
-	RUBYMACO_RULE_TYPE_RUBY,
-	RUBYMACO_RULE_TYPE_BOUTEN,
-);
-
-/**
- * 許可されているルール種別一覧を返す。
- *
- * @return string[]
- */
-function rubymaco_get_allowed_rule_types(): array {
-	return RUBYMACO_ALLOWED_RULE_TYPES;
-}
-
 /**
  * Bouten Styles
  */
@@ -131,7 +97,6 @@ function rubymaco_get_bouten_style_definitions(): array {
 function rubymaco_get_allowed_bouten_styles(): array {
 	return array_keys( rubymaco_get_bouten_style_definitions() );
 }
-
 
 /**
  * Bouten Renderers

@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Rule_Type;
+
 /**
  * Markup transformation pipeline.
  */
@@ -109,7 +111,7 @@ function rubymaco_apply_markup_rules(
 		$type = $rule['type'];
 
 		switch ( $type ) {
-			case RUBYMACO_RULE_TYPE_RUBY:
+			case RUBYMACO_Rule_Type::RUBY:
 				$content = preg_replace_callback(
 					$pattern,
 					fn( $matches ) => rubymaco_render_ruby(
@@ -120,7 +122,7 @@ function rubymaco_apply_markup_rules(
 				) ?? $content;
 				break;
 
-			case RUBYMACO_RULE_TYPE_BOUTEN:
+			case RUBYMACO_Rule_Type::BOUTEN:
 				$content = preg_replace_callback(
 					$pattern,
 					fn( $matches ) => rubymaco_render_bouten(
