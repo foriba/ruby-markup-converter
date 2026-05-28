@@ -22,3 +22,6 @@ phpstan-stubs.php
 .gitignore
 .distignore
 TODO.md
+
+*.psd
+*.ai
