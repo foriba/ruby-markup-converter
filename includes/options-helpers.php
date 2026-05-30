@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -33,8 +34,8 @@ function rubymaco_get_option_choice( string $key, array $allowed_values, string 
 	}
 
 	return in_array( $value, $allowed_values, true )
-	? $value
-	: $default_value;
+		? $value
+		: $default_value;
 }
 
 /**
@@ -68,7 +69,7 @@ function rubymaco_normalize_enabled_rule_ids( array $rule_ids ): array {
  */
 function rubymaco_get_bouten_style(): string {
 	return rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_STYLE,
+		RUBYMACO_Option_Key::BOUTEN_STYLE,
 		rubymaco_get_allowed_bouten_styles(),
 		RUBYMACO_DEFAULT_BOUTEN_STYLE
 	);
@@ -93,7 +94,7 @@ function rubymaco_normalize_bouten_style( string $style ): string {
  */
 function rubymaco_get_bouten_renderer(): string {
 	return rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		RUBYMACO_Option_Key::BOUTEN_RENDERER,
 		rubymaco_get_allowed_bouten_renderers(),
 		RUBYMACO_DEFAULT_BOUTEN_RENDERER
 	);
@@ -118,7 +119,7 @@ function rubymaco_normalize_bouten_renderer( string $renderer ): string {
  */
 function rubymaco_get_apply_mode(): string {
 	return rubymaco_get_option_choice(
-		RUBYMACO_OPTION_APPLY_MODE,
+		RUBYMACO_Option_Key::APPLY_MODE,
 		RUBYMACO_Apply_Mode::values(),
 		RUBYMACO_Apply_Mode::default()
 	);

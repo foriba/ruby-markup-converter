@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 use foriba\rubymarkupconverter\RUBYMACO_Rule_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -92,7 +93,7 @@ function rubymaco_render_settings_page(): void {
 function rubymaco_render_apply_mode_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_APPLY_MODE,
+		RUBYMACO_Option_Key::APPLY_MODE,
 		__( 'Conversion Scope', 'ruby-markup-converter' ), // ja-jp: '適用範囲'.
 	);
 }
@@ -200,7 +201,7 @@ function rubymaco_render_markup_rule_card( array $rule, string $current_bouten_s
 				id="rubymaco-rule-<?php echo esc_attr( $rule_id ); ?>"
 				class="rubymaco-rule-card-checkbox"
 				type="checkbox"
-				name="<?php echo esc_attr( RUBYMACO_OPTION_ENABLED_MARKUP_RULES ); ?>[]"
+				name="<?php echo esc_attr( RUBYMACO_Option_Key::ENABLED_MARKUP_RULES ); ?>[]"
 				value="<?php echo esc_attr( $rule_id ); ?>"
 				<?php checked( $is_enabled ); ?>>
 			<span class="rubymaco-rule-card-checkmark" aria-hidden="true"></span>
@@ -273,7 +274,7 @@ function rubymaco_render_bouten_style_group_field( array $choices ): void {
 function rubymaco_render_bouten_style_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_BOUTEN_STYLE,
+		RUBYMACO_Option_Key::BOUTEN_STYLE,
 		__( 'Bouten Style', 'ruby-markup-converter' ) // ja-jp: '傍点の種類'.
 	);
 }
@@ -314,7 +315,7 @@ function rubymaco_render_advanced_settings_field( array $view_data ): void {
 function rubymaco_render_bouten_renderer_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		RUBYMACO_Option_Key::BOUTEN_RENDERER,
 		__( 'Bouten Rendering Method', 'ruby-markup-converter' ) // ja-jp: '傍点の描画方式'.
 	);
 }

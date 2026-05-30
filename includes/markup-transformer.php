@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 use foriba\rubymarkupconverter\RUBYMACO_Rule_Type;
 
 /**
@@ -53,7 +54,7 @@ function rubymaco_transform_content_markup( string $content ): string {
  */
 function rubymaco_get_enabled_rules(): array {
 	$enabled_rule_ids = get_option(
-		RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+		RUBYMACO_Option_Key::ENABLED_MARKUP_RULES,
 		rubymaco_get_default_enabled_rule_ids()
 	);
 

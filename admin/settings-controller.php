@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function rubymaco_register_settings(): void {
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+		RUBYMACO_Option_Key::ENABLED_MARKUP_RULES,
 		array(
 			'type'              => 'array',
 			'sanitize_callback' => 'rubymaco_sanitize_enabled_markup_rules',
@@ -37,7 +38,7 @@ function rubymaco_register_settings(): void {
 
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_BOUTEN_STYLE,
+		RUBYMACO_Option_Key::BOUTEN_STYLE,
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_style',
@@ -47,7 +48,7 @@ function rubymaco_register_settings(): void {
 
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		RUBYMACO_Option_Key::BOUTEN_RENDERER,
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_renderer',
@@ -57,7 +58,7 @@ function rubymaco_register_settings(): void {
 
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_APPLY_MODE,
+		RUBYMACO_Option_Key::APPLY_MODE,
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_apply_mode',
@@ -177,7 +178,7 @@ function rubymaco_sanitize_apply_mode( $value ): string {
  */
 function rubymaco_get_admin_settings_view_data(): array {
 	$enabled_rule_ids = get_option(
-		RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+		RUBYMACO_Option_Key::ENABLED_MARKUP_RULES,
 		rubymaco_get_default_enabled_rule_ids()
 	);
 
@@ -190,13 +191,13 @@ function rubymaco_get_admin_settings_view_data(): array {
 	);
 
 	$current_bouten_style = rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_STYLE,
+		RUBYMACO_Option_Key::BOUTEN_STYLE,
 		rubymaco_get_allowed_bouten_styles(),
 		RUBYMACO_DEFAULT_BOUTEN_STYLE
 	);
 
 	$current_bouten_renderer = rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		RUBYMACO_Option_Key::BOUTEN_RENDERER,
 		rubymaco_get_allowed_bouten_renderers(),
 		RUBYMACO_DEFAULT_BOUTEN_RENDERER
 	);

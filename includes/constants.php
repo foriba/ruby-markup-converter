@@ -10,32 +10,6 @@ declare(strict_types=1);
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-/**
- * Option Keys
- */
-
-/**
- * 有効化されている記法ルールID一覧を保存する option 名。
- */
-const RUBYMACO_OPTION_ENABLED_MARKUP_RULES = 'rubymaco_enabled_markup_rules';
-
-/**
- * 傍点スタイルを保存する option 名。
- */
-const RUBYMACO_OPTION_BOUTEN_STYLE = 'rubymaco_bouten_style';
-
-/**
- * 適用モードを保存する option 名。
- */
-const RUBYMACO_OPTION_APPLY_MODE = 'rubymaco_apply_mode';
-
-/**
- * 傍点描画方式を保存する option 名。
- */
-const RUBYMACO_OPTION_BOUTEN_RENDERER = 'rubymaco_bouten_renderer';
-
-
 /**
  * Settings API
  */
