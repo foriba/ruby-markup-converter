@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+use foriba\rubymarkupconverter\RUBYMACO_Bouten_Style;
 use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -42,7 +43,7 @@ function rubymaco_register_settings(): void {
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_style',
-			'default'           => RUBYMACO_DEFAULT_BOUTEN_STYLE,
+			'default'           => RUBYMACO_Bouten_Style::default(),
 		)
 	);
 
@@ -98,7 +99,7 @@ function rubymaco_sanitize_enabled_markup_rules( $value ): array {
  * @return string
  */
 function rubymaco_sanitize_bouten_style( $value ): string {
-	return rubymaco_normalize_bouten_style(
+	return RUBYMACO_Bouten_Style::normalize(
 		sanitize_text_field( wp_unslash( (string) $value ) )
 	);
 }
@@ -192,8 +193,8 @@ function rubymaco_get_admin_settings_view_data(): array {
 
 	$current_bouten_style = rubymaco_get_option_choice(
 		RUBYMACO_Option_Key::BOUTEN_STYLE,
-		rubymaco_get_allowed_bouten_styles(),
-		RUBYMACO_DEFAULT_BOUTEN_STYLE
+		RUBYMACO_Bouten_Style::values(),
+		RUBYMACO_Bouten_Style::default()
 	);
 
 	$current_bouten_renderer = rubymaco_get_option_choice(
@@ -215,7 +216,7 @@ function rubymaco_get_admin_settings_view_data(): array {
 			'rubymaco-apply-mode-'
 		),
 		'bouten_style_choices'    => rubymaco_prepare_choice_view_data(
-			rubymaco_get_bouten_style_definitions(),
+			RUBYMACO_Bouten_Style::definitions(),
 			$current_bouten_style,
 			'rubymaco-bouten-style-'
 		),

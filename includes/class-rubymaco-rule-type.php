@@ -28,6 +28,11 @@ final class RUBYMACO_Rule_Type {
 	public const BOUTEN = 'bouten';
 
 	/**
+	 * インスタンス化を防ぐ。
+	 */
+	private function __construct() {}
+
+	/**
 	 * 許可されているルール種別一覧を返す。
 	 *
 	 * @var string[]

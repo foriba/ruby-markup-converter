@@ -25,54 +25,6 @@ const RUBYMACO_SETTINGS_GROUP = 'rubymaco_settings';
 const RUBYMACO_SETTINGS_PAGE_SLUG = 'rubymaco-settings';
 
 /**
- * Bouten Styles
- */
-
-/**
- * 傍点を黒丸の点として表示するスタイル。
- */
-const RUBYMACO_BOUTEN_STYLE_DOT = 'dot';
-
-/**
- * 傍点をゴマ点として表示するスタイル。
- */
-const RUBYMACO_BOUTEN_STYLE_SESAME = 'sesame';
-
-/**
- * 傍点スタイルのデフォルト値。
- */
-const RUBYMACO_DEFAULT_BOUTEN_STYLE = RUBYMACO_BOUTEN_STYLE_DOT;
-
-/**
- * 傍点スタイルの定義一覧を返す。
- *
- * 配列キーは保存値として使用する傍点スタイルID。
- *
- * @return array<string, array{
- *     label:string,
- * }>
- */
-function rubymaco_get_bouten_style_definitions(): array {
-	return array(
-		RUBYMACO_BOUTEN_STYLE_DOT    => array(
-			'label' => __( 'dot', 'ruby-markup-converter' ), // ja-jp: '点'.
-		),
-		RUBYMACO_BOUTEN_STYLE_SESAME => array(
-			'label' => __( 'sesame', 'ruby-markup-converter' ), // ja-jp: 'ゴマ点'.
-		),
-	);
-}
-
-/**
- * 許可されている傍点スタイルID一覧を返す。
- *
- * @return string[]
- */
-function rubymaco_get_allowed_bouten_styles(): array {
-	return array_keys( rubymaco_get_bouten_style_definitions() );
-}
-
-/**
  * Bouten Renderers
  */
 

@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+use foriba\rubymarkupconverter\RUBYMACO_Bouten_Style;
 use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -70,21 +71,9 @@ function rubymaco_normalize_enabled_rule_ids( array $rule_ids ): array {
 function rubymaco_get_bouten_style(): string {
 	return rubymaco_get_option_choice(
 		RUBYMACO_Option_Key::BOUTEN_STYLE,
-		rubymaco_get_allowed_bouten_styles(),
-		RUBYMACO_DEFAULT_BOUTEN_STYLE
+		RUBYMACO_Bouten_Style::values(),
+		RUBYMACO_Bouten_Style::default()
 	);
-}
-
-/**
- * 傍点スタイル名を正規化する。
- *
- * @param string $style 傍点スタイル.
- * @return string 'dot' または 'sesame'
- */
-function rubymaco_normalize_bouten_style( string $style ): string {
-	return in_array( $style, rubymaco_get_allowed_bouten_styles(), true )
-		? $style
-		: RUBYMACO_DEFAULT_BOUTEN_STYLE;
 }
 
 /**

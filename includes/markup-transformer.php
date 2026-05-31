@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Bouten_Style;
 use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 use foriba\rubymarkupconverter\RUBYMACO_Rule_Type;
 
@@ -95,7 +96,7 @@ function rubymaco_apply_markup_rules(
 		return $content;
 	}
 
-	$bouten_style = rubymaco_normalize_bouten_style(
+	$bouten_style = RUBYMACO_Bouten_Style::normalize(
 		$bouten_style ?? rubymaco_get_bouten_style()
 	);
 
@@ -176,7 +177,7 @@ function rubymaco_render_bouten(
 	string $bouten_style,
 	string $bouten_renderer = RUBYMACO_DEFAULT_BOUTEN_RENDERER
 ): string {
-	$bouten_style    = rubymaco_normalize_bouten_style( $bouten_style );
+	$bouten_style    = RUBYMACO_Bouten_Style::normalize( $bouten_style );
 	$bouten_renderer = rubymaco_normalize_bouten_renderer( $bouten_renderer );
 
 	return RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS === $bouten_renderer

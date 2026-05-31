@@ -28,6 +28,11 @@ final class RUBYMACO_Apply_Mode {
 	public const ALL = 'all';
 
 	/**
+	 * インスタンス化を防ぐ。
+	 */
+	private function __construct() {}
+
+	/**
 	 * デフォルトの適用モードを返す。
 	 *
 	 * @return string デフォルトの適用モードID。

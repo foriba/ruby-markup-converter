@@ -38,6 +38,11 @@ final class RUBYMACO_Option_Key {
 	public const APPLY_MODE = 'rubymaco_apply_mode';
 
 	/**
+	 * インスタンス化を防ぐ。
+	 */
+	private function __construct() {}
+
+	/**
 	 * Option Key 一覧を返す。
 	 *
 	 * @return string[]
