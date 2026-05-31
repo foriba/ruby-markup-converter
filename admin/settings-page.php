@@ -7,35 +7,33 @@
 
 declare(strict_types=1);
 
+use foriba\rubymarkupconverter\RUBYMACO_Settings;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once __DIR__ . '/class-rubymaco-settings.php';
 require_once __DIR__ . '/settings-controller.php';
 require_once __DIR__ . '/settings-components.php';
 require_once __DIR__ . '/settings-view.php';
 
 /**
- * WordPress Hooks
+ * WordPress フックを登録する。
  */
-
 add_action( 'admin_menu', 'rubymaco_add_settings_page' );
 add_action( 'admin_init', 'rubymaco_register_settings' );
 add_action( 'admin_enqueue_scripts', 'rubymaco_enqueue_admin_assets' );
 
 /**
- * Admin Page
- */
-
-/**
- * 設定画面を管理画面に登録する。
+ * 設定ページを管理画面に追加する。
  */
 function rubymaco_add_settings_page(): void {
 	add_options_page(
 		__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
 		__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
 		'manage_options',
-		RUBYMACO_SETTINGS_PAGE_SLUG,
+		RUBYMACO_Settings::PAGE_SLUG,
 		'rubymaco_render_settings_page'
 	);
 }
@@ -50,7 +48,7 @@ function rubymaco_add_settings_page(): void {
  * @param string $hook_suffix 現在の管理画面フック名.
  */
 function rubymaco_enqueue_admin_assets( string $hook_suffix ): void {
-	if ( 'settings_page_' . RUBYMACO_SETTINGS_PAGE_SLUG !== $hook_suffix ) {
+	if ( 'settings_page_' . RUBYMACO_Settings::PAGE_SLUG !== $hook_suffix ) {
 		return;
 	}
 

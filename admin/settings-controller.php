@@ -11,6 +11,7 @@ use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
 use foriba\rubymarkupconverter\RUBYMACO_Bouten_Renderer;
 use foriba\rubymarkupconverter\RUBYMACO_Bouten_Style;
 use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
+use foriba\rubymarkupconverter\RUBYMACO_Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function rubymaco_register_settings(): void {
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		RUBYMACO_Settings::GROUP,
 		RUBYMACO_Option_Key::ENABLED_MARKUP_RULES,
 		array(
 			'type'              => 'array',
@@ -39,7 +40,7 @@ function rubymaco_register_settings(): void {
 	);
 
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		RUBYMACO_Settings::GROUP,
 		RUBYMACO_Option_Key::BOUTEN_STYLE,
 		array(
 			'type'              => 'string',
@@ -49,7 +50,7 @@ function rubymaco_register_settings(): void {
 	);
 
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		RUBYMACO_Settings::GROUP,
 		RUBYMACO_Option_Key::BOUTEN_RENDERER,
 		array(
 			'type'              => 'string',
@@ -59,7 +60,7 @@ function rubymaco_register_settings(): void {
 	);
 
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		RUBYMACO_Settings::GROUP,
 		RUBYMACO_Option_Key::APPLY_MODE,
 		array(
 			'type'              => 'string',

@@ -39,8 +39,6 @@ define( 'RUBYMACO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 const RUBYMACO_VERSION = '1.0.0';
 
-require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
-
 require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-apply-mode.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-rule-type.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-option-key.php';

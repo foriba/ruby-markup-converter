@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 use foriba\rubymarkupconverter\RUBYMACO_Rule_Type;
+use foriba\rubymarkupconverter\RUBYMACO_Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -41,7 +42,7 @@ function rubymaco_render_settings_page(): void {
 			</p>
 
 		<form method="post" action="options.php" class="rubymaco-settings-form">
-			<?php settings_fields( RUBYMACO_SETTINGS_GROUP ); ?>
+			<?php settings_fields( RUBYMACO_Settings::GROUP ); ?>
 
 			<div class="rubymaco-settings-layout">
 				<?php
