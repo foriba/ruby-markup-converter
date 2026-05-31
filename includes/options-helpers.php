@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use foriba\rubymarkupconverter\RUBYMACO_Apply_Mode;
+use foriba\rubymarkupconverter\RUBYMACO_Bouten_Renderer;
 use foriba\rubymarkupconverter\RUBYMACO_Bouten_Style;
 use foriba\rubymarkupconverter\RUBYMACO_Option_Key;
 
@@ -84,21 +85,9 @@ function rubymaco_get_bouten_style(): string {
 function rubymaco_get_bouten_renderer(): string {
 	return rubymaco_get_option_choice(
 		RUBYMACO_Option_Key::BOUTEN_RENDERER,
-		rubymaco_get_allowed_bouten_renderers(),
-		RUBYMACO_DEFAULT_BOUTEN_RENDERER
+		RUBYMACO_Bouten_Renderer::values(),
+		RUBYMACO_Bouten_Renderer::default()
 	);
-}
-
-/**
- * 傍点の描画方式を正規化する。
- *
- * @param string $renderer 傍点描画方式.
- * @return string 'custom' または 'text_emphasis'
- */
-function rubymaco_normalize_bouten_renderer( string $renderer ): string {
-	return in_array( $renderer, rubymaco_get_allowed_bouten_renderers(), true )
-		? $renderer
-		: RUBYMACO_DEFAULT_BOUTEN_RENDERER;
 }
 
 /**

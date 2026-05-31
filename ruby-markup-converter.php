@@ -45,6 +45,7 @@ require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-apply-mode.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-rule-type.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-option-key.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-bouten-style.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/class-rubymaco-bouten-renderer.php';
 
 require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-rules.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-transformer.php';
