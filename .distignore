@@ -1,27 +1,33 @@
+# OS
 .DS_Store
 **/.DS_Store
 
-*.css.map
-
-.vscode
-/vendor/
-
+# Version control / editor
 /.git
 /.github
 /.vscode
+.gitignore
+.distignore
+
+# Dependencies
 /vendor
 /node_modules
 
+# Development tools
 composer.json
 composer.lock
 phpcs.xml.dist
-
 phpstan.neon.dist
 phpstan-stubs.php
 
-.gitignore
-.distignore
+# Development files
 TODO.md
+*.css.map
+*.scss
 
+# WordPress.org assets
+/assets
+
+# Source artwork
 *.psd
 *.ai
