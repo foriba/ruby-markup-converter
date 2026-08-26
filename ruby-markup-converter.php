@@ -11,7 +11,7 @@
  * Plugin Name:       Ruby Markup Converter
  * Plugin URI:        https://github.com/foriba/ruby-markup-converter/
  * Description:       Automatically convert plain-text ruby notations into display-ready HTML.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Foriba

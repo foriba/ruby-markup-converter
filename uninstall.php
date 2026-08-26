@@ -11,13 +11,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-$rubymaco_option_keys = array(
-	'rubymaco_enabled_markup_rules',
-	'rubymaco_bouten_style',
-	'rubymaco_bouten_renderer',
-	'rubymaco_apply_mode',
-);
+define( 'RUBYMACO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
 
-foreach ( $rubymaco_option_keys as $rubymaco_option_key ) {
+foreach ( RUBYMACO_OPTION_KEYS as $rubymaco_option_key ) {
 	delete_option( $rubymaco_option_key );
 }

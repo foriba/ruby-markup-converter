@@ -35,6 +35,17 @@ const RUBYMACO_OPTION_APPLY_MODE = 'rubymaco_apply_mode';
  */
 const RUBYMACO_OPTION_BOUTEN_RENDERER = 'rubymaco_bouten_renderer';
 
+/**
+ * Option Key 一覧
+ *
+ * @var string[]
+ */
+const RUBYMACO_OPTION_KEYS = array(
+	RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+	RUBYMACO_OPTION_BOUTEN_STYLE,
+	RUBYMACO_OPTION_APPLY_MODE,
+	RUBYMACO_OPTION_BOUTEN_RENDERER,
+);
 
 /**
  * Settings API
