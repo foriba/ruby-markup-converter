@@ -75,6 +75,9 @@ When the plugin is uninstalled, its saved settings are removed.
 
 == Changelog ==
 
+= 1.0.1 =
+* Improved internal option management.
+
 = 1.0.0 =
 * Initial public release.
 
