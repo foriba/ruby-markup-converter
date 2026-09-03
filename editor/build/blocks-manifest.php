@@ -1,7 +1,7 @@
 <?php
 // This file is generated. Do not modify it manually.
 return array(
-	'build' => array(
+	'content' => array(
 		'$schema' => 'https://schemas.wp.org/trunk/block.json',
 		'apiVersion' => 3,
 		'name' => 'rubymaco/content',
