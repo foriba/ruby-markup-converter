@@ -31,3 +31,8 @@ TODO.md
 # Source artwork
 *.psd
 *.ai
+
+/node_modules
+package.json
+package-lock.json
+/editor/src

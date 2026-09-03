@@ -15,6 +15,7 @@
 
     <!-- Exclude -->
     <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/editor/build/*</exclude-pattern>
 
     <!-- Encoding -->
     <arg name="encoding" value="utf-8"/>

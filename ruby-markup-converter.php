@@ -50,6 +50,8 @@ require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/options-helpers.php';
 
+require_once RUBYMACO_PLUGIN_DIR . '/includes/editor-assets.php';
+
 if ( is_admin() ) {
 	require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-page.php';
 }
