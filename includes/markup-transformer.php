@@ -101,40 +101,84 @@ function rubymaco_apply_markup_rules(
 	);
 
 	foreach ( $rules as $rule ) {
-		$pattern = $rule['pattern'];
-		if ( '' === $pattern ) {
+		if ( '' === $rule['pattern'] ) {
 			continue;
 		}
 
-		$type = $rule['type'];
-
-		switch ( $type ) {
-			case RUBYMACO_RULE_TYPE_RUBY:
-				$content = preg_replace_callback(
-					$pattern,
-					fn( $matches ) => rubymaco_render_ruby(
-						$matches[1] ?? '',
-						$matches[2] ?? ''
-					),
-					$content
-				) ?? $content;
-				break;
-
-			case RUBYMACO_RULE_TYPE_BOUTEN:
-				$content = preg_replace_callback(
-					$pattern,
-					fn( $matches ) => rubymaco_render_bouten(
-						$matches[1] ?? '',
-						$bouten_style,
-						$bouten_renderer
-					),
-					$content
-				) ?? $content;
-				break;
-		}
+		$content = rubymaco_transform_html_text( $content, $rule, $bouten_style, $bouten_renderer );
 	}
 
 	return $content;
+}
+
+/**
+ * Apply one rule to HTML text nodes while preserving surrounding HTML.
+ *
+ * @param string                                      $content HTML content.
+ * @param array{id:string,type:string,pattern:string} $rule Markup rule.
+ * @param string                                      $bouten_style Bouten style.
+ * @param string                                      $bouten_renderer Bouten renderer.
+ * @return string Updated HTML.
+ */
+function rubymaco_transform_html_text( string $content, array $rule, string $bouten_style, string $bouten_renderer ): string {
+	$processor = WP_HTML_Processor::create_fragment( $content );
+	if ( null === $processor ) {
+		return $content;
+	}
+
+	$excluded_tags   = array( 'SCRIPT', 'STYLE', 'TEXTAREA', 'TITLE', 'CODE', 'PRE', 'RUBY', 'NOSCRIPT', 'TEMPLATE' );
+	$protected_depth = null;
+	$replacements    = array();
+	$prefix          = 'rubymaco-html-token-';
+	while ( false !== strpos( $content, $prefix ) ) {
+		$prefix .= '_';
+	}
+
+	while ( $processor->next_token() ) {
+		$depth = $processor->get_current_depth();
+		if ( null !== $protected_depth ) {
+			if ( $depth < $protected_depth || ( $processor->is_tag_closer() && $depth === $protected_depth ) ) {
+				$protected_depth = null;
+			} else {
+				continue;
+			}
+		}
+		if ( '#tag' === $processor->get_token_type() && ! $processor->is_tag_closer() && $processor->has_class( 'rubymaco-bouten' ) ) {
+			$protected_depth = $depth;
+			continue;
+		}
+		if ( '#text' !== $processor->get_token_type() || 'html' !== $processor->get_namespace()
+			|| array_intersect( $excluded_tags, $processor->get_breadcrumbs() ) ) {
+			continue;
+		}
+
+		$text = $processor->get_modifiable_text();
+		if ( ! preg_match_all( $rule['pattern'], $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+			continue;
+		}
+		$html   = '';
+		$offset = 0;
+		foreach ( $matches as $match ) {
+			// HTML API text is decoded; preserve literal character references when encoding it again.
+			$html  .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset, $match[0][1] - $offset ) ) );
+			$html  .= RUBYMACO_RULE_TYPE_RUBY === $rule['type']
+				? rubymaco_render_ruby( str_replace( '&', '&amp;', $match[1][0] ), str_replace( '&', '&amp;', $match[2][0] ) )
+				: rubymaco_render_bouten( str_replace( '&', '&amp;', $match[1][0] ), $bouten_style, $bouten_renderer );
+			$offset = $match[0][1] + strlen( $match[0][0] );
+		}
+		$html .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset ) ) );
+
+		// The HTML API escapes replacements as text; restore only our generated HTML afterward.
+		$token = $prefix . count( $replacements ) . '-end';
+		if ( $processor->set_modifiable_text( $token ) ) {
+			$replacements[ $token ] = $html;
+		}
+	}
+
+	if ( null !== $processor->get_last_error() ) {
+		return $content;
+	}
+	return strtr( $processor->get_updated_html(), $replacements );
 }
 
 /**
