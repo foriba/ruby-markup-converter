@@ -60,12 +60,12 @@ function rubymaco_get_markup_rules(): array {
 				array(
 					'id'      => 'ruby_double_angle_explicit',
 					'type'    => RUBYMACO_RULE_TYPE_RUBY,
-					'pattern' => '/[|｜]([^<>|｜]+?)《([^<>]+?)》/u',
+					'pattern' => '/[|｜]([^<>|｜《》]+?)《([^<>《》]+?)》/u',
 				),
 				array(
 					'id'      => 'ruby_double_angle_implicit',
 					'type'    => RUBYMACO_RULE_TYPE_RUBY,
-					'pattern' => '/([一-龯々〆〤]+)《([^<>]+?)》/u',
+					'pattern' => '/([一-龯々〆〤]+)《([^<>《》]+?)》/u',
 				),
 			),
 		),
