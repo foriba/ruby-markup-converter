@@ -1,0 +1,17 @@
+@use "~@wordpress/base-styles/variables" as variables;
+
+.wp-block-rubymaco-content {
+	position: relative;
+	margin-block: 1.5em;
+	padding: 0.75em;
+	outline: 1px dashed #ddd;
+	outline-offset: 2px;
+}
+
+.rubymaco-editor-label {
+	margin-bottom: 0.75em;
+	font-size: variables.$helptext-font-size;
+	line-height: variables.$default-line-height;
+	font-weight: 600;
+	opacity: 0.6;
+}

@@ -31,8 +31,8 @@ function rubymaco_get_option_choice( string $key, array $allowed_values, string 
 	}
 
 	return in_array( $value, $allowed_values, true )
-	? $value
-	: $default_value;
+		? $value
+		: $default_value;
 }
 
 /**

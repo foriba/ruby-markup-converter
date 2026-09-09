@@ -33,7 +33,7 @@ function rubymaco_register_blocks(): void {
 /**
  * Ruby Markup Converter ブロック内の記法を変換する。
  *
- * @param string               $block_content ブロックの連裸リング済み HTML.
+ * @param string               $block_content ブロックのレンダリング済み HTML.
  * @param array<string, mixed> $block         ブロック情報.
  * @return string 変換後の HTML.
  */
@@ -41,9 +41,9 @@ function rubymaco_render_content_block(
 	string $block_content,
 	array $block
 ): string {
-	if ( RUBYMACO_APPLY_MODE_ALL === rubymaco_get_apply_mode() ) {
-		return $block_content;
-	}
+	unset( $block );
 
-	return rubymaco_transform_content_markup( $block_content );
+	return RUBYMACO_APPLY_MODE_ALL === rubymaco_get_apply_mode()
+		? $block_content
+		: rubymaco_transform_content_markup( $block_content );
 }

@@ -10,15 +10,20 @@
     <rule ref="WordPress-Docs" />
     <rule ref="WordPress-Extra" />
 
-    <!-- Scan current directory -->
-    <file>.</file>
+    <!-- Scan PHP source files -->
+    <file>admin</file>
+    <file>includes</file>
+    <file>ruby-markup-converter.php</file>
+    <file>uninstall.php</file>
 
     <!-- Exclude -->
     <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
     <exclude-pattern>/editor/build/*</exclude-pattern>
 
     <!-- Encoding -->
     <arg name="encoding" value="utf-8"/>
+    <arg name="extensions" value="php"/>
 
     <!-- Show progress -->
     <arg value="p"/>

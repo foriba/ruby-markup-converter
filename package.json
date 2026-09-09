@@ -15,7 +15,7 @@
     },
     "keywords": [],
     "author": "",
-    "license": "ISC",
+    "license": "GPL-2.0-or-later",
     "type": "commonjs",
     "bugs": {
         "url": "https://github.com/foriba/ruby-markup-converter/issues"
@@ -26,6 +26,7 @@
         "@types/react-dom": "^19.2.5",
         "@wordpress/block-editor": "^16.2.0",
         "@wordpress/blocks": "^15.27.0",
+        "@wordpress/i18n": "^6.27.0",
         "@wordpress/rich-text": "^7.53.0",
         "@wordpress/scripts": "^34.1.0"
     }

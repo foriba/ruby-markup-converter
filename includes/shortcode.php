@@ -24,8 +24,9 @@ add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
  * @param string|null          $content ショートコード本文.
  * @return string 変換後の本文
  */
-function rubymaco_shortcode( array $atts, ?string $content = null ): string {
-	$content = (string) $content;
-
-	return rubymaco_transform_content_markup( $content );
+function rubymaco_shortcode(
+	array $atts,
+	?string $content = null
+): string {
+	return rubymaco_transform_content_markup( (string) $content );
 }

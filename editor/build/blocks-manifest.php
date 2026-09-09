@@ -19,6 +19,7 @@ return array(
 			
 		),
 		'textdomain' => 'ruby-markup-converter',
-		'editorScript' => 'file:./index.js'
+		'editorScript' => 'file:./index.js',
+		'editorStyle' => 'file:./index.css'
 	)
 );

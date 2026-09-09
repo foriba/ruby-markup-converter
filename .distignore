@@ -36,3 +36,6 @@ TODO.md
 package.json
 package-lock.json
 /editor/src
+
+tsconfig.json
+/types

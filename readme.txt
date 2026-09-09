@@ -1,10 +1,10 @@
 === Ruby Markup Converter ===
 Contributors: Foriba
 Tags: ruby, japanese, typography, shortcode, converter
-Requires at least: 6.4
+Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ When the plugin is uninstalled, its saved settings are removed.
 
 == Changelog ==
 
+= 1.1.0 =
+* Added the Ruby Markup Converter block for converting markup within a specific block area.
+* Updated the minimum required WordPress version to 6.8.
+
 = 1.0.1 =
 * Improved internal option management.
 
@@ -95,6 +99,9 @@ When the plugin is uninstalled, its saved settings are removed.
 * Added selectable bouten style and rendering method
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+* Adds a dedicated block for limiting ruby and bouten markup conversion to a selected block area. Requires WordPress 6.8 or later.
 
 = 1.0.0 =
 * Initial public release.

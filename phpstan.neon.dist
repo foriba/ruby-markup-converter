@@ -5,10 +5,15 @@ parameters:
 	level: 8
 
 	paths:
-		- .
+		- admin
+		- includes
+		- ruby-markup-converter.php
+		- uninstall.php
 
 	excludePaths:
 		- vendor/*
+		- node_modules/*
+		- editor/build/*
 		- phpstan-stubs.php
 
 	bootstrapFiles:
