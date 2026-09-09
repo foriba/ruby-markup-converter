@@ -112,15 +112,15 @@ msgid "Bouten Rendering Method"
 msgstr ""
 
 #: admin/settings-view.php:346
-msgid "Select how bouten marks are rendered. In most cases, the custom renderer is recommended."
+msgid "Select how bouten marks are rendered. In most cases, CSS text-emphasis is recommended."
 msgstr ""
 
 #: includes/constants.php:122
-msgid "Apply Only Within Shortcodes"
+msgid "Apply Only Within Selected Areas"
 msgstr ""
 
 #: includes/constants.php:123
-msgid "Converts markup only within [rubymaco]...[/rubymaco] blocks. This helps prevent unintended conversions and reduces processing overhead."
+msgid "Converts markup within Ruby Markup Converter blocks. Markup inside manually written [rubymaco]...[/rubymaco] shortcodes is also converted."
 msgstr ""
 
 #: includes/constants.php:130
@@ -128,7 +128,7 @@ msgid "Apply to Entire Post Content"
 msgstr ""
 
 #: includes/constants.php:131
-msgid "Automatically converts markup throughout the post content without requiring shortcodes. This is more convenient, but unintended text may also be converted."
+msgid "Automatically converts markup throughout the post content without placing it inside Ruby Markup Converter blocks. This is more convenient, but unintended text may also be converted and long posts may take more processing."
 msgstr ""
 
 #: includes/constants.php:182
@@ -144,7 +144,7 @@ msgid "Custom Renderer"
 msgstr ""
 
 #: includes/constants.php:235
-msgid "Renders bouten marks by wrapping each character in separate HTML elements. Recommended when you want finer control over positioning and appearance via CSS."
+msgid "Renders bouten marks by wrapping each character in separate HTML elements. Use this when you want finer control over positioning and appearance via CSS."
 msgstr ""
 
 #: includes/constants.php:241
@@ -152,7 +152,7 @@ msgid "CSS text-emphasis"
 msgstr ""
 
 #: includes/constants.php:242
-msgid "Renders bouten marks using the W3C-standard text-emphasis property. The appearance, including mark position and line spacing, depends on each browser’s implementation."
+msgid "Renders bouten marks using the CSS text-emphasis property. This is the standard rendering method, but the appearance may vary slightly between browsers."
 msgstr ""
 
 #: includes/markup-rules.php:43

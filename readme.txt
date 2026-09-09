@@ -20,7 +20,7 @@ While modern WordPress (6.3+) offers a built-in UI for adding ruby annotations, 
 
 Although primarily designed for Japanese typography, the plugin can convert any text that follows the supported notation formats.
 
-You can use shortcode-only conversion for safer operation, or enable conversion for the entire post content. The plugin also includes an admin settings screen where you can choose which markup styles to enable and how bouten should be rendered.
+You can place a Ruby Markup Converter block wherever markup conversion should apply, or enable conversion for the entire post content. Markup inside manually written `[rubymaco]...[/rubymaco]` shortcodes is also supported. The plugin also includes an admin settings screen where you can choose which markup styles to enable and how bouten should be rendered.
 
 Supported Markup Styles:
 
@@ -49,7 +49,7 @@ Whether you are migrating existing text files or looking for a way to write ruby
 
 = How do I use the plugin safely at first? =
 
-Start with the shortcode-only mode. In this mode, markup is converted only inside `[rubymaco]...[/rubymaco]` blocks.
+Start with the selected-area mode and place a Ruby Markup Converter block around the text you want to convert. Markup inside manually written `[rubymaco]...[/rubymaco]` shortcodes is also converted.
 
 = Can I apply conversions to the entire post content? =
 
@@ -77,6 +77,7 @@ When the plugin is uninstalled, its saved settings are removed.
 
 = 1.1.0 =
 * Added the Ruby Markup Converter block for converting markup within a specific block area.
+* Changed the default bouten rendering method to CSS text-emphasis.
 * Updated the minimum required WordPress version to 6.8.
 
 = 1.0.1 =

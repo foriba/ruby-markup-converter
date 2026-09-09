@@ -112,24 +112,24 @@ msgid "Bouten Rendering Method"
 msgstr "傍点の描画方式"
 
 #: admin/settings-view.php:346
-msgid "Select how bouten marks are rendered. In most cases, the custom renderer is recommended."
-msgstr "傍点をどの方式で表示するかを選択します。通常は「独自実装」のままで問題ありません。"
+msgid "Select how bouten marks are rendered. In most cases, CSS text-emphasis is recommended."
+msgstr "傍点をどの方式で表示するかを選択します。通常は「CSS text-emphasis」をおすすめします。"
 
 #: includes/constants.php:122
-msgid "Apply Only Within Shortcodes"
-msgstr "ショートコード内のみ適用"
+msgid "Apply Only Within Selected Areas"
+msgstr "指定範囲内のみ適用"
 
 #: includes/constants.php:123
-msgid "Converts markup only within [rubymaco]...[/rubymaco] blocks. This helps prevent unintended conversions and reduces processing overhead."
-msgstr "[rubymaco]〜[/rubymaco] で囲まれた範囲内の記法のみを変換します。誤変換を防ぎやすく、変換処理の負荷も抑えられます。"
+msgid "Converts markup within Ruby Markup Converter blocks. Markup inside manually written [rubymaco]...[/rubymaco] shortcodes is also converted."
+msgstr "Ruby Markup Converter ブロック内の記法を変換します。手書きの [rubymaco]〜[/rubymaco] ショートコード内の記法も変換されます。"
 
 #: includes/constants.php:130
 msgid "Apply to Entire Post Content"
 msgstr "投稿本文全体に適用"
 
 #: includes/constants.php:131
-msgid "Automatically converts markup throughout the post content without requiring shortcodes. This is more convenient, but unintended text may also be converted."
-msgstr "ショートコードを使わず、投稿本文内の記法を自動的に変換します。手軽に使用できますが、意図しない箇所まで変換される場合があります。"
+msgid "Automatically converts markup throughout the post content without placing it inside Ruby Markup Converter blocks. This is more convenient, but unintended text may also be converted and long posts may take more processing."
+msgstr "Ruby Markup Converter ブロック内に配置しなくても、投稿本文内の記法を自動的に変換します。手軽に使用できますが、意図しない箇所まで変換されたり、長い投稿では処理が増えたりする場合があります。"
 
 #: includes/constants.php:182
 msgid "dot"
@@ -144,16 +144,16 @@ msgid "Custom Renderer"
 msgstr "独自実装"
 
 #: includes/constants.php:235
-msgid "Renders bouten marks by wrapping each character in separate HTML elements. Recommended when you want finer control over positioning and appearance via CSS."
-msgstr "文字ごとにHTMLを分けて傍点を描画します。CSSによる位置調整や見た目のカスタマイズがしやすい方式です。"
+msgid "Renders bouten marks by wrapping each character in separate HTML elements. Use this when you want finer control over positioning and appearance via CSS."
+msgstr "文字ごとにHTMLを分けて傍点を描画します。CSSによる位置調整や見た目を細かく調整したい場合に使用します。"
 
 #: includes/constants.php:241
 msgid "CSS text-emphasis"
 msgstr "CSS text-emphasis"
 
 #: includes/constants.php:242
-msgid "Renders bouten marks using the W3C-standard text-emphasis property. The appearance, including mark position and line spacing, depends on each browser’s implementation."
-msgstr "W3C標準の「text-emphasis」プロパティを使用して傍点を描画します。表示位置や行間などの見た目は、各ブラウザの実装に依存します。"
+msgid "Renders bouten marks using the CSS text-emphasis property. This is the standard rendering method, but the appearance may vary slightly between browsers."
+msgstr "CSS の text-emphasis プロパティを使用して傍点を描画します。標準的な描画方式ですが、表示はブラウザによってわずかに異なる場合があります。"
 
 #: includes/markup-rules.php:43
 msgid "｜BaseText《RubyAnnotation》 Markup"

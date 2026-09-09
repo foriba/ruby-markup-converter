@@ -101,7 +101,9 @@ function rubymaco_get_allowed_rule_types(): array {
  */
 
 /**
- * ショートコード内のみを変換対象にする適用モード。
+ * 明示的に指定された範囲のみを変換対象にする適用モード。
+ *
+ * 保存値は後方互換性のため 'shortcode' のまま維持する。
  */
 const RUBYMACO_APPLY_MODE_SHORTCODE = 'shortcode';
 
@@ -128,18 +130,18 @@ const RUBYMACO_DEFAULT_APPLY_MODE = RUBYMACO_APPLY_MODE_SHORTCODE;
 function rubymaco_get_apply_mode_definitions(): array {
 	return array(
 		RUBYMACO_APPLY_MODE_SHORTCODE => array(
-			'label'       => __( 'Apply Only Within Shortcodes', 'ruby-markup-converter' ), // ja-jp: 'ショートコード内のみ適用'.
+			'label'       => __( 'Apply Only Within Selected Areas', 'ruby-markup-converter' ), // ja-jp: '指定範囲内のみ適用'.
 			'description' => __(
-				'Converts markup only within [rubymaco]...[/rubymaco] blocks. This helps prevent unintended conversions and reduces processing overhead.',
-				// ja-jp: '[rubymaco]〜[/rubymaco] で囲まれた範囲内の記法のみを変換します。誤変換を防ぎやすく、変換処理の負荷も抑えられます。'.
+				'Converts markup within Ruby Markup Converter blocks. Markup inside manually written [rubymaco]...[/rubymaco] shortcodes is also converted.',
+				// ja-jp: 'Ruby Markup Converter ブロック内の記法を変換します。手書きの [rubymaco]〜[/rubymaco] ショートコード内の記法も変換されます。'.
 				'ruby-markup-converter'
 			),
 		),
 		RUBYMACO_APPLY_MODE_ALL       => array(
 			'label'       => __( 'Apply to Entire Post Content', 'ruby-markup-converter' ), // ja-jp: '投稿本文全体に適用'.
 			'description' => __(
-				'Automatically converts markup throughout the post content without requiring shortcodes. This is more convenient, but unintended text may also be converted.',
-				// ja-jp: 'ショートコードを使わず、投稿本文内の記法を自動的に変換します。手軽に使用できますが、意図しない箇所まで変換される場合があります。'.
+				'Automatically converts markup throughout the post content without placing it inside Ruby Markup Converter blocks. This is more convenient, but unintended text may also be converted and long posts may take more processing.',
+				// ja-jp: 'Ruby Markup Converter ブロック内に配置しなくても、投稿本文内の記法を自動的に変換します。手軽に使用できますが、意図しない箇所まで変換されたり、長い投稿では処理が増えたりする場合があります。'.
 				'ruby-markup-converter'
 			),
 		),
@@ -221,7 +223,7 @@ const RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS = 'text_emphasis';
 /**
  * 傍点描画方式のデフォルト値。
  */
-const RUBYMACO_DEFAULT_BOUTEN_RENDERER = RUBYMACO_BOUTEN_RENDERER_CUSTOM;
+const RUBYMACO_DEFAULT_BOUTEN_RENDERER = RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS;
 
 /**
  * 傍点描画方式の定義一覧を返す。
@@ -235,19 +237,19 @@ const RUBYMACO_DEFAULT_BOUTEN_RENDERER = RUBYMACO_BOUTEN_RENDERER_CUSTOM;
  */
 function rubymaco_get_bouten_renderer_definitions(): array {
 	return array(
-		RUBYMACO_BOUTEN_RENDERER_CUSTOM        => array(
-			'label'       => __( 'Custom Renderer', 'ruby-markup-converter' ), // ja-jp: '独自実装'.
-			'description' => __(
-				'Renders bouten marks by wrapping each character in separate HTML elements. Recommended when you want finer control over positioning and appearance via CSS.',
-				'ruby-markup-converter'
-			), // ja-jp: '文字ごとにHTMLを分けて傍点を描画します。CSSによる位置調整や見た目のカスタマイズがしやすい方式です。'.
-		),
 		RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS => array(
 			'label'       => __( 'CSS text-emphasis', 'ruby-markup-converter' ), // ja-jp: 'CSS text-emphasis'.
 			'description' => __(
-				'Renders bouten marks using the W3C-standard text-emphasis property. The appearance, including mark position and line spacing, depends on each browser’s implementation.',
+				'Renders bouten marks using the CSS text-emphasis property. This is the standard rendering method, but the appearance may vary slightly between browsers.',
 				'ruby-markup-converter'
-			), // ja-jp: 'W3C標準の「text-emphasis」プロパティを使用して傍点を描画します。表示位置や行間などの見た目は、各ブラウザの実装に依存します。'.
+			), // ja-jp: 'CSS の text-emphasis プロパティを使用して傍点を描画します。標準的な描画方式ですが、表示はブラウザによってわずかに異なる場合があります。'.
+		),
+		RUBYMACO_BOUTEN_RENDERER_CUSTOM        => array(
+			'label'       => __( 'Custom Renderer', 'ruby-markup-converter' ), // ja-jp: '独自実装'.
+			'description' => __(
+				'Renders bouten marks by wrapping each character in separate HTML elements. Use this when you want finer control over positioning and appearance via CSS.',
+				'ruby-markup-converter'
+			), // ja-jp: '文字ごとにHTMLを分けて傍点を描画します。CSSによる位置調整や見た目を細かく調整したい場合に使用します。'.
 		),
 	);
 }

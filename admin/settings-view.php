@@ -293,8 +293,8 @@ function rubymaco_render_advanced_settings_field( array $view_data ): void {
 				</h3>
 			<p class="rubymaco-advanced-setting-description">
 				<?php
-				echo esc_html__( 'Select how bouten marks are rendered. In most cases, the custom renderer is recommended.', 'ruby-markup-converter' )
-				// ja-jp: '傍点をどの方式で表示するかを選択します。通常は「独自実装」のままで問題ありません。'.
+				echo esc_html__( 'Select how bouten marks are rendered. In most cases, CSS text-emphasis is recommended.', 'ruby-markup-converter' )
+				// ja-jp: '傍点をどの方式で表示するかを選択します。通常は「CSS text-emphasis」をおすすめします。'.
 				?>
 			</p>
 
