@@ -112,13 +112,13 @@ function rubymaco_apply_markup_rules(
 }
 
 /**
- * Apply one rule to HTML text nodes while preserving surrounding HTML.
+ * 周囲の HTML 構造を保ちながら、テキストノードに単一の変換ルールを適用する。
  *
- * @param string                                      $content HTML content.
- * @param array{id:string,type:string,pattern:string} $rule Markup rule.
- * @param string                                      $bouten_style Bouten style.
- * @param string                                      $bouten_renderer Bouten renderer.
- * @return string Updated HTML.
+ * @param string                                      $content HTML を含む本文.
+ * @param array{id:string,type:string,pattern:string} $rule 変換ルール.
+ * @param string                                      $bouten_style 傍点スタイル.
+ * @param string                                      $bouten_renderer 傍点描画方式.
+ * @return string 変換後の HTML.
  */
 function rubymaco_transform_html_text( string $content, array $rule, string $bouten_style, string $bouten_renderer ): string {
 	$processor = WP_HTML_Processor::create_fragment( $content );
@@ -159,7 +159,7 @@ function rubymaco_transform_html_text( string $content, array $rule, string $bou
 		$html   = '';
 		$offset = 0;
 		foreach ( $matches as $match ) {
-			// HTML API text is decoded; preserve literal character references when encoding it again.
+			// HTML API がデコードしたテキストを再エスケープする際、文字参照そのものの表示を保つ.
 			$html  .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset, $match[0][1] - $offset ) ) );
 			$html  .= RUBYMACO_RULE_TYPE_RUBY === $rule['type']
 				? rubymaco_render_ruby( str_replace( '&', '&amp;', $match[1][0] ), str_replace( '&', '&amp;', $match[2][0] ) )
@@ -168,7 +168,7 @@ function rubymaco_transform_html_text( string $content, array $rule, string $bou
 		}
 		$html .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset ) ) );
 
-		// The HTML API escapes replacements as text; restore only our generated HTML afterward.
+		// HTML API は置換内容をテキストとしてエスケープするため、一時トークンを使い、後で生成した HTML に戻す.
 		$token = $prefix . count( $replacements ) . '-end';
 		if ( $processor->set_modifiable_text( $token ) ) {
 			$replacements[ $token ] = $html;

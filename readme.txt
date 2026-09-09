@@ -95,6 +95,8 @@ Uninstalling the plugin removes its saved settings but does not delete or rewrit
 = 1.1.0 =
 * Added the Ruby Markup Converter block for converting markup within a specific block area.
 * Changed the default bouten rendering method to CSS text-emphasis.
+* Fixed unintended markup conversion within HTML tags and attributes that could break the displayed content.
+* Fixed bouten markup immediately following kanji being misinterpreted as ruby markup.
 * Updated the minimum required WordPress version to 6.8.
 
 = 1.0.1 =
@@ -119,7 +121,7 @@ Uninstalling the plugin removes its saved settings but does not delete or rewrit
 == Upgrade Notice ==
 
 = 1.1.0 =
-* Adds a dedicated block for limiting ruby and bouten markup conversion to a selected block area. Requires WordPress 6.8 or later.
+Adds a dedicated conversion block, preserves HTML structure during conversion, and fixes bouten markup after kanji being mistaken for ruby. Requires WordPress 6.8 or later.
 
 = 1.0.0 =
 * Initial public release.

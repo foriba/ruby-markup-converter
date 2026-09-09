@@ -37,10 +37,7 @@ function rubymaco_register_blocks(): void {
  * @param array<string, mixed> $block         ブロック情報.
  * @return string 変換後の HTML.
  */
-function rubymaco_render_content_block(
-	string $block_content,
-	array $block
-): string {
+function rubymaco_render_content_block( string $block_content, array $block ): string {
 	unset( $block );
 
 	return RUBYMACO_APPLY_MODE_ALL === rubymaco_get_apply_mode()
