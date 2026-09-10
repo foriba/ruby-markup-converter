@@ -37,6 +37,20 @@ function rubymaco_render_settings_page(): void {
 		?>
 			</p>
 
+		<p>
+			<?php
+			$url       = _x( 'https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md', 'user guide URL', 'ruby-markup-converter' );
+			$link_text = __( 'User Guide', 'ruby-markup-converter' );
+
+			printf(
+				'<a class="rubymaco-user-guide" href="%s" target="_blank" rel="noopener noreferrer">%s <span class="dashicons dashicons-external" aria-hidden="true"></span><span class="screen-reader-text"> %s</span></a>',
+				esc_url( $url ),
+				esc_html( $link_text ),
+				esc_html__( '(opens in a new tab)', 'ruby-markup-converter' )
+			);
+			?>
+		</p>
+
 		<form method="post" action="options.php" class="rubymaco-settings-form">
 			<?php settings_fields( RUBYMACO_SETTINGS_GROUP ); ?>
 

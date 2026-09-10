@@ -68,8 +68,8 @@ This mode is convenient for posts that are mostly written with ruby or bouten ma
 
 For detailed instructions, examples, and troubleshooting, see the user guides:
 
-* English: [Ruby Markup Converter User Guide](https://github.com/foriba/ruby-markup-converter/blob/mail/rubymaco-block/docs/en-US/user-guide.md)
-* 日本語: [Ruby Markup Converter ユーザーガイド](https://github.com/foriba/ruby-markup-converter/blob/main/rubymaco-block/docs/ja-JP/user-guide.md)
+* English: [Ruby Markup Converter User Guide](https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md)
+* 日本語: [Ruby Markup Converter ユーザーガイド](https://github.com/foriba/ruby-markup-converter/blob/main/docs/ja-JP/user-guide.md)
 
 == Frequently Asked Questions ==
 

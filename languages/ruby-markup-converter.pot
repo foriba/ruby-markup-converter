@@ -206,3 +206,16 @@ msgstr ""
 #: includes/markup-rules.php:173
 msgid "Adds bouten marks to each character enclosed by \"《《\" and \"》》\"."
 msgstr ""
+
+#: admin/settings-view.php:41
+msgid "User Guide"
+msgstr ""
+
+#: admin/settings-view.php
+msgid "(opens in a new tab)"
+msgstr ""
+
+#: admin/settings-view.php
+msgctxt "user guide URL"
+msgid "https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md"
+msgstr ""

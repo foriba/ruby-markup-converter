@@ -3,6 +3,42 @@
  */
 /* Colors */
 /* Layout */
+.rubymaco-settings-page .rubymaco-user-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0.625rem 1rem;
+  border: 1px solid #dcdcde;
+  border-radius: 0.85rem;
+  background: #fff;
+  color: #1d2327;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.rubymaco-settings-page .rubymaco-user-guide:hover {
+  border-color: #8c8f94;
+  background: #f6fbff;
+  color: #2271b1;
+}
+.rubymaco-settings-page .rubymaco-user-guide:focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 2px;
+}
+
+.rubymaco-user-guide .dashicons {
+  flex: 0 0 16px;
+  color: #2271b1;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
 .rubymaco-settings-page {
   max-width: 960px;
 }

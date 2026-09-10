@@ -206,3 +206,16 @@ msgstr "《《強調》》 記法"
 #: includes/markup-rules.php:173
 msgid "Adds bouten marks to each character enclosed by \"《《\" and \"》》\"."
 msgstr "「《《」と「》》」で囲まれた文字列に対して、各文字に傍点を付与します。"
+
+#: admin/settings-view.php:41
+msgid "User Guide"
+msgstr "ユーザーガイド"
+
+#: admin/settings-view.php
+msgid "(opens in a new tab)"
+msgstr "（新しいタブで開きます）"
+
+#: admin/settings-view.php
+msgctxt "user guide URL"
+msgid "https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md"
+msgstr "https://github.com/foriba/ruby-markup-converter/blob/main/docs/ja-JP/user-guide.md"
