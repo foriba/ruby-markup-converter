@@ -160,10 +160,16 @@ function rubymaco_transform_html_text( string $content, array $rule, string $bou
 		$offset = 0;
 		foreach ( $matches as $match ) {
 			// HTML API がデコードしたテキストを再エスケープする際、文字参照そのものの表示を保つ.
-			$html  .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset, $match[0][1] - $offset ) ) );
-			$html  .= RUBYMACO_RULE_TYPE_RUBY === $rule['type']
-				? rubymaco_render_ruby( str_replace( '&', '&amp;', $match[1][0] ), str_replace( '&', '&amp;', $match[2][0] ) )
-				: rubymaco_render_bouten( str_replace( '&', '&amp;', $match[1][0] ), $bouten_style, $bouten_renderer );
+			$html .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset, $match[0][1] - $offset ) ) );
+			if ( RUBYMACO_RULE_TYPE_RUBY === $rule['type'] ) {
+				$html .= rubymaco_render_ruby( str_replace( '&', '&amp;', $match[1][0] ), str_replace( '&', '&amp;', $match[2][0] ) );
+			} else {
+				// custom 方式は分割後に各文字をエスケープするため、デコード済みの文字列を渡す.
+				$bouten_text = RUBYMACO_BOUTEN_RENDERER_CUSTOM === $bouten_renderer
+					? $match[1][0]
+					: str_replace( '&', '&amp;', $match[1][0] );
+				$html       .= rubymaco_render_bouten( $bouten_text, $bouten_style, $bouten_renderer );
+			}
 			$offset = $match[0][1] + strlen( $match[0][0] );
 		}
 		$html .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset ) ) );
