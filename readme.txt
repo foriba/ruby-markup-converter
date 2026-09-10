@@ -105,6 +105,8 @@ Uninstalling the plugin removes its saved settings but does not delete or rewrit
 * Changed the default bouten rendering method to CSS text-emphasis.
 * Fixed unintended markup conversion within HTML tags and attributes that could break the displayed content.
 * Fixed bouten markup immediately following kanji being misinterpreted as ruby markup.
+* Fixed ampersands being displayed incorrectly with the custom bouten renderer.
+* Fixed default markup rules being re-enabled when all rules were disabled.
 * Updated the minimum required WordPress version to 6.8.
 
 = 1.0.1 =

@@ -40,7 +40,7 @@ function rubymaco_render_settings_page(): void {
 		<p>
 			<?php
 			$url       = _x( 'https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md', 'user guide URL', 'ruby-markup-converter' );
-			$link_text = __( 'User Guide', 'ruby-markup-converter' );
+			$link_text = __( 'Ruby Markup Converter User Guide', 'ruby-markup-converter' );
 
 			printf(
 				'<a class="rubymaco-user-guide" href="%s" target="_blank" rel="noopener noreferrer">%s <span class="dashicons dashicons-external" aria-hidden="true"></span><span class="screen-reader-text"> %s</span></a>',
@@ -116,6 +116,9 @@ function rubymaco_render_apply_mode_field( array $choices ): void {
  * @param array<string, mixed>             $view_data 設定画面の表示データ.
  */
 function rubymaco_render_markup_rules_field( array $rules, array $view_data ): void {
+	// 全解除時も配列を送信し、サニタイズ時に空値を除去して「変換ルールなし」として保存する.
+	printf( '<input type="hidden" name="%s[]" value="">', esc_attr( RUBYMACO_OPTION_ENABLED_MARKUP_RULES ) );
+
 	$preview_settings = array(
 		'style'    => $view_data['current_bouten_style'],
 		'renderer' => $view_data['current_bouten_renderer'],
