@@ -7,9 +7,13 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Markup\Rule_Type;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+require_once __DIR__ . '/markup/class-rule-type.php';
 
 /**
  * Option Keys
@@ -69,12 +73,12 @@ const RUBYMACO_SETTINGS_PAGE_SLUG = 'rubymaco-settings';
 /**
  * ルビ変換ルールを表すルール種別。
  */
-const RUBYMACO_RULE_TYPE_RUBY = 'ruby';
+const RUBYMACO_RULE_TYPE_RUBY = Rule_Type::RUBY;
 
 /**
  * 傍点変換ルールを表すルール種別。
  */
-const RUBYMACO_RULE_TYPE_BOUTEN = 'bouten';
+const RUBYMACO_RULE_TYPE_BOUTEN = Rule_Type::BOUTEN;
 
 /**
  * 許可されているルール種別一覧。
