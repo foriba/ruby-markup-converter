@@ -13,46 +13,77 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * 設定画面で選択する記法の表示情報と変換ルール一覧を保持する。
+ *
+ * 保存する選択値には親ルールの ID を使う。
+ * 配列要素の型は PHPDoc で指定し、実行時には検証しない。
+ * 公開プロパティは生成後も変更可能。
+ */
 final class Markup_Rule {
 	/**
-	 *  @var string
+	 * 設定の保存・選択に使う親ルール ID。
+	 *
+	 * @var string
 	 */
 	public string $id;
 
 	/**
+	 * 設定画面での分類に使うルール種別。
+	 *
 	 * @var Rule_Type
 	 */
 	public Rule_Type $type;
 
 	/**
+	 * 記法の表示名一覧。
+	 *
 	 * @var string[]
 	 */
 	public array $titles;
 
 	/**
+	 * 記法の入力例一覧。
+	 *
 	 * @var string[]
 	 */
 	public array $examples;
 
 	/**
+	 * 記法の説明文。
+	 *
 	 * @var string
 	 */
 	public string $description;
 
 	/**
+	 * 設定未保存時に有効とするか。
+	 *
 	 * @var bool
 	 */
 	public bool $enabled_by_default;
 
 	/**
+	 * この記法に属する、適用順に並べた変換ルール一覧。
+	 *
 	 * @var Transform_Rule[]
 	 */
 	public array $transform_rules;
 
 	/**
-	 * @param string[]         $titles
-	 * @param string[]         $examples
-	 * @param Transform_Rule[] $transform_rules
+	 * 表示情報と変換ルールから親ルールを生成する。
+	 *
+	 * ID の空文字だけを検証し、文字列や配列は補正せず保持する。
+	 * 翻訳済みの表示文言を呼び出し側から渡す。設定の保存や翻訳は行わない。
+	 *
+	 * @param string           $id 空文字ではない親ルール ID.
+	 * @param Rule_Type        $type 親ルールの種別.
+	 * @param string[]         $titles 記法の表示名一覧.
+	 * @param string[]         $examples 記法の入力例一覧.
+	 * @param string           $description 記法の説明文.
+	 * @param bool             $enabled_by_default 初期状態で有効とするか.
+	 * @param Transform_Rule[] $transform_rules 適用順の変換ルール一覧.
+	 * @throws \InvalidArgumentException 親ルール ID が空文字の場合.
 	 */
 	public function __construct(
 		string $id,
@@ -77,9 +108,13 @@ final class Markup_Rule {
 	}
 
 	/**
-	 * 設定画面など、従来の配列形が必要な箇所向け。
+	 * 表示情報と変換ルールを従来の配列形式で返す。
 	 *
-	 * @return array(
+	 * 種別は文字列、子ルールは各 to_array() の結果に変換する。
+	 * 表示名と入力例のキーは旧形式の title・example を維持する。
+	 * HTML エスケープは行わず、出力側で行う。
+	 *
+	 * @return array{
 	 *      id:string,
 	 *      type:string,
 	 *      title:string[],
@@ -87,7 +122,7 @@ final class Markup_Rule {
 	 *      description:string,
 	 *      enabled_by_default:bool,
 	 *      transform_rules:array<int, array{id:string, type:string, pattern:string}>
-	 * )
+	 * }
 	 */
 	public function to_array(): array {
 		return array(
