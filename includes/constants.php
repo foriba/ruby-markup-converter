@@ -71,17 +71,17 @@ const RUBYMACO_SETTINGS_PAGE_SLUG = 'rubymaco-settings';
  */
 
 /**
- * ルビ変換ルールを表すルール種別。
+ * ルビ変換ルールを表すルール種別。（既存コードとの互換性維持用）
  */
 const RUBYMACO_RULE_TYPE_RUBY = Rule_Type::RUBY;
 
 /**
- * 傍点変換ルールを表すルール種別。
+ * 傍点変換ルールを表すルール種別。（既存コードとの互換性維持用）
  */
 const RUBYMACO_RULE_TYPE_BOUTEN = Rule_Type::BOUTEN;
 
 /**
- * 許可されているルール種別一覧。
+ * 許可されているルール種別一覧。（既存コードとの互換性維持用）
  *
  * @var string[]
  */
@@ -89,15 +89,6 @@ const RUBYMACO_ALLOWED_RULE_TYPES = array(
 	RUBYMACO_RULE_TYPE_RUBY,
 	RUBYMACO_RULE_TYPE_BOUTEN,
 );
-
-/**
- * 許可されているルール種別一覧を返す。
- *
- * @return string[]
- */
-function rubymaco_get_allowed_rule_types(): array {
-	return RUBYMACO_ALLOWED_RULE_TYPES;
-}
 
 
 /**
