@@ -7,6 +7,10 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
+
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -38,13 +42,15 @@ function rubymaco_get_option_choice( string $key, array $allowed_values, string 
 /**
  * 保存済みの傍点スタイルを返す。
  *
- * @return string 'dot' または 'sesame'
+ * @return Bouten_Style 検証済みの傍点スタイル.
  */
-function rubymaco_get_bouten_style(): string {
-	return rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_STYLE,
-		rubymaco_get_allowed_bouten_styles(),
-		RUBYMACO_DEFAULT_BOUTEN_STYLE
+function rubymaco_get_bouten_style(): Bouten_Style {
+	return Bouten_Style::from(
+		rubymaco_get_option_choice(
+			RUBYMACO_OPTION_BOUTEN_STYLE,
+			rubymaco_get_allowed_bouten_styles(),
+			RUBYMACO_DEFAULT_BOUTEN_STYLE
+		)
 	);
 }
 
@@ -52,24 +58,24 @@ function rubymaco_get_bouten_style(): string {
  * 傍点スタイル名を正規化する。
  *
  * @param string $style 傍点スタイル.
- * @return string 'dot' または 'sesame'
+ * @return Bouten_Style 検証済みの傍点スタイル.
  */
-function rubymaco_normalize_bouten_style( string $style ): string {
-	return in_array( $style, rubymaco_get_allowed_bouten_styles(), true )
-		? $style
-		: RUBYMACO_DEFAULT_BOUTEN_STYLE;
+function rubymaco_normalize_bouten_style( string $style ): Bouten_Style {
+	return Bouten_Style::try_from( $style ) ?? Bouten_Style::from( RUBYMACO_DEFAULT_BOUTEN_STYLE );
 }
 
 /**
  * 傍点の描画方式を返す。
  *
- * @return string 'custom' または 'text_emphasis'
+ * @return Bouten_Rendering_Method 検証済みの傍点描画方式.
  */
-function rubymaco_get_bouten_renderer(): string {
-	return rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
-		rubymaco_get_allowed_bouten_renderers(),
-		RUBYMACO_DEFAULT_BOUTEN_RENDERER
+function rubymaco_get_bouten_renderer(): Bouten_Rendering_Method {
+	return Bouten_Rendering_Method::from(
+		rubymaco_get_option_choice(
+			RUBYMACO_OPTION_BOUTEN_RENDERER,
+			rubymaco_get_allowed_bouten_renderers(),
+			RUBYMACO_DEFAULT_BOUTEN_RENDERER
+		)
 	);
 }
 
@@ -77,12 +83,10 @@ function rubymaco_get_bouten_renderer(): string {
  * 傍点の描画方式を正規化する。
  *
  * @param string $renderer 傍点描画方式.
- * @return string 'custom' または 'text_emphasis'
+ * @return Bouten_Rendering_Method 検証済みの傍点描画方式.
  */
-function rubymaco_normalize_bouten_renderer( string $renderer ): string {
-	return in_array( $renderer, rubymaco_get_allowed_bouten_renderers(), true )
-		? $renderer
-		: RUBYMACO_DEFAULT_BOUTEN_RENDERER;
+function rubymaco_normalize_bouten_renderer( string $renderer ): Bouten_Rendering_Method {
+	return Bouten_Rendering_Method::try_from( $renderer ) ?? Bouten_Rendering_Method::from( RUBYMACO_DEFAULT_BOUTEN_RENDERER );
 }
 
 /**

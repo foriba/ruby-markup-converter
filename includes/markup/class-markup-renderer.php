@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * HTML API のデコード済みテキスト、または通常の文字列を受け取る。
  * 文字参照のように見える入力も文字列として保持し、HTML として解釈しない。
- * 設定の取得や記法の解析は行わない。WordPress と既存の設定定義・正規化関数を使用する。
+ * 設定の取得や記法の解析は行わない。WordPress のエスケープ関数を使用する。
  */
 final class Markup_Renderer {
 	/**
@@ -41,23 +41,21 @@ final class Markup_Renderer {
 	/**
 	 * 傍点用 HTML を生成する。
 	 *
-	 * 不正なスタイル・描画方式は既存のデフォルト値に戻す。
+	 * スタイル・描画方式は検証済みの値オブジェクトとして受け取る。
 	 * custom 方式は Unicode コードポイント単位で分割する。書記素単位ではない。
 	 *
-	 * @param string $text            未エスケープの対象文字列.
-	 * @param string $bouten_style    傍点スタイル.
-	 * @param string $bouten_renderer 傍点描画方式.
+	 * @param string                  $text                    未エスケープの対象文字列.
+	 * @param Bouten_Style            $bouten_style            傍点スタイル.
+	 * @param Bouten_Rendering_Method $bouten_rendering_method 傍点描画方式.
 	 * @return string 傍点 HTML。
 	 */
 	public function render_bouten(
 		string $text,
-		string $bouten_style,
-		string $bouten_renderer = RUBYMACO_DEFAULT_BOUTEN_RENDERER
+		Bouten_Style $bouten_style,
+		Bouten_Rendering_Method $bouten_rendering_method
 	): string {
-		$bouten_style    = rubymaco_normalize_bouten_style( $bouten_style );
-		$bouten_renderer = rubymaco_normalize_bouten_renderer( $bouten_renderer );
-		$is_custom       = RUBYMACO_BOUTEN_RENDERER_CUSTOM === $bouten_renderer;
-		$body            = '';
+		$is_custom = $bouten_rendering_method->equals( Bouten_Rendering_Method::custom() );
+		$body      = '';
 
 		if ( $is_custom ) {
 			foreach ( $this->split_chars( $text ) as $char ) {
@@ -69,7 +67,7 @@ final class Markup_Renderer {
 
 		$method = $is_custom ? 'custom' : 'text-emphasis';
 		$html   = '<span class="rubymaco-bouten rubymaco-bouten--' . $method .
-			' rubymaco-bouten--' . esc_attr( $bouten_style ) . '">' . $body . '</span>';
+			' rubymaco-bouten--' . esc_attr( $bouten_style->get_value() ) . '">' . $body . '</span>';
 
 		return wp_kses( $html, $this->allowed_html() );
 	}

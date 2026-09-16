@@ -97,7 +97,7 @@ function rubymaco_sanitize_enabled_markup_rules( $value ): array {
 function rubymaco_sanitize_bouten_style( $value ): string {
 	return rubymaco_normalize_bouten_style(
 		sanitize_text_field( wp_unslash( (string) $value ) )
-	);
+	)->get_value();
 }
 
 /**
@@ -109,7 +109,7 @@ function rubymaco_sanitize_bouten_style( $value ): string {
 function rubymaco_sanitize_bouten_renderer( $value ): string {
 	return rubymaco_normalize_bouten_renderer(
 		sanitize_text_field( wp_unslash( (string) $value ) )
-	);
+	)->get_value();
 }
 
 /**
