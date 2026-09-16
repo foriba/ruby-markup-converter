@@ -1,0 +1,61 @@
+<?php
+/**
+ * 傍点描画方式の設定取得と正規化。
+ *
+ * @package RubyMarkupConverter
+ */
+
+declare(strict_types=1);
+
+namespace Foriba\RubyMarkupConverter\Settings;
+
+use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * 保存済みの傍点描画方式を検証済みの値オブジェクトとして提供する。
+ *
+ * 保存値は従来どおり文字列とし、読み取り時に型を変換する。
+ * 設定の登録・保存、表示用の翻訳、HTML エスケープは行わない。
+ * 使用前に WordPress、設定キーの定義、Bouten_Rendering_Method を読み込むこと。
+ */
+final class Bouten_Rendering_Method_Resolver {
+	/**
+	 * 保存済みの設定を取得する。
+	 *
+	 * 未保存時や不正値の場合は初期値を返す。保存済みデータは変更しない。
+	 * 結果はキャッシュせず、呼び出しごとに WordPress から取得する。
+	 *
+	 * @return Bouten_Rendering_Method 検証済みの傍点描画方式.
+	 */
+	public function get(): Bouten_Rendering_Method {
+		$value = get_option( RUBYMACO_OPTION_BOUTEN_RENDERER, $this->default_value()->get_value() );
+
+		return is_string( $value ) ? $this->normalize( $value ) : $this->default_value();
+	}
+
+	/**
+	 * 未保存時や不正値時に使用する初期値を返す。
+	 *
+	 * @return Bouten_Rendering_Method CSS text-emphasis による描画方式.
+	 */
+	public function default_value(): Bouten_Rendering_Method {
+		return Bouten_Rendering_Method::text_emphasis();
+	}
+
+	/**
+	 * 文字列を検証し、不正値の場合は初期値に戻す。
+	 *
+	 * 大文字・小文字や前後の空白は補正しない。
+	 * スラッシュ除去など、リクエスト固有の前処理は呼び出し側で行う。
+	 *
+	 * @param string $value 傍点描画方式の保存値または入力値.
+	 * @return Bouten_Rendering_Method 検証済みの傍点描画方式.
+	 */
+	public function normalize( string $value ): Bouten_Rendering_Method {
+		return Bouten_Rendering_Method::try_from( $value ) ?? $this->default_value();
+	}
+}
