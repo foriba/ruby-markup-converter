@@ -11,6 +11,7 @@ use Foriba\RubyMarkupConverter\Settings\Bouten_Style_Setting;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
+use Foriba\RubyMarkupConverter\Settings\Bouten_Style_Resolver;
 
 /**
  * Markup transformation pipeline.
@@ -100,7 +101,7 @@ function rubymaco_apply_markup_rules(
 		return $content;
 	}
 
-	$style_setting = new Bouten_Style_Setting();
+	$style_setting = new Bouten_Style_Resolver();
 	$bouten_style  = null === $bouten_style
 		? $style_setting->get()
 		: $style_setting->normalize( $bouten_style );

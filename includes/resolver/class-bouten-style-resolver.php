@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 設定の登録・保存、表示用の翻訳、HTML エスケープは行わない。
  * 使用前に WordPress、設定キーの定義、Bouten_Style を読み込むこと。
  */
-final class Bouten_Style_Setting {
+final class Bouten_Style_Resolver {
 	/**
 	 * 保存済みの設定を取得する。
 	 *
