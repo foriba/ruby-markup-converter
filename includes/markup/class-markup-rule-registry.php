@@ -84,6 +84,21 @@ final class Markup_Rule_Registry {
 	}
 
 	/**
+	 * すべての親ルールの ID を定義順に取得する。
+	 *
+	 * @return string[] 親ルールの ID 一覧。
+	 */
+	public function ids(): array {
+		$ids = array();
+
+		foreach ( $this->all() as $rule ) {
+			$ids[] = $rule->id;
+		}
+
+		return $ids;
+	}
+
+	/**
 	 * 初期状態で有効な記法の ID を定義順に取得する。
 	 *
 	 * @return string[] 親ルールの ID 一覧。

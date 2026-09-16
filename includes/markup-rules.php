@@ -149,3 +149,25 @@ function rubymaco_get_default_enabled_rule_ids(): array {
 function rubymaco_get_allowed_rule_types(): array {
 	return Rule_Type::values();
 }
+
+/**
+ * 有効な記法ルールID一覧を正規化する。
+ *
+ * 空文字を除外し、レジストリに定義された親ルールIDだけを残す。
+ * 入力順と重複IDを維持し、空の一覧は空配列のまま返す。
+ *
+ * @param string[] $rule_ids 正規化対象のルールID一覧.
+ * @return string[] 正規化済みのルールID一覧。
+ */
+function rubymaco_normalize_enabled_rule_ids( array $rule_ids ): array {
+	$rule_ids = array_values(
+		array_filter(
+			array_map( 'strval', $rule_ids ),
+			static fn( string $rule_id ): bool => '' !== $rule_id
+		)
+	);
+
+	$allowed_rule_ids = Markup_Rule_Registry::instance()->ids();
+
+	return array_values( array_intersect( $rule_ids, $allowed_rule_ids ) );
+}

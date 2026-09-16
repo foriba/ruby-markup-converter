@@ -36,30 +36,6 @@ function rubymaco_get_option_choice( string $key, array $allowed_values, string 
 }
 
 /**
- * 有効な記法ルールID一覧を正規化する。
- *
- * 空文字を除外し、定義済みの管理画面用ルールIDだけを残す。
- *
- * @param string[] $rule_ids 正規化対象のルールID一覧.
- * @return string[] 正規化済みのルールID一覧
- */
-function rubymaco_normalize_enabled_rule_ids( array $rule_ids ): array {
-	$rule_ids = array_values(
-		array_filter(
-			array_map( 'strval', $rule_ids ),
-			static fn( string $rule_id ): bool => '' !== $rule_id
-		)
-	);
-
-	$allowed_rule_ids = array_map(
-		static fn( array $rule ): string => (string) $rule['id'],
-		rubymaco_get_markup_rules_for_settings_view()
-	);
-
-	return array_values( array_intersect( $rule_ids, $allowed_rule_ids ) );
-}
-
-/**
  * 保存済みの傍点スタイルを返す。
  *
  * @return string 'dot' または 'sesame'
