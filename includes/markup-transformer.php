@@ -7,10 +7,9 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Bouten_Style_Setting;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
-
-
 use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
 
 /**
@@ -21,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once __DIR__ . '/settings/class-bouten-style-setting.php';
 require_once __DIR__ . '/markup/class-markup-renderer.php';
 
 /**
@@ -100,9 +100,10 @@ function rubymaco_apply_markup_rules(
 		return $content;
 	}
 
-	$bouten_style = null === $bouten_style
-		? rubymaco_get_bouten_style()
-		: rubymaco_normalize_bouten_style( $bouten_style );
+	$style_setting = new Bouten_Style_Setting();
+	$bouten_style  = null === $bouten_style
+		? $style_setting->get()
+		: $style_setting->normalize( $bouten_style );
 
 	$bouten_rendering_method = null === $bouten_rendering_method
 		? rubymaco_get_bouten_renderer()

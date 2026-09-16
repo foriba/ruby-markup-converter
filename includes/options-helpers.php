@@ -7,13 +7,14 @@
 
 declare(strict_types=1);
 
-use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+require_once __DIR__ . '/markup/class-bouten-rendering-method.php';
 
 /**
  * 保存済み option から、候補が限定された単一値を取得する。
@@ -37,31 +38,6 @@ function rubymaco_get_option_choice( string $key, array $allowed_values, string 
 	return in_array( $value, $allowed_values, true )
 		? $value
 		: $default_value;
-}
-
-/**
- * 保存済みの傍点スタイルを返す。
- *
- * @return Bouten_Style 検証済みの傍点スタイル.
- */
-function rubymaco_get_bouten_style(): Bouten_Style {
-	return Bouten_Style::from(
-		rubymaco_get_option_choice(
-			RUBYMACO_OPTION_BOUTEN_STYLE,
-			rubymaco_get_allowed_bouten_styles(),
-			RUBYMACO_DEFAULT_BOUTEN_STYLE
-		)
-	);
-}
-
-/**
- * 傍点スタイル名を正規化する。
- *
- * @param string $style 傍点スタイル.
- * @return Bouten_Style 検証済みの傍点スタイル.
- */
-function rubymaco_normalize_bouten_style( string $style ): Bouten_Style {
-	return Bouten_Style::try_from( $style ) ?? Bouten_Style::from( RUBYMACO_DEFAULT_BOUTEN_STYLE );
 }
 
 /**

@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
+
 use Foriba\RubyMarkupConverter\Markup\Rule_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once __DIR__ . '/markup/class-rule-type.php';
+require_once __DIR__ . '/markup/class-bouten-style.php';
 
 /**
  * Option Keys
@@ -157,21 +160,6 @@ function rubymaco_get_allowed_apply_modes(): array {
  */
 
 /**
- * 傍点を黒丸の点として表示するスタイル。
- */
-const RUBYMACO_BOUTEN_STYLE_DOT = 'dot';
-
-/**
- * 傍点をゴマ点として表示するスタイル。
- */
-const RUBYMACO_BOUTEN_STYLE_SESAME = 'sesame';
-
-/**
- * 傍点スタイルのデフォルト値。
- */
-const RUBYMACO_DEFAULT_BOUTEN_STYLE = RUBYMACO_BOUTEN_STYLE_DOT;
-
-/**
  * 傍点スタイルの定義一覧を返す。
  *
  * 配列キーは保存値として使用する傍点スタイルID。
@@ -182,23 +170,15 @@ const RUBYMACO_DEFAULT_BOUTEN_STYLE = RUBYMACO_BOUTEN_STYLE_DOT;
  */
 function rubymaco_get_bouten_style_definitions(): array {
 	return array(
-		RUBYMACO_BOUTEN_STYLE_DOT    => array(
+		Bouten_Style::DOT    => array(
 			'label' => __( 'dot', 'ruby-markup-converter' ), // ja-jp: '点'.
 		),
-		RUBYMACO_BOUTEN_STYLE_SESAME => array(
+		Bouten_Style::SESAME => array(
 			'label' => __( 'sesame', 'ruby-markup-converter' ), // ja-jp: 'ゴマ点'.
 		),
 	);
 }
 
-/**
- * 許可されている傍点スタイルID一覧を返す。
- *
- * @return string[]
- */
-function rubymaco_get_allowed_bouten_styles(): array {
-	return array_keys( rubymaco_get_bouten_style_definitions() );
-}
 
 
 /**

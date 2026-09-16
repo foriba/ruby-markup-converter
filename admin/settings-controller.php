@@ -7,9 +7,13 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Bouten_Style_Setting;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+require_once dirname( __DIR__ ) . '/includes/settings/class-bouten-style-setting.php';
 
 /**
  * Settings registration and view data preparation for the admin screen.
@@ -39,7 +43,7 @@ function rubymaco_register_settings(): void {
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_style',
-			'default'           => RUBYMACO_DEFAULT_BOUTEN_STYLE,
+			'default'           => ( new Bouten_Style_Setting() )->default_value()->get_value(),
 		)
 	);
 
@@ -95,7 +99,7 @@ function rubymaco_sanitize_enabled_markup_rules( $value ): array {
  * @return string
  */
 function rubymaco_sanitize_bouten_style( $value ): string {
-	return rubymaco_normalize_bouten_style(
+	return ( new Bouten_Style_Setting() )->normalize(
 		sanitize_text_field( wp_unslash( (string) $value ) )
 	)->get_value();
 }
@@ -187,11 +191,7 @@ function rubymaco_get_admin_settings_view_data(): array {
 		array_map( 'strval', $enabled_rule_ids )
 	);
 
-	$current_bouten_style = rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_STYLE,
-		rubymaco_get_allowed_bouten_styles(),
-		RUBYMACO_DEFAULT_BOUTEN_STYLE
-	);
+	$current_bouten_style = ( new Bouten_Style_Setting() )->get()->get_value();
 
 	$current_bouten_renderer = rubymaco_get_option_choice(
 		RUBYMACO_OPTION_BOUTEN_RENDERER,
