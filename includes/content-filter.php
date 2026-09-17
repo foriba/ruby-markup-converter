@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -35,5 +37,5 @@ function rubymaco_maybe_add_content_filter(): void {
  * @return string 変換後の投稿本文.
  */
 function rubymaco_filter_the_content( string $content ): string {
-	return rubymaco_transform_content_markup( $content );
+	return Markup_Conversion_Service::create_default()->convert( $content );
 }

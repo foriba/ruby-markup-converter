@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -25,5 +27,5 @@ add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
  * @return string 変換後の本文
  */
 function rubymaco_shortcode( array $atts, ?string $content = null ): string {
-	return rubymaco_transform_content_markup( (string) $content );
+	return Markup_Conversion_Service::create_default()->convert( (string) $content );
 }

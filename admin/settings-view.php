@@ -7,6 +7,11 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
+
 use Foriba\RubyMarkupConverter\Markup\Rule_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -359,10 +364,18 @@ function rubymaco_render_admin_rule_preview(
 		return esc_html( $example );
 	}
 
-	return rubymaco_apply_markup_rules(
+	$rules = array();
+	foreach ( $rule['transform_rules'] as $definition ) {
+		$transform_rule = Transform_Rule::try_from_array( $definition );
+		if ( null !== $transform_rule ) {
+			$rules[] = $transform_rule;
+		}
+	}
+
+	return Markup_Conversion_Service::create_default()->convert_with_rules(
 		$example,
-		$rule['transform_rules'],
-		$current_bouten_style,
-		$current_bouten_renderer
+		$rules,
+		( new Bouten_Style_Resolver() )->normalize( $current_bouten_style ),
+		( new Bouten_Rendering_Method_Resolver() )->normalize( $current_bouten_renderer )
 	);
 }

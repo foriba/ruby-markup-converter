@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -42,5 +44,5 @@ function rubymaco_render_content_block( string $block_content, array $block ): s
 
 	return RUBYMACO_APPLY_MODE_ALL === rubymaco_get_apply_mode()
 		? $block_content
-		: rubymaco_transform_content_markup( $block_content );
+		: Markup_Conversion_Service::create_default()->convert( $block_content );
 }
