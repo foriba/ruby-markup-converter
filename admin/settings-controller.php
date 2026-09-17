@@ -7,13 +7,16 @@
 
 declare(strict_types=1);
 
-use Foriba\RubyMarkupConverter\Settings\Bouten_Style_Setting;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
+
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once dirname( __DIR__ ) . '/includes/settings/class-bouten-style-setting.php';
+require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-style-resolver.php';
+require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-rendering-method-resolver.php';
 
 /**
  * Settings registration and view data preparation for the admin screen.
@@ -43,7 +46,7 @@ function rubymaco_register_settings(): void {
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_style',
-			'default'           => ( new Bouten_Style_Setting() )->default_value()->get_value(),
+			'default'           => ( new Bouten_Style_Resolver() )->default_value()->get_value(),
 		)
 	);
 
@@ -53,7 +56,7 @@ function rubymaco_register_settings(): void {
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_renderer',
-			'default'           => RUBYMACO_DEFAULT_BOUTEN_RENDERER,
+			'default'           => ( new Bouten_Rendering_Method_Resolver() )->default_value()->get_value(),
 		)
 	);
 
@@ -99,7 +102,7 @@ function rubymaco_sanitize_enabled_markup_rules( $value ): array {
  * @return string
  */
 function rubymaco_sanitize_bouten_style( $value ): string {
-	return ( new Bouten_Style_Setting() )->normalize(
+	return ( new Bouten_Style_Resolver() )->normalize(
 		sanitize_text_field( wp_unslash( (string) $value ) )
 	)->get_value();
 }
@@ -111,7 +114,7 @@ function rubymaco_sanitize_bouten_style( $value ): string {
  * @return string
  */
 function rubymaco_sanitize_bouten_renderer( $value ): string {
-	return rubymaco_normalize_bouten_renderer(
+	return ( new Bouten_Rendering_Method_Resolver() )->normalize(
 		sanitize_text_field( wp_unslash( (string) $value ) )
 	)->get_value();
 }
@@ -191,13 +194,9 @@ function rubymaco_get_admin_settings_view_data(): array {
 		array_map( 'strval', $enabled_rule_ids )
 	);
 
-	$current_bouten_style = ( new Bouten_Style_Setting() )->get()->get_value();
+	$current_bouten_style = ( new Bouten_Style_Resolver() )->get()->get_value();
 
-	$current_bouten_renderer = rubymaco_get_option_choice(
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
-		rubymaco_get_allowed_bouten_renderers(),
-		RUBYMACO_DEFAULT_BOUTEN_RENDERER
-	);
+	$current_bouten_renderer = ( new Bouten_Rendering_Method_Resolver() )->get()->get_value();
 
 	$current_apply_mode = rubymaco_get_option_choice(
 		RUBYMACO_OPTION_APPLY_MODE,

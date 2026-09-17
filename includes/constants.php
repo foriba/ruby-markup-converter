@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 
 use Foriba\RubyMarkupConverter\Markup\Rule_Type;
 
@@ -17,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/markup/class-rule-type.php';
 require_once __DIR__ . '/markup/class-bouten-style.php';
+require_once __DIR__ . '/markup/class-bouten-rendering-method.php';
 
 /**
  * Option Keys
@@ -186,21 +188,6 @@ function rubymaco_get_bouten_style_definitions(): array {
  */
 
 /**
- * 独自HTML構造で傍点を描画する方式。
- */
-const RUBYMACO_BOUTEN_RENDERER_CUSTOM = 'custom';
-
-/**
- * CSS text-emphasis で傍点を描画する方式。
- */
-const RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS = 'text_emphasis';
-
-/**
- * 傍点描画方式のデフォルト値。
- */
-const RUBYMACO_DEFAULT_BOUTEN_RENDERER = RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS;
-
-/**
  * 傍点描画方式の定義一覧を返す。
  *
  * 配列キーは保存値として使用する傍点描画方式ID。
@@ -212,14 +199,14 @@ const RUBYMACO_DEFAULT_BOUTEN_RENDERER = RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS;
  */
 function rubymaco_get_bouten_renderer_definitions(): array {
 	return array(
-		RUBYMACO_BOUTEN_RENDERER_TEXT_EMPHASIS => array(
+		Bouten_Rendering_Method::TEXT_EMPHASIS => array(
 			'label'       => __( 'CSS text-emphasis', 'ruby-markup-converter' ), // ja-jp: 'CSS text-emphasis'.
 			'description' => __(
 				'Renders bouten marks using the CSS text-emphasis property. This is the standard rendering method, but the appearance may vary slightly between browsers.',
 				'ruby-markup-converter'
 			), // ja-jp: 'CSS の text-emphasis プロパティを使用して傍点を描画します。標準的な描画方式ですが、表示はブラウザによってわずかに異なる場合があります。'.
 		),
-		RUBYMACO_BOUTEN_RENDERER_CUSTOM        => array(
+		Bouten_Rendering_Method::CUSTOM        => array(
 			'label'       => __( 'Custom Renderer', 'ruby-markup-converter' ), // ja-jp: '独自実装'.
 			'description' => __(
 				'Renders bouten marks by wrapping each character in separate HTML elements. Use this when you want finer control over positioning and appearance via CSS.',
@@ -227,13 +214,4 @@ function rubymaco_get_bouten_renderer_definitions(): array {
 			), // ja-jp: '文字ごとにHTMLを分けて傍点を描画します。CSSによる位置調整や見た目を細かく調整したい場合に使用します。'.
 		),
 	);
-}
-
-/**
- * 許可されている傍点描画方式ID一覧を返す。
- *
- * @return string[]
- */
-function rubymaco_get_allowed_bouten_renderers(): array {
-	return array_keys( rubymaco_get_bouten_renderer_definitions() );
 }

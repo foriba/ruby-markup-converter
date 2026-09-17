@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Foriba\RubyMarkupConverter\Settings;
+namespace Foriba\RubyMarkupConverter\Resolver;
 
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 

@@ -7,11 +7,12 @@
 
 declare(strict_types=1);
 
-use Foriba\RubyMarkupConverter\Settings\Bouten_Style_Setting;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
+
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
-use Foriba\RubyMarkupConverter\Settings\Bouten_Style_Resolver;
 
 /**
  * Markup transformation pipeline.
@@ -21,7 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/settings/class-bouten-style-setting.php';
+require_once __DIR__ . '/resolver/class-bouten-style-resolver.php';
+require_once __DIR__ . '/resolver/class-bouten-rendering-method-resolver.php';
 require_once __DIR__ . '/markup/class-markup-renderer.php';
 
 /**
@@ -101,14 +103,15 @@ function rubymaco_apply_markup_rules(
 		return $content;
 	}
 
-	$style_setting = new Bouten_Style_Resolver();
-	$bouten_style  = null === $bouten_style
-		? $style_setting->get()
-		: $style_setting->normalize( $bouten_style );
+	$style_resolver = new Bouten_Style_Resolver();
+	$bouten_style   = null === $bouten_style
+		? $style_resolver->get()
+		: $style_resolver->normalize( $bouten_style );
 
+	$method_resolver         = new Bouten_Rendering_Method_Resolver();
 	$bouten_rendering_method = null === $bouten_rendering_method
-		? rubymaco_get_bouten_renderer()
-		: rubymaco_normalize_bouten_renderer( $bouten_rendering_method );
+		? $method_resolver->get()
+		: $method_resolver->normalize( $bouten_rendering_method );
 
 	foreach ( $rules as $rule ) {
 		if ( '' === $rule['pattern'] ) {
