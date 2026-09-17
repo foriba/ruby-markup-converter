@@ -41,7 +41,10 @@ const RUBYMACO_VERSION = '1.1.0';
 
 require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
 
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-rules.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-rule-type.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-transform-rule.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-markup-rule.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-markup-rule-registry.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/resolver/class-bouten-style-resolver.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/resolver/class-bouten-rendering-method-resolver.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-markup-renderer.php';

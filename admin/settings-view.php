@@ -364,17 +364,9 @@ function rubymaco_render_admin_rule_preview(
 		return esc_html( $example );
 	}
 
-	$rules = array();
-	foreach ( $rule['transform_rules'] as $definition ) {
-		$transform_rule = Transform_Rule::try_from_array( $definition );
-		if ( null !== $transform_rule ) {
-			$rules[] = $transform_rule;
-		}
-	}
-
 	return Markup_Conversion_Service::create_default()->convert_with_rules(
 		$example,
-		$rules,
+		$rule['transform_rules'],
 		( new Bouten_Style_Resolver() )->normalize( $current_bouten_style ),
 		( new Bouten_Rendering_Method_Resolver() )->normalize( $current_bouten_renderer )
 	);
