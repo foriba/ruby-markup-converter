@@ -22,6 +22,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Markup_Renderer {
 	/**
+	 * 未エスケープの通常テキストを HTML に戻す。
+	 *
+	 * @param string $text デコード済み、または通常の文字列.
+	 * @return string エスケープ済みの HTML テキスト.
+	 */
+	public function render_text( string $text ): string {
+		return $this->escape_text( $text );
+	}
+
+	/**
 	 * ルビ用 HTML を生成する。
 	 *
 	 * @param string $base_text 未エスケープの親文字.
