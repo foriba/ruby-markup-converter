@@ -21,6 +21,7 @@ phpstan.neon.dist
 phpstan-stubs.php
 
 # Development files
+/tests
 TODO.md
 *.css.map
 *.scss
