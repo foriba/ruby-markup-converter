@@ -10,13 +10,11 @@ declare(strict_types=1);
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 
-use Foriba\RubyMarkupConverter\Markup\Rule_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/markup/class-rule-type.php';
 require_once __DIR__ . '/markup/class-bouten-style.php';
 require_once __DIR__ . '/markup/class-bouten-rendering-method.php';
 
@@ -69,31 +67,6 @@ const RUBYMACO_SETTINGS_GROUP = 'rubymaco_settings';
  * 設定ページのスラッグ。
  */
 const RUBYMACO_SETTINGS_PAGE_SLUG = 'rubymaco-settings';
-
-
-/**
- * Rule Types
- */
-
-/**
- * ルビ変換ルールを表すルール種別。（既存コードとの互換性維持用）
- */
-const RUBYMACO_RULE_TYPE_RUBY = Rule_Type::RUBY;
-
-/**
- * 傍点変換ルールを表すルール種別。（既存コードとの互換性維持用）
- */
-const RUBYMACO_RULE_TYPE_BOUTEN = Rule_Type::BOUTEN;
-
-/**
- * 許可されているルール種別一覧。（既存コードとの互換性維持用）
- *
- * @var string[]
- */
-const RUBYMACO_ALLOWED_RULE_TYPES = array(
-	RUBYMACO_RULE_TYPE_RUBY,
-	RUBYMACO_RULE_TYPE_BOUTEN,
-);
 
 
 /**

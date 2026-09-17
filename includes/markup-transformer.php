@@ -1,6 +1,6 @@
 <?php
 /**
- * ルビ・傍点記法の変換処理を行う。
+ * 設定と既存の配列形式をクラスベースの変換処理へ接続する。
  *
  * @package RubyMarkupConverter
  */
@@ -10,9 +10,10 @@ declare(strict_types=1);
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
 
-use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
-use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
+use Foriba\RubyMarkupConverter\Markup\Markup_Transformer;
+use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
+use Foriba\RubyMarkupConverter\Markup\Rule_Type;
 
 /**
  * Markup transformation pipeline.
@@ -25,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/resolver/class-bouten-style-resolver.php';
 require_once __DIR__ . '/resolver/class-bouten-rendering-method-resolver.php';
 require_once __DIR__ . '/markup/class-markup-renderer.php';
+require_once __DIR__ . '/markup/class-markup-transformer.php';
 
 /**
  * Public API
@@ -113,92 +115,22 @@ function rubymaco_apply_markup_rules(
 		? $method_resolver->get()
 		: $method_resolver->normalize( $bouten_rendering_method );
 
+	$transform_rules = array();
 	foreach ( $rules as $rule ) {
 		if ( '' === $rule['pattern'] ) {
 			continue;
 		}
-
-		$content = rubymaco_transform_html_text( $content, $rule, $bouten_style, $bouten_rendering_method );
+		$transform_rules[] = new Transform_Rule(
+			$rule['id'],
+			Rule_Type::from( $rule['type'] ),
+			$rule['pattern']
+		);
 	}
 
-	return $content;
-}
-
-/**
- * 周囲の HTML 構造を保ちながら、テキストノードに単一の変換ルールを適用する。
- *
- * @param string                                      $content                 HTML を含む本文.
- * @param array{id:string,type:string,pattern:string} $rule                    変換ルール.
- * @param Bouten_Style                                $bouten_style            傍点スタイル.
- * @param Bouten_Rendering_Method                     $bouten_rendering_method 傍点描画方式.
- * @return string 変換後の HTML.
- */
-function rubymaco_transform_html_text(
-	string $content,
-	array $rule,
-	Bouten_Style $bouten_style,
-	Bouten_Rendering_Method $bouten_rendering_method
-): string {
-	$processor = WP_HTML_Processor::create_fragment( $content );
-	if ( null === $processor ) {
-		return $content;
-	}
-
-	$renderer = new Markup_Renderer();
-
-	$excluded_tags   = array( 'SCRIPT', 'STYLE', 'TEXTAREA', 'TITLE', 'CODE', 'PRE', 'RUBY', 'NOSCRIPT', 'TEMPLATE' );
-	$protected_depth = null;
-	$replacements    = array();
-	$prefix          = 'rubymaco-html-token-';
-	while ( false !== strpos( $content, $prefix ) ) {
-		$prefix .= '_';
-	}
-
-	while ( $processor->next_token() ) {
-		$depth = $processor->get_current_depth();
-		if ( null !== $protected_depth ) {
-			if ( $depth < $protected_depth || ( $processor->is_tag_closer() && $depth === $protected_depth ) ) {
-				$protected_depth = null;
-			} else {
-				continue;
-			}
-		}
-		if ( '#tag' === $processor->get_token_type() && ! $processor->is_tag_closer() && $processor->has_class( 'rubymaco-bouten' ) ) {
-			$protected_depth = $depth;
-			continue;
-		}
-		if ( '#text' !== $processor->get_token_type() || 'html' !== $processor->get_namespace()
-			|| array_intersect( $excluded_tags, $processor->get_breadcrumbs() ) ) {
-			continue;
-		}
-
-		$text = $processor->get_modifiable_text();
-		if ( ! preg_match_all( $rule['pattern'], $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
-			continue;
-		}
-		$html   = '';
-		$offset = 0;
-		foreach ( $matches as $match ) {
-			// HTML API がデコードしたテキストを再エスケープする際、文字参照そのものの表示を保つ.
-			$html .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset, $match[0][1] - $offset ) ) );
-			if ( RUBYMACO_RULE_TYPE_RUBY === $rule['type'] ) {
-				$html .= $renderer->render_ruby( $match[1][0], $match[2][0] );
-			} else {
-				$html .= $renderer->render_bouten( $match[1][0], $bouten_style, $bouten_rendering_method );
-			}
-			$offset = $match[0][1] + strlen( $match[0][0] );
-		}
-		$html .= esc_html( str_replace( '&', '&amp;', substr( $text, $offset ) ) );
-
-		// HTML API は置換内容をテキストとしてエスケープするため、一時トークンを使い、後で生成した HTML に戻す.
-		$token = $prefix . count( $replacements ) . '-end';
-		if ( $processor->set_modifiable_text( $token ) ) {
-			$replacements[ $token ] = $html;
-		}
-	}
-
-	if ( null !== $processor->get_last_error() ) {
-		return $content;
-	}
-	return strtr( $processor->get_updated_html(), $replacements );
+	return ( new Markup_Transformer( new Markup_Renderer() ) )->transform(
+		$content,
+		$transform_rules,
+		$bouten_style,
+		$bouten_rendering_method
+	);
 }
