@@ -13,18 +13,31 @@
 /vendor
 /node_modules
 
-# Development tools
+# PHP development tools
 composer.json
 composer.lock
 phpcs.xml.dist
 phpstan.neon.dist
 phpstan-stubs.php
 
-# Development files
+# JavaScript / TypeScript development tools
+package.json
+package-lock.json
+tsconfig.json
+
+# Tests and local notes
 /tests
+/LOCAL-TEST-COMMANDS.md
 TODO.md
+
+# Build sources and debug artifacts
+/editor/src
+/types
 *.css.map
 *.scss
+
+# Documentation
+/docs
 
 # WordPress.org assets
 /assets
@@ -32,13 +45,3 @@ TODO.md
 # Source artwork
 *.psd
 *.ai
-
-/node_modules
-package.json
-package-lock.json
-/editor/src
-
-tsconfig.json
-/types
-
-/docs
