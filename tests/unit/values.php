@@ -9,6 +9,17 @@ use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Rule_Type;
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
+check_same( 'rubymaco_enabled_markup_rules', Option_Keys::ENABLED_MARKUP_RULES, 'enabled rules storage key' );
+check_same( 'rubymaco_bouten_style', Option_Keys::BOUTEN_STYLE, 'bouten style storage key' );
+check_same( 'rubymaco_apply_mode', Option_Keys::APPLY_MODE, 'apply mode storage key' );
+check_same( 'rubymaco_bouten_renderer', Option_Keys::BOUTEN_RENDERING_METHOD, 'rendering method storage key' );
+check_same(
+	array( 'rubymaco_enabled_markup_rules', 'rubymaco_bouten_style', 'rubymaco_apply_mode', 'rubymaco_bouten_renderer' ),
+	Option_Keys::values(),
+	'option key list preserves compatibility'
+);
 
 foreach ( array(
 	Apply_Mode::class              => array( 'shortcode', 'all' ),

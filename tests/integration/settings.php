@@ -5,6 +5,8 @@
  * @package RubyMarkupConverter
  */
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
@@ -13,13 +15,13 @@ use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 $service = Markup_Conversion_Service::create_default();
 $ruby    = '<ruby class="rubymaco-ruby" data-rt="かんじ">漢字<rp>（</rp><rt>かんじ</rt><rp>）</rp></ruby>';
 
-check_same( 'rubymaco_bouten_style', RUBYMACO_OPTION_BOUTEN_STYLE, 'style key' );
-check_same( 'rubymaco_bouten_renderer', RUBYMACO_OPTION_BOUTEN_RENDERER, 'method key' );
-check_same( 'rubymaco_apply_mode', RUBYMACO_OPTION_APPLY_MODE, 'apply mode key' );
+check_same( 'rubymaco_bouten_style', Option_Keys::BOUTEN_STYLE, 'style key' );
+check_same( 'rubymaco_bouten_renderer', Option_Keys::BOUTEN_RENDERING_METHOD, 'method key' );
+check_same( 'rubymaco_apply_mode', Option_Keys::APPLY_MODE, 'apply mode key' );
 foreach ( array(
-	array( RUBYMACO_OPTION_APPLY_MODE, new Apply_Mode_Resolver(), 'rubymaco_sanitize_apply_mode', array( 'shortcode', 'all' ), 'shortcode' ),
-	array( RUBYMACO_OPTION_BOUTEN_STYLE, new Bouten_Style_Resolver(), 'rubymaco_sanitize_bouten_style', array( 'dot', 'sesame' ), 'dot' ),
-	array( RUBYMACO_OPTION_BOUTEN_RENDERER, new Bouten_Rendering_Method_Resolver(), 'rubymaco_sanitize_bouten_renderer', array( 'text_emphasis', 'custom' ), 'text_emphasis' ),
+	array( Option_Keys::APPLY_MODE, new Apply_Mode_Resolver(), 'rubymaco_sanitize_apply_mode', array( 'shortcode', 'all' ), 'shortcode' ),
+	array( Option_Keys::BOUTEN_STYLE, new Bouten_Style_Resolver(), 'rubymaco_sanitize_bouten_style', array( 'dot', 'sesame' ), 'dot' ),
+	array( Option_Keys::BOUTEN_RENDERING_METHOD, new Bouten_Rendering_Method_Resolver(), 'rubymaco_sanitize_bouten_renderer', array( 'text_emphasis', 'custom' ), 'text_emphasis' ),
 ) as [$key, $resolver, $sanitize, $valid, $default] ) {
 	$GLOBALS['test_options'] = array();
 	check_same( $default, $resolver->get()->get_value(), 'missing option' );
@@ -37,15 +39,15 @@ check_same( array(), rubymaco_sanitize_enabled_markup_rules( array( 'unknown' ) 
 check_same( array( 'ruby_double_angle', 'ruby_double_angle' ), rubymaco_sanitize_enabled_markup_rules( array( 'ruby_double_angle', '', 'ruby_double_angle' ) ), 'selection order and duplicates' );
 $GLOBALS['test_options'] = array();
 check_same( $ruby, $service->convert( '漢字《かんじ》' ), 'default selection' );
-$GLOBALS['test_options'] = array( RUBYMACO_OPTION_ENABLED_MARKUP_RULES => array() );
+$GLOBALS['test_options'] = array( Option_Keys::ENABLED_MARKUP_RULES => array() );
 check_same( '漢字《かんじ》', $service->convert( '漢字《かんじ》' ), 'disabled conversion' );
-$GLOBALS['test_options'] = array( RUBYMACO_OPTION_ENABLED_MARKUP_RULES => 'invalid' );
+$GLOBALS['test_options'] = array( Option_Keys::ENABLED_MARKUP_RULES => 'invalid' );
 check_same( $ruby, $service->convert( '漢字《かんじ》' ), 'invalid selection fallback' );
 $GLOBALS['test_options'] = array();
 check_same( $ruby, rubymaco_shortcode( array(), '漢字《かんじ》' ), 'shortcode' );
 check_same( $ruby, rubymaco_filter_the_content( '漢字《かんじ》' ), 'content filter' );
 check_same( $ruby, rubymaco_render_content_block( '漢字《かんじ》', array() ), 'block' );
-$GLOBALS['test_options'][ RUBYMACO_OPTION_APPLY_MODE ] = 'all';
+$GLOBALS['test_options'][ Option_Keys::APPLY_MODE ] = 'all';
 check_same( '漢字《かんじ》', rubymaco_render_content_block( '漢字《かんじ》', array() ), 'all mode bypasses block conversion' );
 $view = rubymaco_get_admin_settings_view_data();
 check_same( array( 'ruby_double_angle', 'bouten_double_bracket' ), $view['enabled_rule_ids'], 'default IDs' );
@@ -53,7 +55,7 @@ check_same( $ruby, rubymaco_render_admin_rule_preview( '漢字《かんじ》', 
 $GLOBALS['test_options'] = array();
 
 foreach ( array( 'shortcode', 'all', 'unknown', null, false, array() ) as $apply_mode ) {
-	$GLOBALS['test_options'] = array( RUBYMACO_OPTION_APPLY_MODE => $apply_mode );
+	$GLOBALS['test_options'] = array( Option_Keys::APPLY_MODE => $apply_mode );
 	$expected_mode           = 'all' === $apply_mode ? 'all' : 'shortcode';
 	check_same( $expected_mode, rubymaco_sanitize_apply_mode( $apply_mode ), 'sanitize apply mode input' );
 	check_same( $expected_mode, rubymaco_get_admin_settings_view_data()['current_apply_mode'], 'display resolved apply mode' );

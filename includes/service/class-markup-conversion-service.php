@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Service;
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 use Foriba\RubyMarkupConverter\Markup\Markup_Rule_Registry;
 use Foriba\RubyMarkupConverter\Markup\Markup_Transformer;
 use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
@@ -103,7 +105,7 @@ final class Markup_Conversion_Service {
 	 * @return string 変換後の本文.
 	 */
 	public function convert( string $content ): string {
-		$ids = get_option( RUBYMACO_OPTION_ENABLED_MARKUP_RULES, $this->registry->default_enabled_ids() );
+		$ids = get_option( Option_Keys::ENABLED_MARKUP_RULES, $this->registry->default_enabled_ids() );
 		if ( ! is_array( $ids ) ) {
 			$ids = $this->registry->default_enabled_ids();
 		}

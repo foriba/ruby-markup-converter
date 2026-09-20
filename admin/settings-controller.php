@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Markup\Markup_Rule;
 use Foriba\RubyMarkupConverter\Markup\Markup_Rule_Registry;
@@ -38,7 +40,7 @@ require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-rendering-met
 function rubymaco_register_settings(): void {
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+		Option_Keys::ENABLED_MARKUP_RULES,
 		array(
 			'type'              => 'array',
 			'sanitize_callback' => 'rubymaco_sanitize_enabled_markup_rules',
@@ -48,7 +50,7 @@ function rubymaco_register_settings(): void {
 
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_BOUTEN_STYLE,
+		Option_Keys::BOUTEN_STYLE,
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_style',
@@ -58,7 +60,7 @@ function rubymaco_register_settings(): void {
 
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		Option_Keys::BOUTEN_RENDERING_METHOD,
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_bouten_renderer',
@@ -68,7 +70,7 @@ function rubymaco_register_settings(): void {
 
 	register_setting(
 		RUBYMACO_SETTINGS_GROUP,
-		RUBYMACO_OPTION_APPLY_MODE,
+		Option_Keys::APPLY_MODE,
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_apply_mode',
@@ -184,7 +186,7 @@ function rubymaco_sanitize_apply_mode( $value ): string {
  */
 function rubymaco_get_admin_settings_view_data(): array {
 	$enabled_rule_ids = get_option(
-		RUBYMACO_OPTION_ENABLED_MARKUP_RULES,
+		Option_Keys::ENABLED_MARKUP_RULES,
 		Markup_Rule_Registry::instance()->default_enabled_ids()
 	);
 

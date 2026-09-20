@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Resolver;
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -32,7 +34,7 @@ final class Bouten_Style_Resolver {
 	 * @return Bouten_Style 検証済みの傍点スタイル.
 	 */
 	public function get(): Bouten_Style {
-		$value = get_option( RUBYMACO_OPTION_BOUTEN_STYLE, $this->default_value()->get_value() );
+		$value = get_option( Option_Keys::BOUTEN_STYLE, $this->default_value()->get_value() );
 
 		return is_string( $value ) ? $this->normalize( $value ) : $this->default_value();
 	}

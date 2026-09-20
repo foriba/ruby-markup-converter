@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Resolver;
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -32,7 +34,7 @@ final class Bouten_Rendering_Method_Resolver {
 	 * @return Bouten_Rendering_Method 検証済みの傍点描画方式.
 	 */
 	public function get(): Bouten_Rendering_Method {
-		$value = get_option( RUBYMACO_OPTION_BOUTEN_RENDERER, $this->default_value()->get_value() );
+		$value = get_option( Option_Keys::BOUTEN_RENDERING_METHOD, $this->default_value()->get_value() );
 
 		return is_string( $value ) ? $this->normalize( $value ) : $this->default_value();
 	}

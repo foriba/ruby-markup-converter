@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
@@ -111,7 +113,7 @@ function rubymaco_render_settings_page(): void {
 function rubymaco_render_apply_mode_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_APPLY_MODE,
+		Option_Keys::APPLY_MODE,
 		__( 'Conversion Scope', 'ruby-markup-converter' ), // ja-jp: '適用範囲'.
 	);
 }
@@ -124,7 +126,7 @@ function rubymaco_render_apply_mode_field( array $choices ): void {
  */
 function rubymaco_render_markup_rules_field( array $rules, array $view_data ): void {
 	// 全解除時も配列を送信し、サニタイズ時に空値を除去して「変換ルールなし」として保存する.
-	printf( '<input type="hidden" name="%s[]" value="">', esc_attr( RUBYMACO_OPTION_ENABLED_MARKUP_RULES ) );
+	printf( '<input type="hidden" name="%s[]" value="">', esc_attr( Option_Keys::ENABLED_MARKUP_RULES ) );
 
 	$preview_settings = array(
 		'style'    => $view_data['current_bouten_style'],
@@ -222,7 +224,7 @@ function rubymaco_render_markup_rule_card( array $rule, string $current_bouten_s
 				id="rubymaco-rule-<?php echo esc_attr( $rule_id ); ?>"
 				class="rubymaco-rule-card-checkbox"
 				type="checkbox"
-				name="<?php echo esc_attr( RUBYMACO_OPTION_ENABLED_MARKUP_RULES ); ?>[]"
+				name="<?php echo esc_attr( Option_Keys::ENABLED_MARKUP_RULES ); ?>[]"
 				value="<?php echo esc_attr( $rule_id ); ?>"
 				<?php checked( $is_enabled ); ?>>
 			<span class="rubymaco-rule-card-checkmark" aria-hidden="true"></span>
@@ -295,7 +297,7 @@ function rubymaco_render_bouten_style_group_field( array $choices ): void {
 function rubymaco_render_bouten_style_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_BOUTEN_STYLE,
+		Option_Keys::BOUTEN_STYLE,
 		__( 'Bouten Style', 'ruby-markup-converter' ) // ja-jp: '傍点の種類'.
 	);
 }
@@ -336,7 +338,7 @@ function rubymaco_render_advanced_settings_field( array $view_data ): void {
 function rubymaco_render_bouten_renderer_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		Option_Keys::BOUTEN_RENDERING_METHOD,
 		__( 'Bouten Rendering Method', 'ruby-markup-converter' ) // ja-jp: '傍点の描画方式'.
 	);
 }

@@ -42,6 +42,7 @@ define(
 	get_file_data( __FILE__, array( 'version' => 'Version' ) )['version']
 );
 
+require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/class-option-keys.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
 
 require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-rule-type.php';

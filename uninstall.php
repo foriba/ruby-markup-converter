@@ -7,13 +7,14 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-define( 'RUBYMACO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
+require_once __DIR__ . '/includes/settings/class-option-keys.php';
 
-foreach ( RUBYMACO_OPTION_KEYS as $rubymaco_option_key ) {
+foreach ( Option_Keys::values() as $rubymaco_option_key ) {
 	delete_option( $rubymaco_option_key );
 }

@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Resolver;
 
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
 use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -32,7 +34,7 @@ final class Apply_Mode_Resolver {
 	 * @return Apply_Mode 検証済みの適用モード.
 	 */
 	public function get(): Apply_Mode {
-		$value = get_option( RUBYMACO_OPTION_APPLY_MODE, $this->default_value()->get_value() );
+		$value = get_option( Option_Keys::APPLY_MODE, $this->default_value()->get_value() );
 
 		return is_string( $value ) ? $this->normalize( $value ) : $this->default_value();
 	}
