@@ -1,6 +1,6 @@
 <?php
 /**
- * Ruby Markup Converterで使用する共通定数と設定定義を管理する。
+ * 設定画面の選択肢と表示文言を定義する。
  *
  * @package RubyMarkupConverter
  */
@@ -16,9 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/markup/class-apply-mode.php';
-require_once __DIR__ . '/markup/class-bouten-style.php';
-require_once __DIR__ . '/markup/class-bouten-rendering-method.php';
+require_once dirname( __DIR__ ) . '/markup/class-apply-mode.php';
+require_once dirname( __DIR__ ) . '/markup/class-bouten-style.php';
+require_once dirname( __DIR__ ) . '/markup/class-bouten-rendering-method.php';
 
 /**
  * Apply Modes
