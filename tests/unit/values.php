@@ -5,10 +5,16 @@
  * @package RubyMarkupConverter
  */
 
+use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Rule_Type;
+
+// 既存コードへの接続前のため、テスト側で読み込む.
+require_once dirname( __DIR__, 2 ) . '/includes/markup/class-apply-mode.php';
+
 foreach ( array(
+	Apply_Mode::class              => array( 'shortcode', 'all' ),
 	Bouten_Style::class            => array( 'dot', 'sesame' ),
 	Bouten_Rendering_Method::class => array( 'text_emphasis', 'custom' ),
 	Rule_Type::class               => array( 'ruby', 'bouten' ),
@@ -28,3 +34,8 @@ foreach ( array(
 		check_same( true, $thrown, 'invalid value throws' );
 	}
 }
+
+check_same( Apply_Mode::from( 'shortcode' ), Apply_Mode::selected_areas(), 'selected areas factory preserves saved value' );
+check_same( Apply_Mode::from( 'all' ), Apply_Mode::all(), 'all factory preserves saved value' );
+check_same( true, Apply_Mode::selected_areas()->equals( Apply_Mode::from( 'shortcode' ) ), 'equal apply modes' );
+check_same( false, Apply_Mode::selected_areas()->equals( Apply_Mode::all() ), 'different apply modes' );
