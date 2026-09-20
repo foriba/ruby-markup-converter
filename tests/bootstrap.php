@@ -7,18 +7,31 @@
 
 $root = getenv( 'WP_ROOT' );
 if ( ! $root || ! is_file( rtrim( $root, '/\\' ) . '/wp-includes/version.php' ) ) {
-	throw new RuntimeException( 'Set WP_ROOT to a WordPress installation (6.8 or later).' );
+	throw new RuntimeException( 'Set WP_ROOT to a WordPress installation.' );
 }
 define( 'ABSPATH', rtrim( $root, '/\\' ) . '/' );
 define( 'WPINC', 'wp-includes' );
 define( 'WP_DEBUG', false );
-$test_wp_version = ( static function (): string {
+$test_wp_version     = ( static function (): string {
 	$wp_version = '';
 	require ABSPATH . WPINC . '/version.php';
 	return $wp_version;
 } )();
-if ( version_compare( $test_wp_version, '6.8', '<' ) ) {
-	throw new RuntimeException( 'WordPress 6.8 or later is required.' );
+$test_plugin_headers = get_file_data(
+	dirname( __DIR__ ) . '/ruby-markup-converter.php',
+	array(
+		'version'  => 'Version',
+		'requires' => 'Requires at least',
+	)
+);
+foreach ( $test_plugin_headers as $test_header_value ) {
+	if ( '' === $test_header_value || ! preg_match( '/^\d+(?:\.\d+)+(?:[-+][a-zA-Z0-9.-]+)?$/D', $test_header_value ) ) {
+		throw new RuntimeException( 'Missing or invalid Version / Requires at least plugin header.' );
+	}
+}
+if ( '' === $test_wp_version || version_compare( $test_wp_version, $test_plugin_headers['requires'], '<' ) ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- CLI diagnostic, not HTML.
+	throw new RuntimeException( 'WordPress ' . $test_plugin_headers['requires'] . ' or later is required by the plugin header.' );
 }
 foreach ( array( 'compat-utf8.php', 'utf8.php' ) as $optional ) {
 	if ( is_file( ABSPATH . WPINC . '/' . $optional ) ) {
@@ -32,6 +45,35 @@ foreach ( glob( ABSPATH . WPINC . '/html-api/class-*.php' ) as $file ) {
 	require_once $file;
 }
 $GLOBALS['test_options'] = array();
+/**
+ * テスト用に先頭 8 KB のファイルヘッダーを読み取る。
+ *
+ * WordPress の部分読み込み用の代替実装。コンテキスト拡張は扱わない。
+ * 本体と同様に行単位でヘッダーを検索し、コメント終端を除去する。
+ *
+ * @param string               $file 読み込むファイル.
+ * @param array<string,string> $default_headers キーとヘッダー名.
+ * @param string               $context 空文字のみ対応.
+ * @return array<string,string> 読み取った値。欠落したヘッダーは空文字.
+ * @throws RuntimeException 読み取り失敗、または非対応のコンテキストの場合.
+ */
+function get_file_data( $file, $default_headers, $context = '' ) {
+	if ( '' !== $context ) {
+		throw new RuntimeException( 'Header contexts are not supported by the test bootstrap.' );
+	}
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Read-only CLI fixture access without WordPress filesystem initialization.
+	$data = file_get_contents( $file, false, null, 0, 8192 );
+	if ( false === $data ) {
+		throw new RuntimeException( 'Unable to read plugin headers.' );
+	}
+	$data = str_replace( "\r", "\n", $data );
+	foreach ( $default_headers as $key => $header ) {
+		$default_headers[ $key ] = preg_match( '/^(?:[ \t]*<\?(?:php)?)?[ \t\/*#@]*' . preg_quote( $header, '/' ) . ':(.*)$/mi', $data, $matches )
+			? trim( preg_replace( '/\s*(?:\*\/|\?>).*/', '', $matches[1] ) )
+			: '';
+	}
+	return $default_headers;
+}
 /**
  * メモリ上の設定値を取得する。
  *
@@ -140,5 +182,9 @@ function plugins_url( $path = '', $plugin = '' ) {
 	return 'https://example.invalid/plugin/' . $path;
 }
 require dirname( __DIR__ ) . '/ruby-markup-converter.php';
+
+if ( RUBYMACO_VERSION !== $test_plugin_headers['version'] ) {
+	throw new RuntimeException( 'Plugin version does not match its header.' );
+}
 
 return $test_wp_version;
