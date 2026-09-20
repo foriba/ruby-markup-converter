@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
@@ -39,7 +41,7 @@ require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-rendering-met
  */
 function rubymaco_register_settings(): void {
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		Settings_Identifiers::GROUP,
 		Option_Keys::ENABLED_MARKUP_RULES,
 		array(
 			'type'              => 'array',
@@ -49,7 +51,7 @@ function rubymaco_register_settings(): void {
 	);
 
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		Settings_Identifiers::GROUP,
 		Option_Keys::BOUTEN_STYLE,
 		array(
 			'type'              => 'string',
@@ -59,7 +61,7 @@ function rubymaco_register_settings(): void {
 	);
 
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		Settings_Identifiers::GROUP,
 		Option_Keys::BOUTEN_RENDERING_METHOD,
 		array(
 			'type'              => 'string',
@@ -69,7 +71,7 @@ function rubymaco_register_settings(): void {
 	);
 
 	register_setting(
-		RUBYMACO_SETTINGS_GROUP,
+		Settings_Identifiers::GROUP,
 		Option_Keys::APPLY_MODE,
 		array(
 			'type'              => 'string',

@@ -5,6 +5,8 @@
  * @package RubyMarkupConverter
  */
 
+use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+
 use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
@@ -47,3 +49,7 @@ check_same( Apply_Mode::from( 'shortcode' ), Apply_Mode::selected_areas(), 'sele
 check_same( Apply_Mode::from( 'all' ), Apply_Mode::all(), 'all factory preserves saved value' );
 check_same( true, Apply_Mode::selected_areas()->equals( Apply_Mode::from( 'shortcode' ) ), 'equal apply modes' );
 check_same( false, Apply_Mode::selected_areas()->equals( Apply_Mode::all() ), 'different apply modes' );
+
+check_same( 'rubymaco_settings', Settings_Identifiers::GROUP, 'settings group compatibility' );
+check_same( 'rubymaco-settings', Settings_Identifiers::PAGE_SLUG, 'settings page slug compatibility' );
+check_same( 'manage_options', Settings_Identifiers::CAPABILITY, 'settings capability compatibility' );

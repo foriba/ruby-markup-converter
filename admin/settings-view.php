@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
@@ -28,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Ruby Markup Converter の設定画面を描画する。
  */
 function rubymaco_render_settings_page(): void {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( Settings_Identifiers::CAPABILITY ) ) {
 		wp_die( esc_html__( 'You do not have permission to access this page.', 'ruby-markup-converter' ) );
 		// ja-jp: 'このページにアクセスする権限がありません。'.
 	}
@@ -61,7 +63,7 @@ function rubymaco_render_settings_page(): void {
 		</p>
 
 		<form method="post" action="options.php" class="rubymaco-settings-form">
-			<?php settings_fields( RUBYMACO_SETTINGS_GROUP ); ?>
+			<?php settings_fields( Settings_Identifiers::GROUP ); ?>
 
 			<div class="rubymaco-settings-layout">
 				<?php

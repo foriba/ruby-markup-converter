@@ -21,21 +21,6 @@ require_once __DIR__ . '/markup/class-bouten-style.php';
 require_once __DIR__ . '/markup/class-bouten-rendering-method.php';
 
 /**
- * Settings API
- */
-
-/**
- * WordPress Settings API で使用する設定グループ名。
- */
-const RUBYMACO_SETTINGS_GROUP = 'rubymaco_settings';
-
-/**
- * 設定ページのスラッグ。
- */
-const RUBYMACO_SETTINGS_PAGE_SLUG = 'rubymaco-settings';
-
-
-/**
  * Apply Modes
  */
 
@@ -93,8 +78,6 @@ function rubymaco_get_bouten_style_definitions(): array {
 		),
 	);
 }
-
-
 
 /**
  * Bouten Renderers

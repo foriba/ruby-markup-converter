@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -34,8 +36,8 @@ function rubymaco_add_settings_page(): void {
 	add_options_page(
 		__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
 		__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
-		'manage_options',
-		RUBYMACO_SETTINGS_PAGE_SLUG,
+		Settings_Identifiers::CAPABILITY,
+		Settings_Identifiers::PAGE_SLUG,
 		'rubymaco_render_settings_page'
 	);
 }
@@ -50,7 +52,7 @@ function rubymaco_add_settings_page(): void {
  * @param string $hook_suffix 現在の管理画面フック名.
  */
 function rubymaco_enqueue_admin_assets( string $hook_suffix ): void {
-	if ( 'settings_page_' . RUBYMACO_SETTINGS_PAGE_SLUG !== $hook_suffix ) {
+	if ( 'settings_page_' . Settings_Identifiers::PAGE_SLUG !== $hook_suffix ) {
 		return;
 	}
 

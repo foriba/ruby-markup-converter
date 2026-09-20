@@ -43,6 +43,7 @@ define(
 );
 
 require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/class-option-keys.php';
+require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/class-settings-identifiers.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
 
 require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-rule-type.php';
