@@ -10,9 +10,6 @@ use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Rule_Type;
 
-// 既存コードへの接続前のため、テスト側で読み込む.
-require_once dirname( __DIR__, 2 ) . '/includes/markup/class-apply-mode.php';
-
 foreach ( array(
 	Apply_Mode::class              => array( 'shortcode', 'all' ),
 	Bouten_Style::class            => array( 'dot', 'sesame' ),

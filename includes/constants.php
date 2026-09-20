@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
 
@@ -15,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once __DIR__ . '/markup/class-apply-mode.php';
 require_once __DIR__ . '/markup/class-bouten-style.php';
 require_once __DIR__ . '/markup/class-bouten-rendering-method.php';
 
@@ -74,23 +76,6 @@ const RUBYMACO_SETTINGS_PAGE_SLUG = 'rubymaco-settings';
  */
 
 /**
- * 明示的に指定された範囲のみを変換対象にする適用モード。
- *
- * 保存値は後方互換性のため 'shortcode' のまま維持する。
- */
-const RUBYMACO_APPLY_MODE_SHORTCODE = 'shortcode';
-
-/**
- * 投稿本文全体を変換対象にする適用モード。
- */
-const RUBYMACO_APPLY_MODE_ALL = 'all';
-
-/**
- * 適用モードのデフォルト値。
- */
-const RUBYMACO_DEFAULT_APPLY_MODE = RUBYMACO_APPLY_MODE_SHORTCODE;
-
-/**
  * 適用モードの定義一覧を返す。
  *
  * 配列キーは保存値として使用する適用モードID。
@@ -102,7 +87,7 @@ const RUBYMACO_DEFAULT_APPLY_MODE = RUBYMACO_APPLY_MODE_SHORTCODE;
  */
 function rubymaco_get_apply_mode_definitions(): array {
 	return array(
-		RUBYMACO_APPLY_MODE_SHORTCODE => array(
+		Apply_Mode::SELECTED_AREAS => array(
 			'label'       => __( 'Apply Only Within Selected Areas', 'ruby-markup-converter' ), // ja-jp: '指定範囲内のみ適用'.
 			'description' => __(
 				'Converts markup within Ruby Markup Converter blocks. Markup inside manually written [rubymaco]...[/rubymaco] shortcodes is also converted.',
@@ -110,7 +95,7 @@ function rubymaco_get_apply_mode_definitions(): array {
 				'ruby-markup-converter'
 			),
 		),
-		RUBYMACO_APPLY_MODE_ALL       => array(
+		Apply_Mode::ALL            => array(
 			'label'       => __( 'Apply to Entire Post Content', 'ruby-markup-converter' ), // ja-jp: '投稿本文全体に適用'.
 			'description' => __(
 				'Automatically converts markup throughout the post content without placing it inside Ruby Markup Converter blocks. This is more convenient, but unintended text may also be converted and long posts may take more processing.',
@@ -119,15 +104,6 @@ function rubymaco_get_apply_mode_definitions(): array {
 			),
 		),
 	);
-}
-
-/**
- * 許可されている適用モードID一覧を返す。
- *
- * @return string[]
- */
-function rubymaco_get_allowed_apply_modes(): array {
-	return array_keys( rubymaco_get_apply_mode_definitions() );
 }
 
 /**

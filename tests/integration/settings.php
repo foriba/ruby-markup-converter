@@ -5,6 +5,7 @@
  * @package RubyMarkupConverter
  */
 
+use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
@@ -14,7 +15,9 @@ $ruby    = '<ruby class="rubymaco-ruby" data-rt="かんじ">漢字<rp>（</rp><r
 
 check_same( 'rubymaco_bouten_style', RUBYMACO_OPTION_BOUTEN_STYLE, 'style key' );
 check_same( 'rubymaco_bouten_renderer', RUBYMACO_OPTION_BOUTEN_RENDERER, 'method key' );
+check_same( 'rubymaco_apply_mode', RUBYMACO_OPTION_APPLY_MODE, 'apply mode key' );
 foreach ( array(
+	array( RUBYMACO_OPTION_APPLY_MODE, new Apply_Mode_Resolver(), 'rubymaco_sanitize_apply_mode', array( 'shortcode', 'all' ), 'shortcode' ),
 	array( RUBYMACO_OPTION_BOUTEN_STYLE, new Bouten_Style_Resolver(), 'rubymaco_sanitize_bouten_style', array( 'dot', 'sesame' ), 'dot' ),
 	array( RUBYMACO_OPTION_BOUTEN_RENDERER, new Bouten_Rendering_Method_Resolver(), 'rubymaco_sanitize_bouten_renderer', array( 'text_emphasis', 'custom' ), 'text_emphasis' ),
 ) as [$key, $resolver, $sanitize, $valid, $default] ) {
@@ -47,4 +50,17 @@ check_same( '漢字《かんじ》', rubymaco_render_content_block( '漢字《�
 $view = rubymaco_get_admin_settings_view_data();
 check_same( array( 'ruby_double_angle', 'bouten_double_bracket' ), $view['enabled_rule_ids'], 'default IDs' );
 check_same( $ruby, rubymaco_render_admin_rule_preview( '漢字《かんじ》', $view['rules'][0], 'dot', 'text_emphasis' ), 'admin preview' );
+$GLOBALS['test_options'] = array();
+
+foreach ( array( 'shortcode', 'all', 'unknown', null, false, array() ) as $apply_mode ) {
+	$GLOBALS['test_options'] = array( RUBYMACO_OPTION_APPLY_MODE => $apply_mode );
+	$expected_mode           = 'all' === $apply_mode ? 'all' : 'shortcode';
+	check_same( $expected_mode, rubymaco_sanitize_apply_mode( $apply_mode ), 'sanitize apply mode input' );
+	check_same( $expected_mode, rubymaco_get_admin_settings_view_data()['current_apply_mode'], 'display resolved apply mode' );
+	remove_filter( 'the_content', 'rubymaco_filter_the_content', 9 );
+	rubymaco_maybe_add_content_filter();
+	check_same( 'all' === $apply_mode ? 9 : false, has_filter( 'the_content', 'rubymaco_filter_the_content' ), 'apply mode controls content hook' );
+	check_same( 'all' === $apply_mode ? '漢字《かんじ》' : $ruby, rubymaco_render_content_block( '漢字《かんじ》', array() ), 'apply mode controls block conversion' );
+}
+remove_filter( 'the_content', 'rubymaco_filter_the_content', 9 );
 $GLOBALS['test_options'] = array();

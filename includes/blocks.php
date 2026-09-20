@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
+use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -42,7 +44,7 @@ function rubymaco_register_blocks(): void {
 function rubymaco_render_content_block( string $block_content, array $block ): string {
 	unset( $block );
 
-	return RUBYMACO_APPLY_MODE_ALL === rubymaco_get_apply_mode()
+	return ( new Apply_Mode_Resolver() )->get()->equals( Apply_Mode::all() )
 		? $block_content
 		: Markup_Conversion_Service::create_default()->convert( $block_content );
 }

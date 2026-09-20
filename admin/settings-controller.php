@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Markup\Markup_Rule;
 use Foriba\RubyMarkupConverter\Markup\Markup_Rule_Registry;
 use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
@@ -19,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once dirname( __DIR__ ) . '/includes/resolver/class-apply-mode-resolver.php';
 require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-style-resolver.php';
 require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-rendering-method-resolver.php';
 
@@ -70,7 +72,7 @@ function rubymaco_register_settings(): void {
 		array(
 			'type'              => 'string',
 			'sanitize_callback' => 'rubymaco_sanitize_apply_mode',
-			'default'           => RUBYMACO_DEFAULT_APPLY_MODE,
+			'default'           => ( new Apply_Mode_Resolver() )->default_value()->get_value(),
 		)
 	);
 }
@@ -130,9 +132,9 @@ function rubymaco_sanitize_bouten_renderer( $value ): string {
  * @return string
  */
 function rubymaco_sanitize_apply_mode( $value ): string {
-	return rubymaco_normalize_apply_mode(
-		sanitize_text_field( wp_unslash( (string) $value ) )
-	);
+	return ( new Apply_Mode_Resolver() )->normalize(
+		is_string( $value ) ? sanitize_text_field( wp_unslash( $value ) ) : ''
+	)->get_value();
 }
 
 /**
@@ -201,11 +203,7 @@ function rubymaco_get_admin_settings_view_data(): array {
 
 	$current_bouten_renderer = ( new Bouten_Rendering_Method_Resolver() )->get()->get_value();
 
-	$current_apply_mode = rubymaco_get_option_choice(
-		RUBYMACO_OPTION_APPLY_MODE,
-		rubymaco_get_allowed_apply_modes(),
-		RUBYMACO_DEFAULT_APPLY_MODE
-	);
+	$current_apply_mode = ( new Apply_Mode_Resolver() )->get()->get_value();
 
 	return array(
 		'rules'                   => rubymaco_prepare_admin_rule_view_data(
