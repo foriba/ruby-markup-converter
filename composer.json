@@ -1,7 +1,11 @@
 {
     "license": "GPL-2.0-or-later",
     "scripts": {
-        "test": "@php tests/run.php"
+        "test": "@php tests/run.php",
+        "autoload:runtime": [
+            "@putenv COMPOSER_VENDOR_DIR=vendor-runtime",
+            "@composer dump-autoload --no-dev --optimize"
+        ]
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",
@@ -14,5 +18,13 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "autoload": {
+        "classmap": [
+            "includes/markup/",
+            "includes/resolver/",
+            "includes/service/",
+            "includes/settings/"
+        ]
     }
 }

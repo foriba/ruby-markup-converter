@@ -1,6 +1,9 @@
 # 回帰テスト
 
 プラグイン直下で実行します。追加のテストライブラリは不要です。
+初回およびクラスの追加・移動後は `composer autoload:runtime` を実行してください。
+`vendor/` は開発ツール用、`vendor-runtime/` はプラグイン実行用です。
+後者は開発依存を含めず生成するため、PHP 7.4 でも起動できます。
 
 ```sh
 WP_ROOT="/path/to/wordpress" composer test
@@ -46,3 +49,4 @@ UTF-8 判定・文字コード名、許可プロトコルはテスト用の代�
 
 既存の WPCS・PHPStan は本体のコードを対象とし、この軽量テストハーネスは対象外です。
 `tests/` は `.distignore` により配布から除外します。
+- `unit/autoload.php`: クラスの遅延読み込み・参照先と開発依存の分離。

@@ -18,6 +18,7 @@
 
     <!-- Exclude -->
     <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/vendor-runtime/*</exclude-pattern>
     <exclude-pattern>/node_modules/*</exclude-pattern>
     <exclude-pattern>/editor/build/*</exclude-pattern>
 

@@ -24,9 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once dirname( __DIR__ ) . '/includes/resolver/class-apply-mode-resolver.php';
-require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-style-resolver.php';
-require_once dirname( __DIR__ ) . '/includes/resolver/class-bouten-rendering-method-resolver.php';
 
 /**
  * Settings registration and view data preparation for the admin screen.

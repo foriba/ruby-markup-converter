@@ -16,9 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once dirname( __DIR__ ) . '/markup/class-apply-mode.php';
-require_once dirname( __DIR__ ) . '/markup/class-bouten-style.php';
-require_once dirname( __DIR__ ) . '/markup/class-bouten-rendering-method.php';
 
 /**
  * Apply Modes

@@ -42,20 +42,9 @@ define(
 	get_file_data( __FILE__, array( 'version' => 'Version' ) )['version']
 );
 
-require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/class-option-keys.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/class-settings-identifiers.php';
+require_once RUBYMACO_PLUGIN_DIR . '/vendor-runtime/autoload.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/definitions.php';
 
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-rule-type.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-transform-rule.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-markup-rule.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-markup-rule-registry.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/resolver/class-apply-mode-resolver.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/resolver/class-bouten-style-resolver.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/resolver/class-bouten-rendering-method-resolver.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-markup-renderer.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup/class-markup-transformer.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/service/class-markup-conversion-service.php';
 
 require_once RUBYMACO_PLUGIN_DIR . '/includes/content-filter.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';

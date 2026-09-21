@@ -9,8 +9,9 @@
 .gitignore
 .distignore
 
-# Dependencies
+# Dependencies (generate production vendor in the staging directory; see BUILD.md)
 /vendor
+/vendor-runtime
 /node_modules
 
 # PHP development tools
@@ -29,8 +30,10 @@ tsconfig.json
 /tests
 /LOCAL-TEST-COMMANDS.md
 TODO.md
+/BUILD.md
 
 # Build sources and debug artifacts
+/scripts
 /editor/src
 /types
 *.css.map
