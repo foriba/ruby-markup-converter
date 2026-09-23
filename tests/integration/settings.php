@@ -58,9 +58,11 @@ check_same( $ruby, $service->convert( '漢字《かんじ》' ), 'invalid select
 $GLOBALS['test_options'] = array();
 check_same( $ruby, rubymaco_shortcode( array(), '漢字《かんじ》' ), 'shortcode' );
 check_same( $ruby, call_user_func( $registered_content_callback, '漢字《かんじ》' ), 'content filter' );
-check_same( $ruby, rubymaco_render_content_block( '漢字《かんじ》', array() ), 'block' );
+// phpcs:ignore WordPress.NamingConventions.ValidHookName -- WordPress の動的フック名にはブロック名のスラッシュが含まれる。
+check_same( $ruby, apply_filters( 'render_block_rubymaco/content', '漢字《かんじ》', array() ), 'block' );
 $GLOBALS['test_options'][ Option_Keys::APPLY_MODE ] = 'all';
-check_same( '漢字《かんじ》', rubymaco_render_content_block( '漢字《かんじ》', array() ), 'all mode bypasses block conversion' );
+// phpcs:ignore WordPress.NamingConventions.ValidHookName -- WordPress の動的フック名にはブロック名のスラッシュが含まれる。
+check_same( '漢字《かんじ》', apply_filters( 'render_block_rubymaco/content', '漢字《かんじ》', array() ), 'all mode bypasses block conversion' );
 $view = rubymaco_get_admin_settings_view_data();
 check_same( array( 'ruby_double_angle', 'bouten_double_bracket' ), $view['enabled_rule_ids'], 'default IDs' );
 check_same( $ruby, rubymaco_render_admin_rule_preview( '漢字《かんじ》', $view['rules'][0], 'dot', 'text_emphasis' ), 'admin preview' );
@@ -75,7 +77,8 @@ foreach ( array( 'shortcode', 'all', 'unknown', null, false, array() ) as $apply
 	call_user_func( $registered_init_callback );
 	check_same( 'all' === $apply_mode ? 9 : false, has_filter( 'the_content', $registered_content_callback ), 'apply mode controls content hook' );
 	check_same( 'all' === $apply_mode ? $ruby : '漢字《かんじ》', apply_filters( 'the_content', '漢字《かんじ》' ), 'registered filter respects mode' );
-	check_same( 'all' === $apply_mode ? '漢字《かんじ》' : $ruby, rubymaco_render_content_block( '漢字《かんじ》', array() ), 'apply mode controls block conversion' );
+	// phpcs:ignore WordPress.NamingConventions.ValidHookName -- WordPress の動的フック名にはブロック名のスラッシュが含まれる。
+	check_same( 'all' === $apply_mode ? '漢字《かんじ》' : $ruby, apply_filters( 'render_block_rubymaco/content', '漢字《かんじ》', array() ), 'apply mode controls block conversion' );
 }
 remove_filter( 'the_content', $registered_content_callback, 9 );
 $GLOBALS['test_options'] = array();
