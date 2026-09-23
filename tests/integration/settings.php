@@ -5,12 +5,24 @@
  * @package RubyMarkupConverter
  */
 
+use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
+
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+
+$registered_content_filters = array_values(
+	array_filter(
+		$GLOBALS['wp_filter']['init']->callbacks[10],
+		static fn( array $entry ): bool => is_array( $entry['function'] ) && $entry['function'][0] instanceof Post_Content_Filter
+	)
+);
+check_same( 1, count( $registered_content_filters ), 'Bootstrap registers one post content filter' );
+$registered_init_callback    = $registered_content_filters[0]['function'];
+$registered_content_callback = array( $registered_init_callback[0], 'filter_content' );
 
 $service = Markup_Conversion_Service::create_default();
 $ruby    = '<ruby class="rubymaco-ruby" data-rt="かんじ">漢字<rp>（</rp><rt>かんじ</rt><rp>）</rp></ruby>';
@@ -45,7 +57,7 @@ $GLOBALS['test_options'] = array( Option_Keys::ENABLED_MARKUP_RULES => 'invalid'
 check_same( $ruby, $service->convert( '漢字《かんじ》' ), 'invalid selection fallback' );
 $GLOBALS['test_options'] = array();
 check_same( $ruby, rubymaco_shortcode( array(), '漢字《かんじ》' ), 'shortcode' );
-check_same( $ruby, rubymaco_filter_the_content( '漢字《かんじ》' ), 'content filter' );
+check_same( $ruby, call_user_func( $registered_content_callback, '漢字《かんじ》' ), 'content filter' );
 check_same( $ruby, rubymaco_render_content_block( '漢字《かんじ》', array() ), 'block' );
 $GLOBALS['test_options'][ Option_Keys::APPLY_MODE ] = 'all';
 check_same( '漢字《かんじ》', rubymaco_render_content_block( '漢字《かんじ》', array() ), 'all mode bypasses block conversion' );
@@ -59,10 +71,11 @@ foreach ( array( 'shortcode', 'all', 'unknown', null, false, array() ) as $apply
 	$expected_mode           = 'all' === $apply_mode ? 'all' : 'shortcode';
 	check_same( $expected_mode, rubymaco_sanitize_apply_mode( $apply_mode ), 'sanitize apply mode input' );
 	check_same( $expected_mode, rubymaco_get_admin_settings_view_data()['current_apply_mode'], 'display resolved apply mode' );
-	remove_filter( 'the_content', 'rubymaco_filter_the_content', 9 );
-	rubymaco_maybe_add_content_filter();
-	check_same( 'all' === $apply_mode ? 9 : false, has_filter( 'the_content', 'rubymaco_filter_the_content' ), 'apply mode controls content hook' );
+	remove_filter( 'the_content', $registered_content_callback, 9 );
+	call_user_func( $registered_init_callback );
+	check_same( 'all' === $apply_mode ? 9 : false, has_filter( 'the_content', $registered_content_callback ), 'apply mode controls content hook' );
+	check_same( 'all' === $apply_mode ? $ruby : '漢字《かんじ》', apply_filters( 'the_content', '漢字《かんじ》' ), 'registered filter respects mode' );
 	check_same( 'all' === $apply_mode ? '漢字《かんじ》' : $ruby, rubymaco_render_content_block( '漢字《かんじ》', array() ), 'apply mode controls block conversion' );
 }
-remove_filter( 'the_content', 'rubymaco_filter_the_content', 9 );
+remove_filter( 'the_content', $registered_content_callback, 9 );
 $GLOBALS['test_options'] = array();

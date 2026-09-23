@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter;
 
+use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
+use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
+use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -38,12 +42,15 @@ final class Bootstrap {
 		}
 
 		require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/definitions.php';
-		require_once RUBYMACO_PLUGIN_DIR . '/includes/content-filter.php';
 		require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
 		require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
 		require_once RUBYMACO_PLUGIN_DIR . '/includes/blocks.php';
 
-		add_action( 'init', 'rubymaco_maybe_add_content_filter' );
+		$post_content_filter = new Post_Content_Filter(
+			Markup_Conversion_Service::create_default(),
+			new Apply_Mode_Resolver()
+		);
+		$post_content_filter->register_hooks();
 		add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
 		add_action( 'wp_enqueue_scripts', 'rubymaco_enqueue_styles' );
 		add_action( 'init', 'rubymaco_register_blocks' );
