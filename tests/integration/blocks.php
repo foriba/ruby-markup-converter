@@ -20,7 +20,7 @@ function wp_register_block_types_from_metadata_collection( $path, $manifest = nu
 	$GLOBALS['test_block_registration'] = array( $path, $manifest );
 }
 
-$blocks                = new Blocks( Markup_Conversion_Service::create_default(), new Apply_Mode_Resolver() );
+$blocks                = new Blocks( Markup_Conversion_Service::create_default(), new Apply_Mode_Resolver(), dirname( __DIR__, 2 ) );
 $block_init_callback   = array( $blocks, 'register_blocks' );
 $block_render_callback = array( $blocks, 'render_content_block' );
 check_same( false, has_action( 'init', $block_init_callback ), 'construction does not register blocks' );
@@ -32,7 +32,7 @@ check_same( $block_hooks_before, $GLOBALS['wp_filter']['render_block_rubymaco/co
 check_same( 10, has_action( 'init', $block_init_callback ), 'blocks init priority' );
 $blocks->register_blocks();
 check_same(
-	array( RUBYMACO_PLUGIN_DIR . 'editor/build', RUBYMACO_PLUGIN_DIR . 'editor/build/blocks-manifest.php' ),
+	array( dirname( __DIR__, 2 ) . '/editor/build', dirname( __DIR__, 2 ) . '/editor/build/blocks-manifest.php' ),
 	$GLOBALS['test_block_registration'],
 	'block registration paths'
 );

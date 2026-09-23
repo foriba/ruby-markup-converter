@@ -15,7 +15,3 @@ parameters:
 		- vendor/*
 		- node_modules/*
 		- editor/build/*
-		- phpstan-stubs.php
-
-	bootstrapFiles:
-		- phpstan-stubs.php

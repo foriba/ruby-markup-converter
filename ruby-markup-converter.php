@@ -24,26 +24,12 @@
 declare(strict_types=1);
 
 use Foriba\RubyMarkupConverter\Bootstrap;
+use Foriba\RubyMarkupConverter\Plugin_Info;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * Bootstrap
- *
- * Define plugin-wide constants and load feature modules.
- */
+require_once __DIR__ . '/vendor/autoload.php';
 
-define( 'RUBYMACO_PLUGIN_FILE', __FILE__ );
-define( 'RUBYMACO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'RUBYMACO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-
-define(
-	'RUBYMACO_VERSION',
-	get_file_data( __FILE__, array( 'version' => 'Version' ) )['version']
-);
-
-require_once RUBYMACO_PLUGIN_DIR . '/vendor/autoload.php';
-
-( new Bootstrap() )->boot();
+( new Bootstrap( new Plugin_Info( __FILE__ ) ) )->boot();

@@ -24,6 +24,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Blocks {
 	/**
+	 * プラグインのディレクトリ。
+	 *
+	 * @var string
+	 */
+	private string $plugin_directory;
+
+	/**
 	 * 記法の変換サービス。
 	 *
 	 * @var Markup_Conversion_Service
@@ -42,10 +49,12 @@ final class Blocks {
 	 *
 	 * @param Markup_Conversion_Service $service             記法の変換サービス.
 	 * @param Apply_Mode_Resolver       $apply_mode_resolver 適用モードの取得元.
+	 * @param string                    $plugin_directory   プラグインのディレクトリ.
 	 */
-	public function __construct( Markup_Conversion_Service $service, Apply_Mode_Resolver $apply_mode_resolver ) {
+	public function __construct( Markup_Conversion_Service $service, Apply_Mode_Resolver $apply_mode_resolver, string $plugin_directory ) {
 		$this->service             = $service;
 		$this->apply_mode_resolver = $apply_mode_resolver;
+		$this->plugin_directory    = rtrim( $plugin_directory, '/\\' ) . '/';
 	}
 
 	/**
@@ -63,8 +72,8 @@ final class Blocks {
 	 */
 	public function register_blocks(): void {
 		wp_register_block_types_from_metadata_collection(
-			RUBYMACO_PLUGIN_DIR . 'editor/build',
-			RUBYMACO_PLUGIN_DIR . 'editor/build/blocks-manifest.php'
+			$this->plugin_directory . 'editor/build',
+			$this->plugin_directory . 'editor/build/blocks-manifest.php'
 		);
 	}
 

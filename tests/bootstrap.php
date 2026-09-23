@@ -183,7 +183,7 @@ function plugins_url( $path = '', $plugin = '' ) {
 }
 require dirname( __DIR__ ) . '/ruby-markup-converter.php';
 
-if ( RUBYMACO_VERSION !== $test_plugin_headers['version'] ) {
+if ( ( new \Foriba\RubyMarkupConverter\Plugin_Info( dirname( __DIR__ ) . '/ruby-markup-converter.php' ) )->get_version() !== $test_plugin_headers['version'] ) {
 	throw new RuntimeException( 'Plugin version does not match its header.' );
 }
 

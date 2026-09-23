@@ -60,7 +60,7 @@ SVN="/path/to/svn/ruby-markup-converter"
 - メインPHPのヘッダー `Version` と、readme.txtの `Stable tag` が今回の番号と一致する。
 - Changelog・Upgrade Noticeに今回の変更が反映されている。
 - `Requires at least`・`Requires PHP` は実装に合っており、`Tested up to` は実際に検証した版である。
-- `RUBYMACO_VERSION` はヘッダーから取得するため、別途番号を書き換えない。
+- `Plugin_Info` がバージョンをヘッダーから取得するため、別途番号を書き換えない。
 - ブロックのバージョンは配布準備時にヘッダーから同期する。翻訳ファイルは必要に応じて更新する。
 - JavaScriptを変更した場合は、プロジェクトのビルド手順で `editor/build/` を更新する。
 - 設定の保存、ブロック・ショートコード・全文変換、ルビ・傍点の表示を実画面でも確認する。

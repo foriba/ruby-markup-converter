@@ -19,10 +19,9 @@ check_same( dirname( $plugin_main_file ) . '/', $plugin_info->get_directory(), '
 check_same( plugin_dir_url( $plugin_main_file ), $plugin_info->get_url(), 'plugin URL uses WordPress API' );
 check_same( '/', substr( $plugin_info->get_url(), -1 ), 'plugin URL has trailing slash' );
 check_same( get_file_data( $plugin_main_file, array( 'version' => 'Version' ) )['version'], $plugin_info->get_version(), 'version comes from header' );
-check_same( RUBYMACO_PLUGIN_FILE, $plugin_info->get_file(), 'file matches existing constant' );
-check_same( RUBYMACO_PLUGIN_DIR, $plugin_info->get_directory(), 'directory matches existing constant' );
-check_same( RUBYMACO_PLUGIN_URL, $plugin_info->get_url(), 'URL matches existing constant' );
-check_same( RUBYMACO_VERSION, $plugin_info->get_version(), 'version matches existing constant' );
+foreach ( array( 'RUBYMACO_PLUGIN_FILE', 'RUBYMACO_PLUGIN_DIR', 'RUBYMACO_PLUGIN_URL', 'RUBYMACO_VERSION' ) as $legacy_constant ) {
+	check_same( false, defined( $legacy_constant ), 'legacy plugin constants are not defined' );
+}
 $info_hooks_after = array();
 foreach ( $GLOBALS['wp_filter'] as $info_hook => $info_hook_object ) {
 	$info_hooks_after[ $info_hook ] = $info_hook_object->callbacks;

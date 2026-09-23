@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+use Foriba\RubyMarkupConverter\Plugin_Info;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,32 +38,33 @@ function rubymaco_add_settings_page(): void {
 /**
  * 設定ページ用の CSS と JavaScript を読み込む。
  *
- * @param string $hook_suffix 現在の管理画面フック名.
+ * @param string      $hook_suffix 現在の管理画面フック名.
+ * @param Plugin_Info $plugin_info プラグイン情報.
  */
-function rubymaco_enqueue_admin_assets( string $hook_suffix ): void {
+function rubymaco_enqueue_admin_assets( string $hook_suffix, Plugin_Info $plugin_info ): void {
 	if ( 'settings_page_' . Settings_Identifiers::PAGE_SLUG !== $hook_suffix ) {
 		return;
 	}
 
 	wp_enqueue_style(
 		'ruby-markup-converter',
-		RUBYMACO_PLUGIN_URL . 'public/css/ruby-markup-converter.css',
+		$plugin_info->get_url() . 'public/css/ruby-markup-converter.css',
 		array(),
-		RUBYMACO_VERSION
+		$plugin_info->get_version()
 	);
 
 	wp_enqueue_style(
 		'rubymaco-settings',
-		RUBYMACO_PLUGIN_URL . 'admin/css/settings.css',
+		$plugin_info->get_url() . 'admin/css/settings.css',
 		array( 'ruby-markup-converter' ),
-		(string) filemtime( RUBYMACO_PLUGIN_DIR . 'admin/css/settings.css' )
+		(string) filemtime( $plugin_info->get_directory() . 'admin/css/settings.css' )
 	);
 
 	wp_enqueue_script(
 		'rubymaco-settings',
-		RUBYMACO_PLUGIN_URL . 'admin/js/settings.js',
+		$plugin_info->get_url() . 'admin/js/settings.js',
 		array(),
-		(string) filemtime( RUBYMACO_PLUGIN_DIR . 'admin/js/settings.js' ),
+		(string) filemtime( $plugin_info->get_directory() . 'admin/js/settings.js' ),
 		true
 	);
 }

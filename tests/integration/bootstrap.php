@@ -11,6 +11,7 @@ use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
 
 use Foriba\RubyMarkupConverter\Bootstrap;
+use Foriba\RubyMarkupConverter\Plugin_Info;
 
 $registered_content_filters = array_values(
 	array_filter(
@@ -41,6 +42,15 @@ $registered_assets = array_values(
 check_same( 1, count( $registered_assets ), 'Bootstrap registers one frontend assets integration' );
 $registered_assets_callback = $registered_assets[0]['function'];
 
+$registered_admin_assets = array_values(
+	array_filter(
+		$GLOBALS['wp_filter']['admin_enqueue_scripts']->callbacks[10],
+		static fn( array $entry ): bool => is_array( $entry['function'] ) && $entry['function'][0] instanceof Bootstrap
+	)
+);
+check_same( 1, count( $registered_admin_assets ), 'Bootstrap registers one admin assets callback' );
+$registered_admin_assets_callback = $registered_admin_assets[0]['function'];
+
 foreach ( array(
 	array( 'init', $registered_init_callback, 10, 1 ),
 	array( 'init', $registered_block_init_callback, 10, 1 ),
@@ -48,7 +58,7 @@ foreach ( array(
 	array( 'render_block_rubymaco/content', $registered_block_callback, 10, 2 ),
 	array( 'admin_menu', 'rubymaco_add_settings_page', 10, 1 ),
 	array( 'admin_init', 'rubymaco_register_settings', 10, 1 ),
-	array( 'admin_enqueue_scripts', 'rubymaco_enqueue_admin_assets', 10, 1 ),
+	array( 'admin_enqueue_scripts', $registered_admin_assets_callback, 10, 1 ),
 ) as [$hook, $callback, $priority, $accepted_args] ) {
 	check_same( $priority, has_filter( $hook, $callback ), 'hook priority: ' . $hook );
 	check_same( $accepted_args, $GLOBALS['wp_filter'][ $hook ]->callbacks[ $priority ][ _wp_filter_build_unique_id( $hook, $callback, $priority ) ]['accepted_args'], 'hook argument count: ' . $hook );
@@ -64,7 +74,7 @@ check_same(
 	'init callback order'
 );
 
-$bootstrap = new Bootstrap();
+$bootstrap = new Bootstrap( new Plugin_Info( dirname( __DIR__, 2 ) . '/ruby-markup-converter.php' ) );
 $bootstrap->boot();
 $before_boot = array();
 foreach ( $GLOBALS['wp_filter'] as $hook => $hook_object ) {
@@ -79,6 +89,7 @@ foreach ( $GLOBALS['wp_filter'] as $hook => $hook_object ) {
 check_same( $before_boot, $after_boot, 'repeated boot leaves hooks unchanged' );
 check_same( $before_shortcodes, $GLOBALS['shortcode_tags'], 'repeated boot leaves shortcodes unchanged' );
 add_shortcode( 'rubymaco', $registered_shortcode_callback );
+remove_action( 'admin_enqueue_scripts', array( $bootstrap, 'enqueue_admin_assets' ) );
 
 foreach ( $GLOBALS['wp_filter']['wp_enqueue_scripts']->callbacks[10] as $entry ) {
 	$callback = $entry['function'];
