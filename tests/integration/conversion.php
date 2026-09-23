@@ -8,8 +8,8 @@
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Markup\Markup_Rule_Registry;
 use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
-use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
-use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 $service  = Markup_Conversion_Service::create_default();
 $registry = Markup_Rule_Registry::instance();
 $rules    = $registry->transform_rules_for( $registry->ids() );

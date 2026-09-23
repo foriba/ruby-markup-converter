@@ -16,7 +16,7 @@ use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
 
-use Foriba\RubyMarkupConverter\Markup\Rule_Type;
+use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

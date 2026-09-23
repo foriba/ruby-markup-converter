@@ -11,7 +11,7 @@ namespace Foriba\RubyMarkupConverter\Resolver;
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
-use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

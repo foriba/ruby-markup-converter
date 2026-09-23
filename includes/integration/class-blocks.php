@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Integration;
 
-use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 

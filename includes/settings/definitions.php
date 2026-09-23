@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
-use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
-use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
+use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 
 
 if ( ! defined( 'ABSPATH' ) ) {

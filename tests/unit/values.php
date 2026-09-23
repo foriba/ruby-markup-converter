@@ -7,10 +7,10 @@
 
 use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
 
-use Foriba\RubyMarkupConverter\Markup\Apply_Mode;
-use Foriba\RubyMarkupConverter\Markup\Bouten_Style;
-use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
-use Foriba\RubyMarkupConverter\Markup\Rule_Type;
+use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
+use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
 check_same( 'rubymaco_enabled_markup_rules', Option_Keys::ENABLED_MARKUP_RULES, 'enabled rules storage key' );

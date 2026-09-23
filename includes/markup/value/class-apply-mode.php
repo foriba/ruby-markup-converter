@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Foriba\RubyMarkupConverter\Markup;
+namespace Foriba\RubyMarkupConverter\Markup\Value;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

@@ -11,7 +11,7 @@ namespace Foriba\RubyMarkupConverter\Resolver;
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
-use Foriba\RubyMarkupConverter\Markup\Bouten_Rendering_Method;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

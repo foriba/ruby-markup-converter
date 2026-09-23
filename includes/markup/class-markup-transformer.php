@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Markup;
 
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
+use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
