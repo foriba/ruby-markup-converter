@@ -31,6 +31,11 @@ foreach ( array( 'pre', 'code', 'script', 'style', 'textarea', 'title', 'noscrip
 	check_same( $protected . $ruby, $convert( $protected . '漢字《かんじ》' ), 'protected ' . $protected_tag );
 }
 check_same( $ruby . $bouten, $convert( $ruby . $bouten ), 'idempotent' );
+foreach ( array( 'pre', 'code', 'ruby', 'noscript', 'template' ) as $protected_tag ) {
+	$protected = '<' . $protected_tag . '><span>漢字《かんじ》《《強調》》</span></' . $protected_tag . '>';
+	check_same( $protected . $ruby . $bouten, $convert( $protected . '漢字《かんじ》《《強調》》' ), 'excluded ancestor and following sibling ' . $protected_tag );
+}
+check_same( '<div><span>' . $ruby . $bouten . '</span></div>', $convert( '<div><span>漢字《かんじ》《《強調》》</span></div>' ), 'ordinary ancestors allow conversion' );
 check_same( 'rubymaco-html-token-0-end ' . $ruby, $convert( 'rubymaco-html-token-0-end 漢字《かんじ》' ), 'token collision' );
 check_same( '&amp;lt; ' . $ruby, $convert( '&amp;lt; 漢字《かんじ》' ), 'literal entity in plain text' );
 $renderer = new Markup_Renderer();

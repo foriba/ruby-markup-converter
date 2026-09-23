@@ -25,6 +25,23 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Markup_Transformer {
 	/**
+	 * 記法変換から除外する要素の集合。
+	 *
+	 * @var array<string, bool>
+	 */
+	private const EXCLUDED_TAGS = array(
+		'SCRIPT'   => true,
+		'STYLE'    => true,
+		'TEXTAREA' => true,
+		'TITLE'    => true,
+		'CODE'     => true,
+		'PRE'      => true,
+		'RUBY'     => true,
+		'NOSCRIPT' => true,
+		'TEMPLATE' => true,
+	);
+
+	/**
 	 * HTML の生成担当。
 	 *
 	 * @var Markup_Renderer
@@ -89,11 +106,10 @@ final class Markup_Transformer {
 			return $content;
 		}
 
-		$excluded_tags   = array( 'SCRIPT', 'STYLE', 'TEXTAREA', 'TITLE', 'CODE', 'PRE', 'RUBY', 'NOSCRIPT', 'TEMPLATE' );
 		$protected_depth = null;
 		$replacements    = array();
 		$prefix          = 'rubymaco-html-token-';
-		while ( false !== strpos( $content, $prefix ) ) {
+		while ( str_contains( $content, $prefix ) ) {
 			$prefix .= '_';
 		}
 
@@ -111,7 +127,7 @@ final class Markup_Transformer {
 				continue;
 			}
 			if ( '#text' !== $processor->get_token_type() || 'html' !== $processor->get_namespace()
-				|| array_intersect( $excluded_tags, $processor->get_breadcrumbs() ) ) {
+				|| $this->is_excluded( $processor->get_breadcrumbs() ) ) {
 				continue;
 			}
 
@@ -134,6 +150,22 @@ final class Markup_Transformer {
 	}
 
 	/**
+	 * 現在位置の要素階層に除外対象が含まれるか判定する。
+	 *
+	 * @param string[] $breadcrumbs HTML API が返す要素階層.
+	 * @return bool 除外対象が含まれる場合に true.
+	 */
+	private function is_excluded( array $breadcrumbs ): bool {
+		foreach ( $breadcrumbs as $tag ) {
+			if ( isset( self::EXCLUDED_TAGS[ $tag ] ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * デコード済みテキストの記法を HTML に変換する。
 	 *
 	 * @param string                  $text デコード済みテキスト.
@@ -151,12 +183,13 @@ final class Markup_Transformer {
 		if ( ! preg_match_all( $rule->pattern, $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
 			return null;
 		}
-		$html   = '';
-		$offset = 0;
+		$is_ruby = $rule->type->equals( Rule_Type::ruby() );
+		$html    = '';
+		$offset  = 0;
 		foreach ( $matches as $match ) {
 			// HTML API がデコードしたテキストを再エスケープする際、文字参照そのものの表示を保つ.
 			$html .= $this->renderer->render_text( substr( $text, $offset, $match[0][1] - $offset ) );
-			if ( $rule->type->equals( Rule_Type::ruby() ) ) {
+			if ( $is_ruby ) {
 				$html .= $this->renderer->render_ruby( $match[1][0], $match[2][0] );
 			} else {
 				$html .= $this->renderer->render_bouten( $match[1][0], $bouten_style, $bouten_rendering_method );
