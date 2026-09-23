@@ -23,6 +23,7 @@
     "autoload": {
         "classmap": [
             "includes/class-bootstrap.php",
+            "includes/integration/",
             "includes/markup/",
             "includes/resolver/",
             "includes/service/",
