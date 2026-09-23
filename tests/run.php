@@ -42,7 +42,7 @@ function check_same( $expected, $actual, $label ) {
 }
 try {
 	$test_wp_version = require __DIR__ . '/bootstrap.php';
-	foreach ( array( 'unit/autoload.php', 'integration/bootstrap.php', 'unit/values.php', 'integration/conversion.php', 'integration/settings.php', 'integration/post-content-filter.php', 'integration/blocks.php' ) as $file ) {
+	foreach ( array( 'unit/autoload.php', 'integration/bootstrap.php', 'unit/values.php', 'integration/conversion.php', 'integration/settings.php', 'integration/post-content-filter.php', 'integration/blocks.php', 'integration/shortcode.php' ) as $file ) {
 		require __DIR__ . '/' . $file;
 	}
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain CLI output, not HTML.

@@ -7,6 +7,7 @@
 
 use Foriba\RubyMarkupConverter\Integration\Blocks;
 use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
+use Foriba\RubyMarkupConverter\Integration\Shortcode;
 
 use Foriba\RubyMarkupConverter\Bootstrap;
 
@@ -42,7 +43,9 @@ foreach ( array(
 	check_same( $priority, has_filter( $hook, $callback ), 'hook priority: ' . $hook );
 	check_same( $accepted_args, $GLOBALS['wp_filter'][ $hook ]->callbacks[ $priority ][ _wp_filter_build_unique_id( $hook, $callback, $priority ) ]['accepted_args'], 'hook argument count: ' . $hook );
 }
-check_same( 'rubymaco_shortcode', $GLOBALS['shortcode_tags']['rubymaco'], 'shortcode callback' );
+$registered_shortcode_callback = $GLOBALS['shortcode_tags']['rubymaco'];
+check_same( true, is_array( $registered_shortcode_callback ) && $registered_shortcode_callback[0] instanceof Shortcode, 'shortcode instance' );
+check_same( 'render_shortcode', $registered_shortcode_callback[1], 'shortcode callback' );
 check_same( false, has_filter( 'the_content', $registered_content_callback ), 'content filter remains deferred until init' );
 $init_callbacks = array_keys( $GLOBALS['wp_filter']['init']->callbacks[10] );
 check_same(
@@ -65,6 +68,7 @@ foreach ( $GLOBALS['wp_filter'] as $hook => $hook_object ) {
 }
 check_same( $before_boot, $after_boot, 'repeated boot leaves hooks unchanged' );
 check_same( $before_shortcodes, $GLOBALS['shortcode_tags'], 'repeated boot leaves shortcodes unchanged' );
+add_shortcode( 'rubymaco', $registered_shortcode_callback );
 
 // 別インスタンスの起動テストで追加したコールバックを取り除く.
 foreach ( $GLOBALS['wp_filter']['init']->callbacks[10] as $entry ) {

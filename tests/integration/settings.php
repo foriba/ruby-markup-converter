@@ -56,7 +56,7 @@ check_same( '漢字《かんじ》', $service->convert( '漢字《かんじ》' 
 $GLOBALS['test_options'] = array( Option_Keys::ENABLED_MARKUP_RULES => 'invalid' );
 check_same( $ruby, $service->convert( '漢字《かんじ》' ), 'invalid selection fallback' );
 $GLOBALS['test_options'] = array();
-check_same( $ruby, rubymaco_shortcode( array(), '漢字《かんじ》' ), 'shortcode' );
+check_same( $ruby, do_shortcode( '[rubymaco]漢字《かんじ》[/rubymaco]' ), 'shortcode' );
 check_same( $ruby, call_user_func( $registered_content_callback, '漢字《かんじ》' ), 'content filter' );
 // phpcs:ignore WordPress.NamingConventions.ValidHookName -- WordPress の動的フック名にはブロック名のスラッシュが含まれる。
 check_same( $ruby, apply_filters( 'render_block_rubymaco/content', '漢字《かんじ》', array() ), 'block' );

@@ -11,6 +11,7 @@ namespace Foriba\RubyMarkupConverter;
 
 use Foriba\RubyMarkupConverter\Integration\Blocks;
 use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
+use Foriba\RubyMarkupConverter\Integration\Shortcode;
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 
@@ -43,7 +44,6 @@ final class Bootstrap {
 		}
 
 		require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/definitions.php';
-		require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
 		require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
 
 		$post_content_filter = new Post_Content_Filter(
@@ -58,7 +58,8 @@ final class Bootstrap {
 		);
 		$blocks->register_hooks();
 
-		add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
+		$shortcode = new Shortcode( Markup_Conversion_Service::create_default() );
+		$shortcode->register_hooks();
 
 		add_action( 'wp_enqueue_scripts', 'rubymaco_enqueue_styles' );
 
