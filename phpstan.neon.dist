@@ -1,5 +1,5 @@
 includes:
-	- vendor/szepeviktor/phpstan-wordpress/extension.neon
+	- vendor-dev/szepeviktor/phpstan-wordpress/extension.neon
 
 parameters:
 	level: 8
@@ -11,6 +11,7 @@ parameters:
 		- uninstall.php
 
 	excludePaths:
+		- vendor-dev/*
 		- vendor/*
 		- node_modules/*
 		- editor/build/*

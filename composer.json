@@ -3,7 +3,7 @@
     "scripts": {
         "test": "@php tests/run.php",
         "autoload:runtime": [
-            "@putenv COMPOSER_VENDOR_DIR=vendor-runtime",
+            "@putenv COMPOSER_VENDOR_DIR=vendor",
             "@composer dump-autoload --no-dev --optimize"
         ]
     },
@@ -17,7 +17,8 @@
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+        },
+        "vendor-dir": "vendor-dev"
     },
     "autoload": {
         "classmap": [

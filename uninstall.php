@@ -13,7 +13,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/vendor-runtime/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 foreach ( Option_Keys::values() as $rubymaco_option_key ) {
 	delete_option( $rubymaco_option_key );

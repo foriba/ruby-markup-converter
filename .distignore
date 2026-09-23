@@ -10,6 +10,7 @@
 .distignore
 
 # Dependencies (generate production vendor in the staging directory; see BUILD.md)
+/vendor-dev
 /vendor
 /vendor-runtime
 /node_modules

@@ -37,14 +37,14 @@ cp "$root/composer.json" "$root/composer.lock" "$stage/"
 (
     cd "$stage"
     unset COMPOSER
-    export COMPOSER_VENDOR_DIR=vendor-runtime
+    export COMPOSER_VENDOR_DIR=vendor
     composer install --no-dev --optimize-autoloader --no-plugins --no-scripts --no-interaction
 
     # Check generated class paths without booting WordPress or accessing a database.
     php -r '
         define("ABSPATH", getcwd() . "/");
-        require "vendor-runtime/autoload.php";
-        $map = require "vendor-runtime/composer/autoload_classmap.php";
+        require "vendor/autoload.php";
+        $map = require "vendor/composer/autoload_classmap.php";
         $count = 0;
         foreach ($map as $class => $file) {
             if (strpos($class, "Foriba\\RubyMarkupConverter\\") === 0) {

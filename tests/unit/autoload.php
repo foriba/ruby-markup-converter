@@ -6,7 +6,7 @@
  */
 
 check_same( false, class_exists( 'Foriba\RubyMarkupConverter\Markup\Rule_Type', false ), 'class loading is deferred' );
-$runtime_classmap = require dirname( __DIR__, 2 ) . '/vendor-runtime/composer/autoload_classmap.php';
+$runtime_classmap = require dirname( __DIR__, 2 ) . '/vendor/composer/autoload_classmap.php';
 foreach ( $runtime_classmap as $class => $class_file ) {
 	if ( 0 !== strpos( $class, 'Foriba\\RubyMarkupConverter\\' ) ) {
 		continue;

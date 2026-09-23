@@ -42,7 +42,7 @@ define(
 	get_file_data( __FILE__, array( 'version' => 'Version' ) )['version']
 );
 
-require_once RUBYMACO_PLUGIN_DIR . '/vendor-runtime/autoload.php';
+require_once RUBYMACO_PLUGIN_DIR . '/vendor/autoload.php';
 require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/definitions.php';
 
 

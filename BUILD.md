@@ -29,14 +29,14 @@ WordPress形式のクラスファイル名を維持するため、Composerのcla
 クラスを追加・移動・名前変更した後は `composer autoload:runtime` を再実行します。
 既存メソッドの本文だけの変更なら再生成は不要です。
 
-- `vendor/`：PHPStan・WPCSなど開発用。
-- `vendor-runtime/`：プラグイン実行用。開発依存を含めず生成。
+- `vendor-dev/`：PHPStan・WPCSなど開発用。
+- `vendor/`：プラグイン実行用。開発依存を含めず生成。
 - 関数ファイルは明示的な読み込みを維持。フック登録のタイミングも維持。
 - 自動生成されたvendorディレクトリはGitにコミットしません。
 - 利用者側にComposerは不要です。配布物に実行用オートローダーを同梱します。
 
 現在、実行時の外部パッケージ依存はありません。将来追加した場合、開発環境の
-`vendor-runtime/` にも実行用パッケージをインストールするよう、生成手順を見直してください。
+`vendor/` にも実行用パッケージをインストールするよう、生成手順を見直してください。
 
 ## 1. リリース内容を確定する
 
@@ -71,9 +71,9 @@ SVN="/path/to/svn/ruby-markup-converter"
 composer autoload:runtime
 WP_ROOT="$WP_ROOT" composer test
 WP_ROOT="$WP_ROOT" "$PHP_MIN" tests/run.php
-vendor/bin/phpcs -d memory_limit=512M
-vendor/bin/phpcs tests
-vendor/bin/phpstan analyse --no-progress --debug --memory-limit=512M
+vendor-dev/bin/phpcs -d memory_limit=512M
+vendor-dev/bin/phpcs tests
+vendor-dev/bin/phpstan analyse --no-progress --debug --memory-limit=512M
 git diff --check
 git status --short
 ```
@@ -95,7 +95,7 @@ bash scripts/prepare-dist.sh
 スクリプトは毎回新しい一時フォルダを作り、以下を実行します。
 
 1. `.distignore` に従って配布対象をコピー。
-2. コピー先で開発依存を除いた `vendor-runtime/` を生成。
+2. コピー先で開発依存を除いた `vendor/` を生成。
 3. プラグインのクラスが読み込めることを確認。
 4. 成功時に `ruby-markup-converter-dist/` の絶対パスを表示。
 
@@ -108,7 +108,7 @@ ZIP作成、アップロード、JavaScriptのビルド、回帰テストは自�
 DIST="/スクリプトが表示した絶対パス/ruby-markup-converter-dist"
 test -f "$DIST/ruby-markup-converter.php"
 test -f "$DIST/readme.txt"
-test -f "$DIST/vendor-runtime/autoload.php"
+test -f "$DIST/vendor/autoload.php"
 ```
 
 どれかが失敗したら先へ進まず、パスと生成結果を確認します。
@@ -126,9 +126,9 @@ WP_ROOT="$WP_ROOT" php "$CHECK/tests/run.php"
 WP_ROOT="$WP_ROOT" "$PHP_MIN" "$CHECK/tests/run.php"
 ```
 
-このテスト用コピーは配布しません。テスト後、`DIST` に開発用の `vendor/`、
+このテスト用コピーは配布しません。テスト後、`DIST` に開発用の `vendor-dev/`、
 `node_modules/`、`tests/`、`scripts/`、`.git/` がなく、
-実行用の `vendor-runtime/` と `editor/build/` があることを確認します。
+実行用の `vendor/` と `editor/build/` があることを確認します。
 
 ## 3. SVN作業コピーを確認する
 
@@ -160,7 +160,7 @@ svn status "$SVN"
 コピー元とコピー先の存在を再確認します。失敗した場合は停止してください。
 
 ```sh
-test -f "$DIST/vendor-runtime/autoload.php"
+test -f "$DIST/vendor/autoload.php"
 test -d "$SVN/trunk"
 rsync -avn --delete --exclude='.svn/' "$DIST/" "$SVN/trunk/"
 ```
@@ -200,7 +200,7 @@ svn add "trunk/追加対象のファイルまたはディレクトリ"
 svn delete "trunk/削除対象のファイルまたはディレクトリ"
 ```
 
-特にオートロード導入後の初回公開では、`trunk/vendor-runtime/` の追加登録を忘れないでください。
+特にオートロード導入後の初回公開では、`trunk/vendor/` の追加登録を忘れないでください。
 ディレクトリを追加すると、その配下も追加対象になります。無関係なファイルまで一括登録しないでください。
 
 ```sh
@@ -247,7 +247,7 @@ WordPress.org側の反映には時間がかかる場合があります。次を�
 
 - 公開バージョン・Changelog・Tested up toが意図どおり。
 - ダウンロードされたZIPのバージョンが一致する。
-- ZIP内に `vendor-runtime/autoload.php` と必要な生成ファイルが含まれる。
+- ZIP内に `vendor/autoload.php` と必要な生成ファイルが含まれる。
 - 別のテスト用WordPressへインストールして、有効化・設定保存・変換が動く。
 
 ## 任意：ローカルでインストール用ZIPを作る
