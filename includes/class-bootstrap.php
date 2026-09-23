@@ -62,29 +62,29 @@ final class Bootstrap {
 
 		require_once $this->plugin_info->get_directory() . 'includes/settings/definitions.php';
 
-		$post_content_filter = new Post_Content_Filter(
+		// 全文変換モードに応じて本文フィルターを有効にする起動処理を登録する.
+		( new Post_Content_Filter(
 			Markup_Conversion_Service::create_default(),
 			new Apply_Mode_Resolver()
-		);
-		$post_content_filter->register_hooks();
+		) )->register_hooks();
 
-		$blocks = new Blocks(
+		// 独自ブロックの登録と、ブロック内の記法変換をフックに接続する.
+		( new Blocks(
 			Markup_Conversion_Service::create_default(),
 			new Apply_Mode_Resolver(),
 			$this->plugin_info->get_directory()
-		);
-		$blocks->register_hooks();
+		) )->register_hooks();
 
-		$shortcode = new Shortcode(
+		// [rubymaco] 内の記法を変換するショートコードを登録する.
+		( new Shortcode(
 			Markup_Conversion_Service::create_default()
-		);
-		$shortcode->register_hooks();
+		) )->register_hooks();
 
-		$frontend_assets = new Frontend_Assets(
+		// 公開画面でルビ・傍点用 CSS を読み込むフックを登録する.
+		( new Frontend_Assets(
 			$this->plugin_info->get_url(),
 			$this->plugin_info->get_version()
-		);
-		$frontend_assets->register_hooks();
+		) )->register_hooks();
 
 		if ( is_admin() ) {
 			$this->boot_admin();
