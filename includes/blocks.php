@@ -15,15 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'init', 'rubymaco_register_blocks' );
-
-add_filter(
-	'render_block_rubymaco/content',
-	'rubymaco_render_content_block',
-	10,
-	2
-);
-
 /**
  * Ruby Markup Converter blocks を登録する。
  */

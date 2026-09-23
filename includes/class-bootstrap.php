@@ -1,0 +1,72 @@
+<?php
+/**
+ * プラグインの起動処理。
+ *
+ * @package RubyMarkupConverter
+ */
+
+declare(strict_types=1);
+
+namespace Foriba\RubyMarkupConverter;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * 関数ファイルの読み込みと WordPress フックの登録を取りまとめる。
+ *
+ * メインファイルで定数とオートローダーを準備した後に起動する。
+ * 変換処理、設定の正規化、プラグイン情報の定義は担当しない。
+ */
+final class Bootstrap {
+	/**
+	 * このインスタンスで起動済みかどうか。
+	 *
+	 * @var bool
+	 */
+	private bool $booted = false;
+
+	/**
+	 * 必要な機能を読み込み、従来と同じタイミングで登録する。
+	 *
+	 * 同じインスタンスでの再呼び出しは何もしない。
+	 */
+	public function boot(): void {
+		if ( $this->booted ) {
+			return;
+		}
+
+		require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/definitions.php';
+		require_once RUBYMACO_PLUGIN_DIR . '/includes/content-filter.php';
+		require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
+		require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
+		require_once RUBYMACO_PLUGIN_DIR . '/includes/blocks.php';
+
+		add_action( 'init', 'rubymaco_maybe_add_content_filter' );
+		add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
+		add_action( 'wp_enqueue_scripts', 'rubymaco_enqueue_styles' );
+		add_action( 'init', 'rubymaco_register_blocks' );
+		add_filter( 'render_block_rubymaco/content', 'rubymaco_render_content_block', 10, 2 );
+
+		if ( is_admin() ) {
+			$this->boot_admin();
+		}
+
+		$this->booted = true;
+	}
+
+	/**
+	 * 管理画面用の関数を読み込み、フックを登録する。
+	 */
+	private function boot_admin(): void {
+		require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-controller.php';
+		require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-components.php';
+		require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-view.php';
+		require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-page.php';
+
+		add_action( 'admin_menu', 'rubymaco_add_settings_page' );
+		add_action( 'admin_init', 'rubymaco_register_settings' );
+		add_action( 'admin_enqueue_scripts', 'rubymaco_enqueue_admin_assets' );
+	}
+}

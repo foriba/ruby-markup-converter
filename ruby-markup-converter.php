@@ -23,6 +23,8 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Bootstrap;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -43,16 +45,5 @@ define(
 );
 
 require_once RUBYMACO_PLUGIN_DIR . '/vendor/autoload.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/definitions.php';
 
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/content-filter.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/blocks.php';
-
-if ( is_admin() ) {
-	require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-page.php';
-}
+( new Bootstrap() )->boot();

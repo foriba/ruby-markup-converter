@@ -15,12 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'init', 'rubymaco_maybe_add_content_filter' );
-
-/**
- * WordPressフックを登録する。
- */
-
 /**
  * 適用モードが投稿本文全体の場合のみ、本文変換フィルターを登録する。
  */

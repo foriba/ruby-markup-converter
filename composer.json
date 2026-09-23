@@ -22,6 +22,7 @@
     },
     "autoload": {
         "classmap": [
+            "includes/class-bootstrap.php",
             "includes/markup/",
             "includes/resolver/",
             "includes/service/",

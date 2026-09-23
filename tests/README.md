@@ -22,6 +22,8 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 ## 構成
 
+- `integration/bootstrap.php`: 起動時のフック・ショートコード登録、優先度、引数数、再起動時の重複。
+
 - `unit/values.php`: 値クラスの候補、変換、不正値、共有インスタンス。
 - `integration/conversion.php`: 全記法、HTML 保護、文字参照、両描画方式、再変換の抑止。
 - `integration/settings.php`: 保存形式、初期値、全解除、不正値、各呼び出し元とプレビュー。

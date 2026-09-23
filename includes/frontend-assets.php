@@ -11,12 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'wp_enqueue_scripts', 'rubymaco_enqueue_styles' );
-
-/**
- * WordPress フックを登録する
- */
-
 /**
  * フロントエンド用の CSS を読み込む。
  */

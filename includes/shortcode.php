@@ -13,12 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_shortcode( 'rubymaco', 'rubymaco_shortcode' );
-
-/**
- * WordPress フックを登録する
- */
-
 /**
  * ショートコード内の本文を変換する。
  *

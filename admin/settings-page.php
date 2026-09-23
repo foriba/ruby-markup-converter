@@ -13,18 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/settings-controller.php';
-require_once __DIR__ . '/settings-components.php';
-require_once __DIR__ . '/settings-view.php';
-
-/**
- * WordPress Hooks
- */
-
-add_action( 'admin_menu', 'rubymaco_add_settings_page' );
-add_action( 'admin_init', 'rubymaco_register_settings' );
-add_action( 'admin_enqueue_scripts', 'rubymaco_enqueue_admin_assets' );
-
 /**
  * Admin Page
  */
