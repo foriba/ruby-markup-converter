@@ -46,12 +46,13 @@ WordPress形式のクラスファイル名を維持するため、Composerのcla
 ```sh
 PROJECT="$PWD"
 VERSION="1.2.3"
-WP_ROOT="/Users/macuser/Local Sites/ruby-test/app/public"
-PHP_MIN="/Users/macuser/Library/Application Support/Local/lightning-services/php-7.4.30+6/bin/darwin-arm64/bin/php"
-SVN="$HOME/Documents/ruby-markup-converter"
+WP_ROOT="/path/to/wordpress"
+PHP_MIN="/path/to/minimum-supported-php"
+SVN="/path/to/svn/ruby-markup-converter"
 ```
 
-`WP_ROOT`・`PHP_MIN`・`SVN` は環境に応じて変更します。最低対応PHPを変更したらテスト用実行パスも更新します。
+`WP_ROOT`・`PHP_MIN`・`SVN` は例示用のパスです。実際の環境に合わせて必ず変更します。
+最低対応PHPを変更したらテスト用実行パスも更新します。
 `PROJECT` と `SVN` は別のディレクトリです。
 
 公開前の確認事項：
@@ -271,7 +272,7 @@ ZIP内部の最上位は必ず `ruby-markup-converter/` とします。
 
 ## 参考資料
 
-既存の「pluginをWordPress_orgへ同期する手順.pdf」を元に、現在のオートロード構成に合わせて整理しました。
+公開手順の詳細は、以下の公式資料も参照してください。
 
 - [WordPress公式：Using Subversion](https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/)
 - [Composer公式：classmap](https://getcomposer.org/doc/04-schema.md#classmap)

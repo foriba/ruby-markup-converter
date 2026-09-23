@@ -29,6 +29,7 @@ tsconfig.json
 # Tests and local notes
 /tests
 /LOCAL-TEST-COMMANDS.md
+/LOCAL-BUILD-COMMANDS.md
 TODO.md
 /BUILD.md
 
