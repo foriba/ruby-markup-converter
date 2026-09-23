@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter;
 
 use Foriba\RubyMarkupConverter\Integration\Blocks;
+use Foriba\RubyMarkupConverter\Integration\Frontend_Assets;
 use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
@@ -44,7 +45,6 @@ final class Bootstrap {
 		}
 
 		require_once RUBYMACO_PLUGIN_DIR . '/includes/settings/definitions.php';
-		require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
 
 		$post_content_filter = new Post_Content_Filter(
 			Markup_Conversion_Service::create_default(),
@@ -61,7 +61,8 @@ final class Bootstrap {
 		$shortcode = new Shortcode( Markup_Conversion_Service::create_default() );
 		$shortcode->register_hooks();
 
-		add_action( 'wp_enqueue_scripts', 'rubymaco_enqueue_styles' );
+		$frontend_assets = new Frontend_Assets( RUBYMACO_PLUGIN_URL, RUBYMACO_VERSION );
+		$frontend_assets->register_hooks();
 
 		if ( is_admin() ) {
 			$this->boot_admin();
