@@ -12,21 +12,28 @@ on_error() {
 }
 trap on_error EXIT
 
-for command in rsync composer php mktemp; do
+for command in rsync composer php mktemp node npm; do
     if ! command -v "$command" >/dev/null 2>&1; then
         printf 'Required command not found: %s\n' "$command" >&2
         exit 1
     fi
 done
 
-for file in .distignore composer.json composer.lock ruby-markup-converter.php editor/build/blocks-manifest.php; do
+for file in .distignore composer.json composer.lock ruby-markup-converter.php package.json scripts/sync-block-version.cjs node_modules/@wordpress/scripts/bin/wp-scripts.js; do
     if [[ ! -f "$root/$file" ]]; then
         printf 'Required file not found: %s\n' "$root/$file" >&2
         exit 1
     fi
 done
 
-# Always build outside the checkout; never modify its installed dependencies.
+# Synchronize source metadata and rebuild before copying distribution files.
+(
+    cd "$root"
+    node scripts/sync-block-version.cjs
+    npm run build
+)
+
+# Generate runtime dependencies outside the checkout.
 temp_root="${TMPDIR:-/tmp}"
 stage_parent="$(mktemp -d "${temp_root%/}/rubymaco-dist.XXXXXX")"
 stage="$stage_parent/ruby-markup-converter-dist"
