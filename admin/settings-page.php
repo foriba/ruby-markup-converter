@@ -48,23 +48,23 @@ function rubymaco_enqueue_admin_assets( string $hook_suffix, Plugin_Info $plugin
 
 	wp_enqueue_style(
 		'ruby-markup-converter',
-		$plugin_info->get_url() . 'public/css/ruby-markup-converter.css',
+		$plugin_info->get_directory_url() . 'public/css/ruby-markup-converter.css',
 		array(),
 		$plugin_info->get_version()
 	);
 
 	wp_enqueue_style(
 		'rubymaco-settings',
-		$plugin_info->get_url() . 'admin/css/settings.css',
+		$plugin_info->get_directory_url() . 'admin/css/settings.css',
 		array( 'ruby-markup-converter' ),
-		(string) filemtime( $plugin_info->get_directory() . 'admin/css/settings.css' )
+		(string) filemtime( $plugin_info->get_directory_path() . 'admin/css/settings.css' )
 	);
 
 	wp_enqueue_script(
 		'rubymaco-settings',
-		$plugin_info->get_url() . 'admin/js/settings.js',
+		$plugin_info->get_directory_url() . 'admin/js/settings.js',
 		array(),
-		(string) filemtime( $plugin_info->get_directory() . 'admin/js/settings.js' ),
+		(string) filemtime( $plugin_info->get_directory_path() . 'admin/js/settings.js' ),
 		true
 	);
 }

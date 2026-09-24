@@ -14,10 +14,10 @@ foreach ( $GLOBALS['wp_filter'] as $info_hook => $info_hook_object ) {
 }
 $info_options_before = $GLOBALS['test_options'];
 $plugin_info         = new Plugin_Info( $plugin_main_file );
-check_same( $plugin_main_file, $plugin_info->get_file(), 'plugin main file' );
-check_same( dirname( $plugin_main_file ) . '/', $plugin_info->get_directory(), 'plugin directory with trailing slash' );
-check_same( plugin_dir_url( $plugin_main_file ), $plugin_info->get_url(), 'plugin URL uses WordPress API' );
-check_same( '/', substr( $plugin_info->get_url(), -1 ), 'plugin URL has trailing slash' );
+check_same( $plugin_main_file, $plugin_info->get_file_path(), 'plugin main file' );
+check_same( dirname( $plugin_main_file ) . '/', $plugin_info->get_directory_path(), 'plugin directory with trailing slash' );
+check_same( plugin_dir_url( $plugin_main_file ), $plugin_info->get_directory_url(), 'plugin URL uses WordPress API' );
+check_same( '/', substr( $plugin_info->get_directory_url(), -1 ), 'plugin URL has trailing slash' );
 check_same( get_file_data( $plugin_main_file, array( 'version' => 'Version' ) )['version'], $plugin_info->get_version(), 'version comes from header' );
 foreach ( array( 'RUBYMACO_PLUGIN_FILE', 'RUBYMACO_PLUGIN_DIR', 'RUBYMACO_PLUGIN_URL', 'RUBYMACO_VERSION' ) as $legacy_constant ) {
 	check_same( false, defined( $legacy_constant ), 'legacy plugin constants are not defined' );
@@ -28,7 +28,7 @@ foreach ( $GLOBALS['wp_filter'] as $info_hook => $info_hook_object ) {
 }
 check_same( $info_hooks_before, $info_hooks_after, 'plugin info does not change hooks' );
 check_same( $info_options_before, $GLOBALS['test_options'], 'plugin info does not change options' );
-foreach ( array( 'file', 'directory', 'url', 'version' ) as $info_property ) {
+foreach ( array( 'plugin_file_path', 'plugin_directory_path', 'plugin_directory_url', 'plugin_version' ) as $info_property ) {
 	check_same( true, ( new ReflectionProperty( Plugin_Info::class, $info_property ) )->isPrivate(), 'plugin info property is private' );
 }
 foreach ( array( '', __DIR__ . '/missing-plugin.php', __DIR__ ) as $invalid_plugin_file ) {

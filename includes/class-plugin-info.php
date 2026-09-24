@@ -28,52 +28,52 @@ final class Plugin_Info {
 	 *
 	 * @var string
 	 */
-	private string $file;
+	private string $plugin_file_path;
 
 	/**
 	 * 末尾にスラッシュを含むディレクトリ。
 	 *
 	 * @var string
 	 */
-	private string $directory;
+	private string $plugin_directory_path;
 
 	/**
 	 * 末尾にスラッシュを含む公開 URL。
 	 *
 	 * @var string
 	 */
-	private string $url;
+	private string $plugin_directory_url;
 
 	/**
 	 * ヘッダーから取得したバージョン。
 	 *
 	 * @var string
 	 */
-	private string $version;
+	private string $plugin_version;
 
 	/**
 	 * メインファイルからプラグイン情報を取得する。
 	 *
 	 * パスは realpath() で解決せず、呼び出し元の __FILE__ をそのまま保持する。
 	 *
-	 * @param string $file メインファイルの絶対パス。__FILE__ を渡す.
+	 * @param string $plugin_file_path メインファイルの絶対パス。__FILE__ を渡す.
 	 * @throws InvalidArgumentException ファイルを読み取れない場合.
-	 * @throws RuntimeException バージョンのヘッダーが空の場合.
+	 * @throws RuntimeException プラグインの version ヘッダーが空の場合.
 	 */
-	public function __construct( string $file ) {
-		if ( ! is_file( $file ) || ! is_readable( $file ) ) {
+	public function __construct( string $plugin_file_path ) {
+		if ( ! is_file( $plugin_file_path ) || ! is_readable( $plugin_file_path ) ) {
 			throw new InvalidArgumentException( 'The plugin main file must be readable.' );
 		}
 
-		$headers = get_file_data( $file, array( 'version' => 'Version' ) );
+		$headers = get_file_data( $plugin_file_path, array( 'version' => 'Version' ) );
 		if ( '' === $headers['version'] ) {
 			throw new RuntimeException( 'The plugin Version header must not be empty.' );
 		}
 
-		$this->file      = $file;
-		$this->directory = plugin_dir_path( $file );
-		$this->url       = plugin_dir_url( $file );
-		$this->version   = $headers['version'];
+		$this->plugin_file_path      = $plugin_file_path;
+		$this->plugin_directory_path = plugin_dir_path( $plugin_file_path );
+		$this->plugin_directory_url  = plugin_dir_url( $plugin_file_path );
+		$this->plugin_version        = $headers['version'];
 	}
 
 	/**
@@ -81,8 +81,8 @@ final class Plugin_Info {
 	 *
 	 * @return string メインファイルのパス.
 	 */
-	public function get_file(): string {
-		return $this->file;
+	public function get_file_path(): string {
+		return $this->plugin_file_path;
 	}
 
 	/**
@@ -90,8 +90,8 @@ final class Plugin_Info {
 	 *
 	 * @return string 末尾にスラッシュを含むディレクトリ.
 	 */
-	public function get_directory(): string {
-		return $this->directory;
+	public function get_directory_path(): string {
+		return $this->plugin_directory_path;
 	}
 
 	/**
@@ -99,8 +99,8 @@ final class Plugin_Info {
 	 *
 	 * @return string 末尾にスラッシュを含む URL.
 	 */
-	public function get_url(): string {
-		return $this->url;
+	public function get_directory_url(): string {
+		return $this->plugin_directory_url;
 	}
 
 	/**
@@ -109,6 +109,6 @@ final class Plugin_Info {
 	 * @return string メインファイルのヘッダーに記載されたバージョン.
 	 */
 	public function get_version(): string {
-		return $this->version;
+		return $this->plugin_version;
 	}
 }

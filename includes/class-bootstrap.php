@@ -60,7 +60,7 @@ final class Bootstrap {
 			return;
 		}
 
-		require_once $this->plugin_info->get_directory() . 'includes/settings/definitions.php';
+		require_once $this->plugin_info->get_directory_path() . 'includes/settings/definitions.php';
 
 		// 全文変換モードに応じて本文フィルターを有効にする起動処理を登録する.
 		( new Post_Content_Filter(
@@ -72,7 +72,7 @@ final class Bootstrap {
 		( new Blocks(
 			Markup_Conversion_Service::create_default(),
 			new Apply_Mode_Resolver(),
-			$this->plugin_info->get_directory()
+			$this->plugin_info->get_directory_path()
 		) )->register_hooks();
 
 		// [rubymaco] 内の記法を変換するショートコードを登録する.
@@ -82,7 +82,7 @@ final class Bootstrap {
 
 		// 公開画面でルビ・傍点用 CSS を読み込むフックを登録する.
 		( new Frontend_Assets(
-			$this->plugin_info->get_url(),
+			$this->plugin_info->get_directory_url(),
 			$this->plugin_info->get_version()
 		) )->register_hooks();
 
@@ -97,10 +97,10 @@ final class Bootstrap {
 	 * 管理画面用の関数を読み込み、フックを登録する。
 	 */
 	private function boot_admin(): void {
-		require_once $this->plugin_info->get_directory() . 'admin/settings-controller.php';
-		require_once $this->plugin_info->get_directory() . 'admin/settings-components.php';
-		require_once $this->plugin_info->get_directory() . 'admin/settings-view.php';
-		require_once $this->plugin_info->get_directory() . 'admin/settings-page.php';
+		require_once $this->plugin_info->get_directory_path() . 'admin/settings-controller.php';
+		require_once $this->plugin_info->get_directory_path() . 'admin/settings-components.php';
+		require_once $this->plugin_info->get_directory_path() . 'admin/settings-view.php';
+		require_once $this->plugin_info->get_directory_path() . 'admin/settings-page.php';
 
 		add_action( 'admin_menu', 'rubymaco_add_settings_page' );
 		add_action( 'admin_init', 'rubymaco_register_settings' );

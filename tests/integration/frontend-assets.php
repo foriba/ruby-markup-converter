@@ -72,14 +72,14 @@ check_same( array(), $GLOBALS['test_enqueued_scripts'], 'other admin pages do no
 do_action( 'admin_enqueue_scripts', 'settings_page_' . Settings_Identifiers::PAGE_SLUG );
 check_same(
 	array(
-		array( 'ruby-markup-converter', $admin_plugin_info->get_url() . 'public/css/ruby-markup-converter.css', array(), $admin_plugin_info->get_version(), 'all' ),
-		array( 'rubymaco-settings', $admin_plugin_info->get_url() . 'admin/css/settings.css', array( 'ruby-markup-converter' ), (string) filemtime( $admin_plugin_info->get_directory() . 'admin/css/settings.css' ), 'all' ),
+		array( 'ruby-markup-converter', $admin_plugin_info->get_directory_url() . 'public/css/ruby-markup-converter.css', array(), $admin_plugin_info->get_version(), 'all' ),
+		array( 'rubymaco-settings', $admin_plugin_info->get_directory_url() . 'admin/css/settings.css', array( 'ruby-markup-converter' ), (string) filemtime( $admin_plugin_info->get_directory_path() . 'admin/css/settings.css' ), 'all' ),
 	),
 	$GLOBALS['test_enqueued_styles'],
 	'admin styles use injected plugin info'
 );
 check_same(
-	array( array( 'rubymaco-settings', $admin_plugin_info->get_url() . 'admin/js/settings.js', array(), (string) filemtime( $admin_plugin_info->get_directory() . 'admin/js/settings.js' ), true ) ),
+	array( array( 'rubymaco-settings', $admin_plugin_info->get_directory_url() . 'admin/js/settings.js', array(), (string) filemtime( $admin_plugin_info->get_directory_path() . 'admin/js/settings.js' ), true ) ),
 	$GLOBALS['test_enqueued_scripts'],
 	'admin scripts preserve version and footer settings'
 );
