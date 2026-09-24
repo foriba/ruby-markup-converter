@@ -12,9 +12,9 @@ use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
-use Foriba\RubyMarkupConverter\Markup\Markup_Rule;
-use Foriba\RubyMarkupConverter\Markup\Markup_Rule_Registry;
-use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
+use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule;
+use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
+use Foriba\RubyMarkupConverter\Markup\Rules\Transform_Rule;
 
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;

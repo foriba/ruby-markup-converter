@@ -12,8 +12,8 @@ use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
-use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
-use Foriba\RubyMarkupConverter\Markup\Markup_Rule;
+use Foriba\RubyMarkupConverter\Markup\Rules\Transform_Rule;
+use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule;
 
 foreach ( Rule_Type::cases() as $rule_type ) {
 	$pattern        = '/(example)/u';

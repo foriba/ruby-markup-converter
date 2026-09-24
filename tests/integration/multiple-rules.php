@@ -5,7 +5,7 @@
  * @package RubyMarkupConverter
  */
 
-use Foriba\RubyMarkupConverter\Markup\Markup_Rule_Registry;
+use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Foriba\RubyMarkupConverter\Markup;
+namespace Foriba\RubyMarkupConverter\Markup\Rules;
 
 use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
 

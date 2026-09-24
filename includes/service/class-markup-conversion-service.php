@@ -11,10 +11,10 @@ namespace Foriba\RubyMarkupConverter\Service;
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
-use Foriba\RubyMarkupConverter\Markup\Markup_Rule_Registry;
+use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
 use Foriba\RubyMarkupConverter\Markup\Markup_Transformer;
 use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
-use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
+use Foriba\RubyMarkupConverter\Markup\Rules\Transform_Rule;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
