@@ -123,7 +123,7 @@ final class Markup_Rule {
 	 *      example:string[],
 	 *      description:string,
 	 *      enabled_by_default:bool,
-	 *      transform_rules:array<int, array{id:string, type:string, pattern:string}>
+	 *      transform_rules:array<int, array{type:string, pattern:string}>
 	 * }
 	 */
 	public function to_array(): array {

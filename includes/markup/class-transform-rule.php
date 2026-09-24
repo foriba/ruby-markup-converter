@@ -18,18 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * 単一の正規表現による変換ルールを保持する。
  *
- * 生成時に ID とパターンの空文字を拒否する。
+ * 生成時にパターンの空文字を拒否する。
  * 正規表現の構文やキャプチャ構造は検証しない。
  * 現時点ではプロパティを公開しており、生成後の変更は制限しない。
  */
 final class Transform_Rule {
-	/**
-	 * 親ルールの ID とは別に、個々の変換ルールを識別する ID。
-	 *
-	 * @var string
-	 */
-	public string $id;
-
 	/**
 	 * ルビまたは傍点の種別。
 	 *
@@ -48,64 +41,30 @@ final class Transform_Rule {
 	public string $pattern;
 
 	/**
-	 * ID・種別・正規表現から変換ルールを生成する。
+	 * 種別・正規表現から変換ルールを生成する。
 	 *
-	 * ID とパターンの前後の空白は除去せず、そのまま保持する。
+	 * パターンの前後の空白は除去せず、そのまま保持する。
 	 *
-	 * @param string    $id 空文字ではない変換ルール ID.
 	 * @param Rule_Type $type ルール種別.
 	 * @param string    $pattern 空文字ではない正規表現.
-	 * @throws \InvalidArgumentException ID またはパターンが空文字の場合.
+	 * @throws \InvalidArgumentException パターンが空文字の場合.
 	 */
-	public function __construct( string $id, Rule_Type $type, string $pattern ) {
-		if ( '' === $id || '' === $pattern ) {
-			throw new \InvalidArgumentException( 'TransformRule requires a non-empty id and pattern.' );
+	public function __construct( Rule_Type $type, string $pattern ) {
+		if ( '' === $pattern ) {
+			throw new \InvalidArgumentException( 'TransformRule requires a non-empty pattern.' );
 		}
 
-		$this->id      = $id;
 		$this->type    = $type;
 		$this->pattern = $pattern;
 	}
 
 	/**
-	 * 従来の配列形式から変換ルールを生成する。
+	 * ルール種別を文字列に戻し、配列形式で返す。
 	 *
-	 * 必須キー id・type・pattern は文字列を要求する。欠落・型違い、ID・パターンの
-	 * 空文字、未定義の種別は null を返す。追加のキーは無視する。
-	 * 正規表現の構文やキャプチャ構造は検証しない。
-	 *
-	 * @param array<string, mixed> $data 変換ルールの配列.
-	 * @return self|null 生成したルール、または検証失敗時に null.
-	 */
-	public static function try_from_array( array $data ): ?self {
-		if (
-			! isset( $data['id'], $data['type'], $data['pattern'] )
-			|| ! is_string( $data['id'] )
-			|| ! is_string( $data['type'] )
-			|| ! is_string( $data['pattern'] )
-			|| '' === $data['id']
-			|| '' === $data['pattern']
-		) {
-			return null;
-		}
-
-		$type = Rule_Type::try_from( $data['type'] );
-
-		if ( null === $type ) {
-			return null;
-		}
-
-		return new self( $data['id'], $type, $data['pattern'] );
-	}
-
-	/**
-	 * ルール種別を文字列に戻し、従来の配列形式で返す。
-	 *
-	 * @return array{id:string, type:string, pattern:string} 変換ルールの配列.
+	 * @return array{type:string, pattern:string} 変換ルールの配列.
 	 */
 	public function to_array(): array {
 		return array(
-			'id'      => $this->id,
 			'type'    => $this->type->get_value(),
 			'pattern' => $this->pattern,
 		);

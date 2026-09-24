@@ -12,6 +12,37 @@ use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
+
+foreach ( Rule_Type::cases() as $rule_type ) {
+	$pattern        = '/(example)/u';
+	$transform_rule = new Transform_Rule( $rule_type, $pattern );
+	check_same( $rule_type, $transform_rule->type, 'transform rule preserves type' );
+	check_same( $pattern, $transform_rule->pattern, 'transform rule preserves pattern' );
+	check_same(
+		array(
+			'type'    => $rule_type,
+			'pattern' => $pattern,
+		),
+		get_object_vars( $transform_rule ),
+		'transform rule holds only type and pattern'
+	);
+	check_same(
+		array(
+			'type'    => $rule_type->get_value(),
+			'pattern' => $pattern,
+		),
+		$transform_rule->to_array(),
+		'transform rule array contains type and pattern'
+	);
+	$thrown = false;
+	try {
+		new Transform_Rule( $rule_type, '' );
+	} catch ( InvalidArgumentException $e ) {
+		$thrown = true;
+	}
+	check_same( true, $thrown, 'empty transform pattern throws' );
+}
 
 check_same( 'rubymaco_enabled_markup_rules', Option_Keys::ENABLED_MARKUP_RULES, 'enabled rules storage key' );
 check_same( 'rubymaco_bouten_style', Option_Keys::BOUTEN_STYLE, 'bouten style storage key' );

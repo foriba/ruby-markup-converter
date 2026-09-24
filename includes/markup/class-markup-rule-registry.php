@@ -180,12 +180,10 @@ final class Markup_Rule_Registry {
 				true,
 				array(
 					new Transform_Rule(
-						'ruby_double_angle_explicit',
 						Rule_Type::ruby(),
 						'/[|｜]([^<>|｜《》]+?)《([^<>《》]+?)》/u'
 					),
 					new Transform_Rule(
-						'ruby_double_angle_implicit',
 						Rule_Type::ruby(),
 						'/([一-龯々〆〤]+)《([^<>《》]+?)》/u'
 					),
@@ -208,7 +206,6 @@ final class Markup_Rule_Registry {
 				false,
 				array(
 					new Transform_Rule(
-						'ruby_parenthesis',
 						Rule_Type::ruby(),
 						'/([一-龯々〆〤]+)\(([ぁ-ゖァ-ヺー・]+)\)/u'
 					),
@@ -231,7 +228,6 @@ final class Markup_Rule_Registry {
 				false,
 				array(
 					new Transform_Rule(
-						'ruby_rb',
 						Rule_Type::ruby(),
 						'/\[\[rb:([^>\[\]]+?)\s*>\s*([^\[\]]+?)\]\]/u'
 					),
@@ -254,7 +250,6 @@ final class Markup_Rule_Registry {
 				false,
 				array(
 					new Transform_Rule(
-						'ruby_double_underscore',
 						Rule_Type::ruby(),
 						'/#(.+?)__(.+?)__#/u'
 					),
@@ -277,7 +272,6 @@ final class Markup_Rule_Registry {
 				false,
 				array(
 					new Transform_Rule(
-						'ruby_mediawiki',
 						Rule_Type::ruby(),
 						'/\{\{ruby\|(.+?)\|(.+?)\}\}/u'
 					),
@@ -300,7 +294,6 @@ final class Markup_Rule_Registry {
 				true,
 				array(
 					new Transform_Rule(
-						'bouten_double_bracket',
 						Rule_Type::bouten(),
 						'/《《([^<>]+?)》》/u'
 					),
