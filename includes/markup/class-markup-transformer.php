@@ -75,7 +75,7 @@ final class Markup_Transformer {
 		Bouten_Rendering_Method $bouten_rendering_method
 	): string {
 		foreach ( $rules as $rule ) {
-			if ( '' === $rule->pattern ) {
+			if ( '' === $rule->get_pattern() ) {
 				continue;
 			}
 			$content = $this->transform_html( $content, $rule, $bouten_style, $bouten_rendering_method );
@@ -180,10 +180,10 @@ final class Markup_Transformer {
 		Bouten_Style $bouten_style,
 		Bouten_Rendering_Method $bouten_rendering_method
 	): ?string {
-		if ( ! preg_match_all( $rule->pattern, $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+		if ( ! preg_match_all( $rule->get_pattern(), $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
 			return null;
 		}
-		$is_ruby = $rule->type->equals( Rule_Type::ruby() );
+		$is_ruby = $rule->get_type()->equals( Rule_Type::ruby() );
 		$html    = '';
 		$offset  = 0;
 		foreach ( $matches as $match ) {

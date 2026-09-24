@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * 生成時にパターンの空文字を拒否する。
  * 正規表現の構文やキャプチャ構造は検証しない。
- * 現時点ではプロパティを公開しており、生成後の変更は制限しない。
+ * 種別とパターンは生成後に変更しない。
  */
 final class Transform_Rule {
 	/**
@@ -28,7 +28,7 @@ final class Transform_Rule {
 	 *
 	 * @var Rule_Type
 	 */
-	public Rule_Type $type;
+	private Rule_Type $type;
 
 	/**
 	 * 区切り文字と修飾子を含む正規表現。
@@ -38,7 +38,7 @@ final class Transform_Rule {
 	 *
 	 * @var string
 	 */
-	public string $pattern;
+	private string $pattern;
 
 	/**
 	 * 種別・正規表現から変換ルールを生成する。
@@ -56,5 +56,23 @@ final class Transform_Rule {
 
 		$this->type    = $type;
 		$this->pattern = $pattern;
+	}
+
+	/**
+	 * ルール種別を取得する。
+	 *
+	 * @return Rule_Type ルール種別.
+	 */
+	public function get_type(): Rule_Type {
+		return $this->type;
+	}
+
+	/**
+	 * 正規表現を取得する。
+	 *
+	 * @return string 正規表現.
+	 */
+	public function get_pattern(): string {
+		return $this->pattern;
 	}
 }

@@ -260,7 +260,7 @@ function rubymaco_prepare_admin_rule_view_data( array $rules, array $enabled_rul
 
 		$prepared_rules[] = array(
 			'id'                 => $rule_id,
-			'type'               => $rule->type->get_value(),
+			'type'               => $rule->get_type()->get_value(),
 			'titles'             => rubymaco_normalize_admin_rule_titles( $rule->titles ),
 			'examples'           => array_values(
 				array_filter(
@@ -270,7 +270,7 @@ function rubymaco_prepare_admin_rule_view_data( array $rules, array $enabled_rul
 			),
 			'description'        => $rule->description,
 			'enabled_by_default' => $rule->enabled_by_default,
-			'transform_rules'    => $rule->transform_rules,
+			'transform_rules'    => $rule->get_transform_rules(),
 			'is_enabled'         => in_array( $rule_id, $enabled_rule_ids, true ),
 		);
 	}

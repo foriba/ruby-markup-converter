@@ -144,7 +144,7 @@ final class Markup_Rule_Registry {
 				continue;
 			}
 
-			foreach ( $rule->transform_rules as $transform_rule ) {
+			foreach ( $rule->get_transform_rules() as $transform_rule ) {
 				$transform_rules[] = $transform_rule;
 			}
 		}
@@ -164,7 +164,6 @@ final class Markup_Rule_Registry {
 		return array(
 			new Markup_Rule(
 				'ruby_double_angle',
-				Rule_Type::ruby(),
 				array(
 					__( '｜BaseText《RubyAnnotation》 Markup', 'ruby-markup-converter' ), // ja-jp: '｜親文字《ルビ》 記法'.
 					__( 'BaseText《RubyAnnotation》 Markup', 'ruby-markup-converter' ), // ja-jp: '親文字《ルビ》 記法'.
@@ -192,7 +191,6 @@ final class Markup_Rule_Registry {
 
 			new Markup_Rule(
 				'ruby_parenthesis',
-				Rule_Type::ruby(),
 				array(
 					__( 'BaseText(RubyAnnotation) Markup', 'ruby-markup-converter' ), // ja-jp: '親文字(ルビ) 記法'.
 				),
@@ -214,7 +212,6 @@ final class Markup_Rule_Registry {
 
 			new Markup_Rule(
 				'ruby_rb',
-				Rule_Type::ruby(),
 				array(
 					__( '[[rb:BaseText > RubyAnnotation]] Markup', 'ruby-markup-converter' ), // ja-jp: '[[rb:親文字 > ルビ]] 記法'.
 				),
@@ -236,7 +233,6 @@ final class Markup_Rule_Registry {
 
 			new Markup_Rule(
 				'ruby_double_underscore',
-				Rule_Type::ruby(),
 				array(
 					__( '#BaseText__RubyAnnotation__# Markup', 'ruby-markup-converter' ), // ja-jp: '#親文字__ルビ__# 記法'.
 				),
@@ -258,7 +254,6 @@ final class Markup_Rule_Registry {
 
 			new Markup_Rule(
 				'ruby_mediawiki',
-				Rule_Type::ruby(),
 				array(
 					__( '{{ruby|BaseText|RubyAnnotation}} Markup', 'ruby-markup-converter' ), // ja-jp: '{{ruby|親文字|ルビ}} 記法'.
 				),
@@ -280,7 +275,6 @@ final class Markup_Rule_Registry {
 
 			new Markup_Rule(
 				'bouten_double_bracket',
-				Rule_Type::bouten(),
 				array(
 					__( '《《Emphasis》》 Markup', 'ruby-markup-converter' ), // ja-jp: '《《強調》》 記法'.
 				),

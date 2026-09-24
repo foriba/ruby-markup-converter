@@ -13,19 +13,17 @@ use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 use Foriba\RubyMarkupConverter\Markup\Transform_Rule;
+use Foriba\RubyMarkupConverter\Markup\Markup_Rule;
 
 foreach ( Rule_Type::cases() as $rule_type ) {
 	$pattern        = '/(example)/u';
 	$transform_rule = new Transform_Rule( $rule_type, $pattern );
-	check_same( $rule_type, $transform_rule->type, 'transform rule preserves type' );
-	check_same( $pattern, $transform_rule->pattern, 'transform rule preserves pattern' );
+	check_same( $rule_type, $transform_rule->get_type(), 'transform rule preserves type' );
+	check_same( $pattern, $transform_rule->get_pattern(), 'transform rule preserves pattern' );
 	check_same(
-		array(
-			'type'    => $rule_type,
-			'pattern' => $pattern,
-		),
+		array(),
 		get_object_vars( $transform_rule ),
-		'transform rule holds only type and pattern'
+		'transform rule exposes no public properties'
 	);
 	$thrown = false;
 	try {
@@ -34,6 +32,43 @@ foreach ( Rule_Type::cases() as $rule_type ) {
 		$thrown = true;
 	}
 	check_same( true, $thrown, 'empty transform pattern throws' );
+}
+
+foreach ( Rule_Type::cases() as $rule_type ) {
+	$child  = new Transform_Rule( $rule_type, '/(example)/u' );
+	$input  = array( $child, $child );
+	$parent = new Markup_Rule( 'test', array( 'title' ), array( 'example' ), 'description', true, $input );
+	check_same( $rule_type, $parent->get_type(), 'parent derives child type' );
+	check_same( $input, $parent->get_transform_rules(), 'child order is preserved' );
+	$input[0]  = new Transform_Rule( Rule_Type::ruby(), '/(other)/u' );
+	$output    = $parent->get_transform_rules();
+	$output[0] = $input[0];
+	check_same( array( $child, $child ), $parent->get_transform_rules(), 'input and returned arrays cannot replace stored children' );
+	foreach ( array(
+		array( $parent, 'type', Rule_Type::bouten() ),
+		array( $parent, 'transform_rules', array() ),
+		array( $child, 'type', Rule_Type::bouten() ),
+		array( $child, 'pattern', '' ),
+	) as $mutation ) {
+		$thrown = false;
+		try {
+			$mutation[0]->{$mutation[1]} = $mutation[2];
+		} catch ( Error $e ) {
+			$thrown = true;
+		}
+		check_same( true, $thrown, 'rule property cannot be overwritten: ' . $mutation[1] );
+	}
+}
+$ruby_child   = new Transform_Rule( Rule_Type::ruby(), '/(base)(ruby)/u' );
+$bouten_child = new Transform_Rule( Rule_Type::bouten(), '/(text)/u' );
+foreach ( array( array(), array( null ), array( 'invalid' ), array( new stdClass() ), array( $ruby_child, null ), array( $ruby_child, $bouten_child ), array( $bouten_child, $ruby_child ) ) as $invalid_children ) {
+	$thrown = false;
+	try {
+		new Markup_Rule( 'test', array(), array(), '', false, $invalid_children );
+	} catch ( InvalidArgumentException $e ) {
+		$thrown = true;
+	}
+	check_same( true, $thrown, 'invalid children rejected' );
 }
 
 check_same( 'rubymaco_enabled_markup_rules', Option_Keys::ENABLED_MARKUP_RULES, 'enabled rules storage key' );
