@@ -108,36 +108,4 @@ final class Markup_Rule {
 		$this->enabled_by_default = $enabled_by_default;
 		$this->transform_rules    = $transform_rules;
 	}
-
-	/**
-	 * 表示情報と変換ルールを従来の配列形式で返す。
-	 *
-	 * 種別は文字列、子ルールは各 to_array() の結果に変換する。
-	 * 表示名と入力例のキーは旧形式の title・example を維持する。
-	 * HTML エスケープは行わず、出力側で行う。
-	 *
-	 * @return array{
-	 *      id:string,
-	 *      type:string,
-	 *      title:string[],
-	 *      example:string[],
-	 *      description:string,
-	 *      enabled_by_default:bool,
-	 *      transform_rules:array<int, array{type:string, pattern:string}>
-	 * }
-	 */
-	public function to_array(): array {
-		return array(
-			'id'                 => $this->id,
-			'type'               => $this->type->get_value(),
-			'title'              => $this->titles,
-			'example'            => $this->examples,
-			'description'        => $this->description,
-			'enabled_by_default' => $this->enabled_by_default,
-			'transform_rules'    => array_map(
-				static fn( Transform_Rule $rule ): array => $rule->to_array(),
-				$this->transform_rules
-			),
-		);
-	}
 }

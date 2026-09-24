@@ -57,16 +57,4 @@ final class Transform_Rule {
 		$this->type    = $type;
 		$this->pattern = $pattern;
 	}
-
-	/**
-	 * ルール種別を文字列に戻し、配列形式で返す。
-	 *
-	 * @return array{type:string, pattern:string} 変換ルールの配列.
-	 */
-	public function to_array(): array {
-		return array(
-			'type'    => $this->type->get_value(),
-			'pattern' => $this->pattern,
-		);
-	}
 }

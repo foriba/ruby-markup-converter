@@ -27,14 +27,6 @@ foreach ( Rule_Type::cases() as $rule_type ) {
 		get_object_vars( $transform_rule ),
 		'transform rule holds only type and pattern'
 	);
-	check_same(
-		array(
-			'type'    => $rule_type->get_value(),
-			'pattern' => $pattern,
-		),
-		$transform_rule->to_array(),
-		'transform rule array contains type and pattern'
-	);
 	$thrown = false;
 	try {
 		new Transform_Rule( $rule_type, '' );
