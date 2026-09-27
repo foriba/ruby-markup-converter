@@ -7,21 +7,12 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+use Foriba\RubyMarkupConverter\Plugin_Info;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-require_once __DIR__ . '/settings-controller.php';
-require_once __DIR__ . '/settings-components.php';
-require_once __DIR__ . '/settings-view.php';
-
-/**
- * WordPress Hooks
- */
-
-add_action( 'admin_menu', 'rubymaco_add_settings_page' );
-add_action( 'admin_init', 'rubymaco_register_settings' );
-add_action( 'admin_enqueue_scripts', 'rubymaco_enqueue_admin_assets' );
 
 /**
  * Admin Page
@@ -34,8 +25,8 @@ function rubymaco_add_settings_page(): void {
 	add_options_page(
 		__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
 		__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
-		'manage_options',
-		RUBYMACO_SETTINGS_PAGE_SLUG,
+		Settings_Identifiers::CAPABILITY,
+		Settings_Identifiers::PAGE_SLUG,
 		'rubymaco_render_settings_page'
 	);
 }
@@ -47,32 +38,33 @@ function rubymaco_add_settings_page(): void {
 /**
  * 設定ページ用の CSS と JavaScript を読み込む。
  *
- * @param string $hook_suffix 現在の管理画面フック名.
+ * @param string      $hook_suffix 現在の管理画面フック名.
+ * @param Plugin_Info $plugin_info プラグイン情報.
  */
-function rubymaco_enqueue_admin_assets( string $hook_suffix ): void {
-	if ( 'settings_page_' . RUBYMACO_SETTINGS_PAGE_SLUG !== $hook_suffix ) {
+function rubymaco_enqueue_admin_assets( string $hook_suffix, Plugin_Info $plugin_info ): void {
+	if ( 'settings_page_' . Settings_Identifiers::PAGE_SLUG !== $hook_suffix ) {
 		return;
 	}
 
 	wp_enqueue_style(
 		'ruby-markup-converter',
-		RUBYMACO_PLUGIN_URL . 'public/css/ruby-markup-converter.css',
+		$plugin_info->get_directory_url() . 'public/css/ruby-markup-converter.css',
 		array(),
-		RUBYMACO_VERSION
+		$plugin_info->get_version()
 	);
 
 	wp_enqueue_style(
 		'rubymaco-settings',
-		RUBYMACO_PLUGIN_URL . 'admin/css/settings.css',
+		$plugin_info->get_directory_url() . 'admin/css/settings.css',
 		array( 'ruby-markup-converter' ),
-		(string) filemtime( RUBYMACO_PLUGIN_DIR . 'admin/css/settings.css' )
+		(string) filemtime( $plugin_info->get_directory_path() . 'admin/css/settings.css' )
 	);
 
 	wp_enqueue_script(
 		'rubymaco-settings',
-		RUBYMACO_PLUGIN_URL . 'admin/js/settings.js',
+		$plugin_info->get_directory_url() . 'admin/js/settings.js',
 		array(),
-		(string) filemtime( RUBYMACO_PLUGIN_DIR . 'admin/js/settings.js' ),
+		(string) filemtime( $plugin_info->get_directory_path() . 'admin/js/settings.js' ),
 		true
 	);
 }

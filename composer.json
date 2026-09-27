@@ -1,5 +1,12 @@
 {
     "license": "GPL-2.0-or-later",
+    "scripts": {
+        "test": "@php tests/run.php",
+        "autoload:runtime": [
+            "@putenv COMPOSER_VENDOR_DIR=vendor",
+            "@composer dump-autoload --no-dev --optimize"
+        ]
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",
         "wp-coding-standards/wpcs": "^3.3",
@@ -10,6 +17,18 @@
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+        },
+        "vendor-dir": "vendor-dev"
+    },
+    "autoload": {
+        "classmap": [
+            "includes/class-bootstrap.php",
+            "includes/class-plugin-info.php",
+            "includes/integration/",
+            "includes/markup/",
+            "includes/resolver/",
+            "includes/service/",
+            "includes/settings/"
+        ]
     }
 }

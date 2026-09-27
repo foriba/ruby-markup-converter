@@ -9,21 +9,39 @@
 .gitignore
 .distignore
 
-# Dependencies
+# Dependencies (generate production vendor in the staging directory; see BUILD.md)
+/vendor-dev
 /vendor
+/vendor-runtime
 /node_modules
 
-# Development tools
+# PHP development tools
 composer.json
 composer.lock
 phpcs.xml.dist
 phpstan.neon.dist
-phpstan-stubs.php
 
-# Development files
+# JavaScript / TypeScript development tools
+package.json
+package-lock.json
+tsconfig.json
+
+# Tests and local notes
+/tests
+/LOCAL-TEST-COMMANDS.md
+/LOCAL-BUILD-COMMANDS.md
 TODO.md
+/BUILD.md
+
+# Build sources and debug artifacts
+/scripts
+/editor/src
+/types
 *.css.map
 *.scss
+
+# Documentation
+/docs
 
 # WordPress.org assets
 /assets
@@ -31,13 +49,3 @@ TODO.md
 # Source artwork
 *.psd
 *.ai
-
-/node_modules
-package.json
-package-lock.json
-/editor/src
-
-tsconfig.json
-/types
-
-/docs

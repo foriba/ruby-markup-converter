@@ -7,6 +7,17 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+
+use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+
+use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+use Foriba\RubyMarkupConverter\Markup\Rules\Transform_Rule;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
+
+use Foriba\RubyMarkupConverter\Markup\Value\Rule_Type;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -19,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Ruby Markup Converter の設定画面を描画する。
  */
 function rubymaco_render_settings_page(): void {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( Settings_Identifiers::CAPABILITY ) ) {
 		wp_die( esc_html__( 'You do not have permission to access this page.', 'ruby-markup-converter' ) );
 		// ja-jp: 'このページにアクセスする権限がありません。'.
 	}
@@ -52,7 +63,7 @@ function rubymaco_render_settings_page(): void {
 		</p>
 
 		<form method="post" action="options.php" class="rubymaco-settings-form">
-			<?php settings_fields( RUBYMACO_SETTINGS_GROUP ); ?>
+			<?php settings_fields( Settings_Identifiers::GROUP ); ?>
 
 			<div class="rubymaco-settings-layout">
 				<?php
@@ -104,7 +115,7 @@ function rubymaco_render_settings_page(): void {
 function rubymaco_render_apply_mode_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_APPLY_MODE,
+		Option_Keys::APPLY_MODE,
 		__( 'Conversion Scope', 'ruby-markup-converter' ), // ja-jp: '適用範囲'.
 	);
 }
@@ -117,7 +128,7 @@ function rubymaco_render_apply_mode_field( array $choices ): void {
  */
 function rubymaco_render_markup_rules_field( array $rules, array $view_data ): void {
 	// 全解除時も配列を送信し、サニタイズ時に空値を除去して「変換ルールなし」として保存する.
-	printf( '<input type="hidden" name="%s[]" value="">', esc_attr( RUBYMACO_OPTION_ENABLED_MARKUP_RULES ) );
+	printf( '<input type="hidden" name="%s[]" value="">', esc_attr( Option_Keys::ENABLED_MARKUP_RULES ) );
 
 	$preview_settings = array(
 		'style'    => $view_data['current_bouten_style'],
@@ -125,24 +136,24 @@ function rubymaco_render_markup_rules_field( array $rules, array $view_data ): v
 	);
 
 	rubymaco_render_markup_rule_group(
-		RUBYMACO_RULE_TYPE_RUBY,
+		Rule_Type::RUBY,
 		__( 'Ruby', 'ruby-markup-converter' ), // ja-jp: 'ルビ'.
 		array_values(
 			array_filter(
 				$rules,
-				static fn( array $r ): bool => RUBYMACO_RULE_TYPE_RUBY === $r['type']
+				static fn( array $r ): bool => Rule_Type::RUBY === $r['type']
 			)
 		),
 		$preview_settings
 	);
 
 	rubymaco_render_markup_rule_group(
-		RUBYMACO_RULE_TYPE_BOUTEN,
+		Rule_Type::BOUTEN,
 		__( 'Bouten', 'ruby-markup-converter' ), // ja-jp: '傍点'.
 		array_values(
 			array_filter(
 				$rules,
-				static fn( array $r ): bool => RUBYMACO_RULE_TYPE_BOUTEN === $r['type']
+				static fn( array $r ): bool => Rule_Type::BOUTEN === $r['type']
 			)
 		),
 		$preview_settings,
@@ -187,7 +198,7 @@ function rubymaco_render_markup_rule_group(
 		</div>
 
 		<?php
-		if ( RUBYMACO_RULE_TYPE_BOUTEN === $type && array() !== $bouten_choices ) :
+		if ( Rule_Type::BOUTEN === $type && array() !== $bouten_choices ) :
 			?>
 			<?php rubymaco_render_bouten_style_group_field( $bouten_choices ); ?>
 		<?php endif; ?>
@@ -215,7 +226,7 @@ function rubymaco_render_markup_rule_card( array $rule, string $current_bouten_s
 				id="rubymaco-rule-<?php echo esc_attr( $rule_id ); ?>"
 				class="rubymaco-rule-card-checkbox"
 				type="checkbox"
-				name="<?php echo esc_attr( RUBYMACO_OPTION_ENABLED_MARKUP_RULES ); ?>[]"
+				name="<?php echo esc_attr( Option_Keys::ENABLED_MARKUP_RULES ); ?>[]"
 				value="<?php echo esc_attr( $rule_id ); ?>"
 				<?php checked( $is_enabled ); ?>>
 			<span class="rubymaco-rule-card-checkmark" aria-hidden="true"></span>
@@ -288,7 +299,7 @@ function rubymaco_render_bouten_style_group_field( array $choices ): void {
 function rubymaco_render_bouten_style_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_BOUTEN_STYLE,
+		Option_Keys::BOUTEN_STYLE,
 		__( 'Bouten Style', 'ruby-markup-converter' ) // ja-jp: '傍点の種類'.
 	);
 }
@@ -329,7 +340,7 @@ function rubymaco_render_advanced_settings_field( array $view_data ): void {
 function rubymaco_render_bouten_renderer_field( array $choices ): void {
 	rubymaco_render_choice_group(
 		$choices,
-		RUBYMACO_OPTION_BOUTEN_RENDERER,
+		Option_Keys::BOUTEN_RENDERING_METHOD,
 		__( 'Bouten Rendering Method', 'ruby-markup-converter' ) // ja-jp: '傍点の描画方式'.
 	);
 }
@@ -357,10 +368,10 @@ function rubymaco_render_admin_rule_preview(
 		return esc_html( $example );
 	}
 
-	return rubymaco_apply_markup_rules(
+	return Markup_Conversion_Service::create_default()->convert_with_rules(
 		$example,
 		$rule['transform_rules'],
-		$current_bouten_style,
-		$current_bouten_renderer
+		( new Bouten_Style_Resolver() )->normalize( $current_bouten_style ),
+		( new Bouten_Rendering_Method_Resolver() )->normalize( $current_bouten_renderer )
 	);
 }

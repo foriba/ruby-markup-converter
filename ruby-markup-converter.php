@@ -23,35 +23,13 @@
 
 declare(strict_types=1);
 
+use Foriba\RubyMarkupConverter\Bootstrap;
+use Foriba\RubyMarkupConverter\Plugin_Info;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * Bootstrap
- *
- * Define plugin-wide constants and load feature modules.
- */
+require_once __DIR__ . '/vendor/autoload.php';
 
-define( 'RUBYMACO_PLUGIN_FILE', __FILE__ );
-define( 'RUBYMACO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'RUBYMACO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-
-const RUBYMACO_VERSION = '1.1.0';
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/constants.php';
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-rules.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/markup-transformer.php';
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/content-filter.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/shortcode.php';
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/frontend-assets.php';
-require_once RUBYMACO_PLUGIN_DIR . '/includes/options-helpers.php';
-
-require_once RUBYMACO_PLUGIN_DIR . '/includes/blocks.php';
-
-if ( is_admin() ) {
-	require_once RUBYMACO_PLUGIN_DIR . '/admin/settings-page.php';
-}
+( new Bootstrap( new Plugin_Info( __FILE__ ) ) )->boot();
