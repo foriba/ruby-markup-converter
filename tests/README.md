@@ -22,6 +22,8 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 ## 構成
 
+- `integration/settings-service.php`: 設定値取得の形式、初期値、不正値、全解除、読み取り時に保存しないこと。
+
 - `integration/post-content-filter.php`: 本文フィルタークラスの遅延登録・適用モード・変換・重複登録。
 
 - `integration/bootstrap.php`: 起動時のフック・ショートコード登録、優先度、引数数、再起動時の重複。
