@@ -22,6 +22,7 @@
     },
     "autoload": {
         "classmap": [
+            "admin/class-settings-page-data.php",
             "includes/class-bootstrap.php",
             "includes/class-plugin-info.php",
             "includes/integration/",

@@ -22,6 +22,8 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 ## 構成
 
+- `integration/settings-page-data.php`: 初期データの組み立て、リンク・画面文言、JSON 形式、設定変更の追従。翻訳は代替実装であり、実際の言語切り替えは画面で確認する。
+
 - `integration/settings-definitions.php`: 表示定義の形式、値クラスとの対応、内部データの除外、互換設定の注意文。
 
 - `integration/settings-service.php`: 設定値取得の形式、初期値、不正値、全解除、読み取り時に保存しないこと。

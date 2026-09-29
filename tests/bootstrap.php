@@ -140,6 +140,18 @@ function __( $text, $domain = '' ) {
 	return $text;
 }
 /**
+ * 文脈付き翻訳の代替実装。実際の翻訳は行わない。
+ *
+ * @param string $text 元の文字列.
+ * @param string $context 翻訳文脈.
+ * @param string $domain 翻訳ドメイン.
+ * @return string 元の文字列.
+ */
+function _x( $text, $context, $domain = '' ) {
+	unset( $context, $domain );
+	return $text;
+}
+/**
  * テストで許可するプロトコルを返す。
  *
  * @return string[] プロトコル一覧.
