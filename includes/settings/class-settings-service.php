@@ -1,6 +1,6 @@
 <?php
 /**
- * 設定画面に提供する現在値の取得。
+ * 設定値の取得・検証・保存。
  *
  * @package RubyMarkupConverter
  */
@@ -13,6 +13,9 @@ use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
+use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -21,8 +24,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * 保存値を表示・編集用の配列として提供する。
  *
- * 保存、フック登録、翻訳、通信は行わない。
- * 不正な保存値は読み取り時だけ補正し、データベースは変更しない。
+ * フック登録・通信・権限確認は呼び出し側が担当する。
+ * 読み取り時の不正値は補正するが、保存要求の不正値は拒否する。
+ *
+ * @phpstan-type Settings array{apply_mode:string, enabled_rule_ids:string[], bouten_style:string, bouten_rendering_method:string}
  */
 final class Settings_Service {
 	/**
@@ -114,5 +119,77 @@ final class Settings_Service {
 			'bouten_style'            => $this->bouten_style_resolver->get()->get_value(),
 			'bouten_rendering_method' => $this->bouten_rendering_method_resolver->get()->get_value(),
 		);
+	}
+
+	/**
+	 * 全設定の保存要求を検証する。保存や初期値への補正は行わない。
+	 *
+	 * JSON デコード済みの配列を要求する。スラッシュ除去は行わない。
+	 * 記法 ID は重複を除去し、定義順に揃える。空配列は全解除を表す。
+	 *
+	 * @param array<string, mixed> $settings 保存要求.
+	 * @return array<string, mixed> 検証済み設定.
+	 * @phpstan-return Settings
+	 * @throws \InvalidArgumentException 欠落・未知の項目、型違い、不正値の場合.
+	 */
+	public function validate( array $settings ): array {
+		$fields = array( 'apply_mode', 'enabled_rule_ids', 'bouten_style', 'bouten_rendering_method' );
+		if ( array_diff( $fields, array_keys( $settings ) ) || array_diff( array_keys( $settings ), $fields ) ) {
+			throw new \InvalidArgumentException( 'Settings must contain exactly the four supported fields.' );
+		}
+		foreach ( array(
+			'apply_mode'              => Apply_Mode::values(),
+			'bouten_style'            => Bouten_Style::values(),
+			'bouten_rendering_method' => Bouten_Rendering_Method::values(),
+		) as $field => $allowed ) {
+			if ( ! is_string( $settings[ $field ] ) || ! in_array( $settings[ $field ], $allowed, true ) ) {
+				throw new \InvalidArgumentException( 'Invalid setting value.' );
+			}
+		}
+		$ids = $settings['enabled_rule_ids'];
+		if ( ! is_array( $ids ) || array_values( $ids ) !== $ids ) {
+			throw new \InvalidArgumentException( 'Enabled rule IDs must be a list.' );
+		}
+		$allowed_ids = $this->markup_rule_registry->ids();
+		foreach ( $ids as $id ) {
+			if ( ! is_string( $id ) || ! in_array( $id, $allowed_ids, true ) ) {
+				throw new \InvalidArgumentException( 'Unknown or invalid rule ID.' );
+			}
+		}
+		return array(
+			'apply_mode'              => $settings['apply_mode'],
+			'enabled_rule_ids'        => array_values( array_intersect( $allowed_ids, $ids ) ),
+			'bouten_style'            => $settings['bouten_style'],
+			'bouten_rendering_method' => $settings['bouten_rendering_method'],
+		);
+	}
+
+	/**
+	 * 全項目を検証してから既存の保存キーへ書き込む。
+	 *
+	 * 呼び出し側で権限・nonce を確認すること。未変更も成功として扱う。
+	 * 書き込み後の値を確認し、不一致なら中断する。複数キーの保存は非原子的で、
+	 * 途中失敗時には先行項目が保存済みの場合がある。ロールバックは行わない。
+	 *
+	 * @param array<string, mixed> $settings 保存要求.
+	 * @return array<string, mixed> 保存後の設定.
+	 * @phpstan-return Settings
+	 * @throws \InvalidArgumentException|\RuntimeException 検証失敗（書き込みなし）、または保存失敗の場合.
+	 */
+	public function save( array $settings ): array {
+		$validated = $this->validate( $settings );
+		$keys      = array(
+			'apply_mode'              => Option_Keys::APPLY_MODE,
+			'enabled_rule_ids'        => Option_Keys::ENABLED_MARKUP_RULES,
+			'bouten_style'            => Option_Keys::BOUTEN_STYLE,
+			'bouten_rendering_method' => Option_Keys::BOUTEN_RENDERING_METHOD,
+		);
+		foreach ( $keys as $field => $key ) {
+			update_option( $key, $validated[ $field ] );
+			if ( get_option( $key ) !== $validated[ $field ] ) {
+				throw new \RuntimeException( 'Unable to save settings. Some settings may already have been saved.' );
+			}
+		}
+		return $this->get();
 	}
 }

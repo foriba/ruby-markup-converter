@@ -88,15 +88,18 @@ function get_option( $key, $default_value = false ) {
 	return array_key_exists( $key, $GLOBALS['test_options'] ) ? $GLOBALS['test_options'][ $key ] : $default_value;
 }
 /**
- * 設定の更新を禁止する。
+ * 通常は設定の更新を禁止し、保存テスト中だけ代替処理に委譲する。
  *
  * @param string $key 設定キー.
  * @param mixed  $value 保存値.
  * @param mixed  $autoload 自動読み込み指定.
- * @return void
+ * @return bool 代替処理の更新結果.
  * @throws RuntimeException データベース操作が呼ばれた場合.
  */
 function update_option( $key, $value, $autoload = null ) {
+	if ( isset( $GLOBALS['test_option_writer'] ) ) {
+		return ( $GLOBALS['test_option_writer'] )( $key, $value, $autoload );
+	}
 	unset( $key, $value, $autoload );
 	throw new RuntimeException( 'Unexpected database write' );
 }
