@@ -30,7 +30,10 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 - POST は Content-Type: application/json で4項目を直接送信する（settings で包まない）。
 - 成功時は `{"settings": {...}}` を返す。検証失敗は400、非JSONは415、保存失敗は500。
 - 500の保存失敗では一部が保存済みの場合がある。
-- 両操作に manage_options が必要。管理画面は X-WP-Nonce に wp_rest nonce を送り、ユーザー言語には `?_locale=user` を指定する。
+- POST `/wp-json/rubymaco/v1/settings/preview` は同じ4項目を受け取り、保存せずに例文を変換する。任意の本文や追加項目は受け付けない。
+- プレビュー応答は `{"previews":[{"id":"記法ID","examples":[{"text":"例文","html":"変換結果"}]}]}`。全記法を定義順で返し、選択された全ルールを各例文に適用する。全解除ならエスケープ済みの未変換例文を返す。
+- 適用範囲は検証するがプレビュー結果には影響しない。傍点スタイル・描画方式は送信された値を使う。表示時にはプラグインの描画用CSSも必要。
+- 全操作に manage_options が必要。管理画面は X-WP-Nonce に wp_rest nonce を送り、ユーザー言語には `?_locale=user` を指定する。
 - Cookie/nonce 認証は WordPress 標準処理に委譲する。テストのルート登録・権限判定は代替処理で、実HTTP・Cookie・nonceの検証ではない。
 - 実環境では未ログイン、権限のないユーザー、管理者の正常nonce・欠落nonce・不正nonce、言語切り替えを確認すること。
 

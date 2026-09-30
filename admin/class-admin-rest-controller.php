@@ -1,6 +1,6 @@
 <?php
 /**
- * 設定の取得・保存 REST API。
+ * 設定の取得・保存・プレビュー REST API。
  *
  * @package RubyMarkupConverter
  */
@@ -11,6 +11,11 @@ namespace Foriba\RubyMarkupConverter\Admin;
 
 use Foriba\RubyMarkupConverter\Settings\Settings_Service;
 use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
+use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
+use Foriba\RubyMarkupConverter\Markup\Markup_Renderer;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
+use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
+use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -67,6 +72,17 @@ final class Admin_REST_Controller {
 	public function register_routes(): void {
 		register_rest_route(
 			'rubymaco/v1',
+			'/settings/preview',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'preview_settings' ),
+					'permission_callback' => array( $this, 'check_permissions' ),
+				),
+			)
+		);
+		register_rest_route(
+			'rubymaco/v1',
 			'/settings',
 			array(
 				array(
@@ -84,7 +100,7 @@ final class Admin_REST_Controller {
 	}
 
 	/**
-	 * 両操作に管理権限を要求する。
+	 * すべての操作に管理権限を要求する。
 	 *
 	 * @return true|\WP_Error 許可または 401/403 エラー.
 	 */
@@ -124,6 +140,86 @@ final class Admin_REST_Controller {
 	 * @return \WP_REST_Response|\WP_Error 保存後の settings、またはエラー.
 	 */
 	public function save_settings( \WP_REST_Request $request ) {
+		$settings = $this->read_settings( $request );
+		if ( $settings instanceof \WP_Error ) {
+			return $settings;
+		}
+		try {
+			$settings = $this->settings_service->save( $settings );
+		} catch ( \RuntimeException $error ) {
+			return new \WP_Error(
+				'rubymaco_save_failed',
+				__(
+					'Unable to save settings. Some settings may already have been saved. Please try again.',
+					'ruby-markup-converter'
+				),
+				array(
+					'status'                => 500,
+					'partial_save_possible' => true,
+				)
+			);
+		}
+		return new \WP_REST_Response(
+			array( 'settings' => $settings ),
+			200,
+			array( 'Cache-Control' => 'no-store' )
+		);
+	}
+
+	/**
+	 * 保存前の設定で全例文を変換する。適用範囲はプレビューに影響しない。
+	 *
+	 * 有効な全ルールを定義順に適用する。無効な記法の例文も結果に含める。
+	 * 任意の本文は受け付けず、保存設定の読み書きも行わない。
+	 *
+	 * @param \WP_REST_Request $request REST リクエスト.
+	 * @return \WP_REST_Response|\WP_Error 例文ごとの HTML、または検証エラー.
+	 */
+	public function preview_settings( \WP_REST_Request $request ) {
+		$settings = $this->read_settings( $request );
+		if ( $settings instanceof \WP_Error ) {
+			return $settings;
+		}
+		$markup_rule_registry      = Markup_Rule_Registry::instance();
+		$markup_conversion_service = Markup_Conversion_Service::create_default();
+		$markup_renderer           = new Markup_Renderer();
+		$enabled_rules             = $markup_rule_registry->transform_rules_for( $settings['enabled_rule_ids'] );
+		$bouten_style              = Bouten_Style::from( $settings['bouten_style'] );
+		$bouten_rendering_method   = Bouten_Rendering_Method::from( $settings['bouten_rendering_method'] );
+		$previews                  = array();
+		foreach ( $markup_rule_registry->all() as $rule ) {
+			$examples = array();
+			foreach ( $rule->examples as $example ) {
+				$examples[] = array(
+					'text' => $example,
+					'html' => $markup_conversion_service->convert_with_rules(
+						$markup_renderer->render_text( $example ),
+						$enabled_rules,
+						$bouten_style,
+						$bouten_rendering_method
+					),
+				);
+			}
+			$previews[] = array(
+				'id'       => $rule->id,
+				'examples' => $examples,
+			);
+		}
+		return new \WP_REST_Response(
+			array( 'previews' => $previews ),
+			200,
+			array( 'Cache-Control' => 'no-store' )
+		);
+	}
+
+	/**
+	 * JSON 本文を取得し、保存・プレビュー共通の設定検証を行う。
+	 *
+	 * @param \WP_REST_Request $request REST リクエスト.
+	 * @return array|\WP_Error 検証済み設定、またはエラー.
+	 * @phpstan-return array{apply_mode:string, enabled_rule_ids:string[], bouten_style:string, bouten_rendering_method:string}|\WP_Error
+	 */
+	private function read_settings( \WP_REST_Request $request ) {
 		if ( ! $request->is_json_content_type() ) {
 			return new \WP_Error(
 				'rubymaco_invalid_content_type',
@@ -157,7 +253,7 @@ final class Admin_REST_Controller {
 			);
 		}
 		try {
-			$settings = $this->settings_service->save( get_object_vars( $body ) );
+			return $this->settings_service->validate( get_object_vars( $body ) );
 		} catch ( \InvalidArgumentException $error ) {
 			return new \WP_Error(
 				'rubymaco_invalid_settings',
@@ -167,23 +263,6 @@ final class Admin_REST_Controller {
 				),
 				array( 'status' => 400 )
 			);
-		} catch ( \RuntimeException $error ) {
-			return new \WP_Error(
-				'rubymaco_save_failed',
-				__(
-					'Unable to save settings. Some settings may already have been saved. Please try again.',
-					'ruby-markup-converter'
-				),
-				array(
-					'status'                => 500,
-					'partial_save_possible' => true,
-				)
-			);
 		}
-		return new \WP_REST_Response(
-			array( 'settings' => $settings ),
-			200,
-			array( 'Cache-Control' => 'no-store' )
-		);
 	}
 }

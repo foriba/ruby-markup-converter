@@ -61,7 +61,9 @@ try {
 	$rest_controller->register_routes();
 	$rest_routes = $GLOBALS['test_rest_routes']['rubymaco/v1/settings'];
 	\check_same( array( 'GET', 'POST' ), array_column( $rest_routes, 'methods' ), 'GET and POST only' );
-	foreach ( $rest_routes as $rest_route ) {
+	$preview_route = $GLOBALS['test_rest_routes']['rubymaco/v1/settings/preview'][0];
+	\check_same( 'POST', $preview_route['methods'], 'preview is POST only' );
+	foreach ( array_merge( $rest_routes, array( $preview_route ) ) as $rest_route ) {
 		\check_same( array( $rest_controller, 'check_permissions' ), $rest_route['permission_callback'], 'all routes protected' );
 		foreach ( array( false, true ) as $logged_in ) {
 			$GLOBALS['test_rest_allowed']   = false;
@@ -112,7 +114,58 @@ try {
 		$rest_error = call_user_func( $rest_routes[1]['callback'], $request );
 		\check_same( $rest_case[2], $rest_error->get_error_data()['status'], 'invalid request status' );
 		\check_same( 0, $rest_writes, 'invalid body cannot write or use query fallback' );
+		$preview_error = call_user_func( $preview_route['callback'], $request );
+		\check_same( $rest_case[2], $preview_error->get_error_data()['status'], 'preview rejects invalid settings' );
+		\check_same( 0, $rest_writes, 'invalid preview does not write' );
 	}
+	$preview_options  = $GLOBALS['test_options'];
+	$preview_registry = \Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry::instance();
+	foreach ( array( array(), $preview_registry->ids() ) as $preview_ids ) {
+		foreach ( array( 'dot', 'sesame' ) as $preview_style ) {
+			foreach ( array( 'custom', 'text_emphasis' ) as $preview_method ) {
+				$preview_results = array();
+				foreach ( array( 'all', 'shortcode' ) as $preview_mode ) {
+					$preview_request = new \WP_REST_Request( 'POST', '/rubymaco/v1/settings/preview' );
+					$preview_request->set_header( 'Content-Type', 'application/json' );
+					$preview_request->set_body(
+						// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- CLI request fixture; WordPress is only partially loaded.
+						json_encode(
+							array(
+								'apply_mode'              => $preview_mode,
+								'enabled_rule_ids'        => $preview_ids,
+								'bouten_style'            => $preview_style,
+								'bouten_rendering_method' => $preview_method,
+							)
+						)
+					);
+					$preview_response = call_user_func( $preview_route['callback'], $preview_request );
+					\check_same( 200, $preview_response->get_status(), 'preview success' );
+					\check_same( 'no-store', $preview_response->get_headers()['Cache-Control'], 'preview is not cached' );
+					$preview_data = $preview_response->get_data()['previews'];
+					\check_same( $preview_registry->ids(), array_column( $preview_data, 'id' ), 'preview includes every rule in order' );
+					foreach ( $preview_data as $preview_item ) {
+						foreach ( $preview_item['examples'] as $preview_example ) {
+							$preview_text     = ( new \Foriba\RubyMarkupConverter\Markup\Markup_Renderer() )->render_text( $preview_example['text'] );
+							$expected_preview = \Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service::create_default()->convert_with_rules(
+								$preview_text,
+								$preview_registry->transform_rules_for( $preview_ids ),
+								\Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style::from( $preview_style ),
+								\Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method::from( $preview_method )
+							);
+							\check_same( $expected_preview, $preview_example['html'], 'preview uses explicit settings and existing converter' );
+							if ( array() === $preview_ids ) {
+								\check_same( $preview_text, $preview_example['html'], 'disabled rules leave examples unconverted' );
+							}
+						}
+					}
+					$preview_results[] = $preview_data;
+				}
+				\check_same( $preview_results[0], $preview_results[1], 'apply mode does not change preview' );
+			}
+		}
+	}
+	\check_same( $preview_options, $GLOBALS['test_options'], 'preview leaves saved settings unchanged' );
+	\check_same( 0, $rest_writes, 'preview never calls update_option' );
 	$request = new \WP_REST_Request( 'POST', '/rubymaco/v1/settings' );
 	$request->set_header( 'Content-Type', 'application/json; charset=UTF-8' );
 	$request->set_body( $rest_valid );
