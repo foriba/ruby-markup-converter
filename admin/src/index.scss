@@ -1,0 +1,18 @@
+#rubymaco-admin-root {
+	max-width: 960px;
+
+	.rubymaco-admin-summary > div {
+		display: grid;
+		grid-template-columns: minmax(160px, 1fr) minmax(0, 3fr);
+		gap: 16px;
+		padding: 16px 0;
+		border-bottom: 1px solid #c3c4c7;
+	}
+
+	dt { font-weight: 600; }
+	dd { margin: 0; overflow-wrap: anywhere; }
+
+	@media (max-width: 600px) {
+		.rubymaco-admin-summary > div { grid-template-columns: 1fr; gap: 8px; }
+	}
+}

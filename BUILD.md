@@ -282,3 +282,21 @@ ZIP内部の最上位は必ず `ruby-markup-converter/` とします。
 
 - [WordPress公式：Using Subversion](https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/)
 - [Composer公式：classmap](https://getcomposer.org/doc/04-schema.md#classmap)
+# 管理画面用 React の開発
+
+既存のブロックと同じ `@wordpress/scripts` を使います。
+
+- `npm run build`: ブロックと管理画面の両方をビルド。
+- `npm run build:blocks`: 従来のブロックだけをビルド。
+- `npm run build:admin`: 管理画面だけをビルド。
+- `npm start`: ブロックの変更を監視。
+- `npm run start:admin`: 管理画面の変更を監視。
+
+管理画面のソースは `admin/src/`、生成物は `admin/build/` です。
+配布準備スクリプトも `npm run build` を使うため、両方を生成します。
+ソースは配布から除外し、生成物と依存関係・バージョンを含む `index.asset.php` は配布します。
+
+移行中の起動確認ページは、管理者としてログインした状態で
+`/wp-admin/options.php?page=rubymaco-settings-react` を開きます。
+通常の設定画面は維持しています。現段階では現在値の読み取りのみで、編集・保存・プレビュー操作は未実装です。
+通信失敗時の再試行、他の管理画面ではReact用アセットを読み込まないことも確認してください。

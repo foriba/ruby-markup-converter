@@ -17,6 +17,7 @@ use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Admin\Admin_REST_Controller;
 use Foriba\RubyMarkupConverter\Admin\Admin_Page_Data;
+use Foriba\RubyMarkupConverter\Admin\Admin_App;
 use Foriba\RubyMarkupConverter\Settings\Settings_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -104,6 +105,7 @@ final class Bootstrap {
 	 * 管理画面用の関数を読み込み、フックを登録する。
 	 */
 	private function boot_admin(): void {
+		( new Admin_App( $this->plugin_info ) )->register_hooks();
 		require_once $this->plugin_info->get_directory_path() . 'admin/settings-controller.php';
 		require_once $this->plugin_info->get_directory_path() . 'admin/settings-components.php';
 		require_once $this->plugin_info->get_directory_path() . 'admin/settings-view.php';
