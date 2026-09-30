@@ -42,10 +42,13 @@ foreach ( Markup_Rule_Registry::instance()->all() as $definition_index => $defin
 		'rule contains only display metadata'
 	);
 }
-$legacy_methods = rubymaco_get_bouten_renderer_definitions();
+$legacy_methods = $settings_definitions->get_bouten_rendering_methods();
 check_same( $legacy_methods['text_emphasis']['description'], $definitions_data['bouten_rendering_methods'][0]['description'], 'standard method text unchanged' );
 check_same( $legacy_methods['custom']['description'] . ' This compatibility option may be removed in a future version.', $definitions_data['bouten_rendering_methods'][1]['description'], 'custom method includes future compatibility notice' );
-check_same( $legacy_methods, rubymaco_get_bouten_renderer_definitions(), 'legacy definitions unchanged' );
+check_same( $legacy_methods, $settings_definitions->get_bouten_rendering_methods(), 'keyed definitions unchanged by REST formatting' );
+foreach ( array( 'rubymaco_get_apply_mode_definitions', 'rubymaco_get_bouten_style_definitions', 'rubymaco_get_bouten_renderer_definitions' ) as $removed_function ) {
+	check_same( false, function_exists( $removed_function ), 'legacy definition functions removed' );
+}
 check_same( $definitions_options_before, $GLOBALS['test_options'], 'definition lookup does not save settings' );
 // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- Verify plain data serialization without WordPress runtime helpers.
 check_same( $definitions_data, json_decode( json_encode( $definitions_data, JSON_THROW_ON_ERROR ), true ), 'definitions JSON round trip' );

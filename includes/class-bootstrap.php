@@ -63,8 +63,6 @@ final class Bootstrap {
 			return;
 		}
 
-		require_once $this->plugin_info->get_directory_path() . 'includes/settings/definitions.php';
-
 		// 全文変換モードに応じて本文フィルターを有効にする起動処理を登録する.
 		( new Post_Content_Filter(
 			Markup_Conversion_Service::create_default(),

@@ -184,7 +184,8 @@ function rubymaco_sanitize_apply_mode( $value ): string {
  * }
  */
 function rubymaco_get_admin_settings_view_data(): array {
-	$enabled_rule_ids = get_option(
+	$settings_definitions = \Foriba\RubyMarkupConverter\Settings\Settings_Definitions::create_default();
+	$enabled_rule_ids     = get_option(
 		Option_Keys::ENABLED_MARKUP_RULES,
 		Markup_Rule_Registry::instance()->default_enabled_ids()
 	);
@@ -212,17 +213,17 @@ function rubymaco_get_admin_settings_view_data(): array {
 			$enabled_rule_ids
 		),
 		'apply_mode_choices'      => rubymaco_prepare_choice_view_data(
-			rubymaco_get_apply_mode_definitions(),
+			$settings_definitions->get_apply_modes(),
 			$current_apply_mode,
 			'rubymaco-apply-mode-'
 		),
 		'bouten_style_choices'    => rubymaco_prepare_choice_view_data(
-			rubymaco_get_bouten_style_definitions(),
+			$settings_definitions->get_bouten_styles(),
 			$current_bouten_style,
 			'rubymaco-bouten-style-'
 		),
 		'bouten_renderer_choices' => rubymaco_prepare_choice_view_data(
-			rubymaco_get_bouten_renderer_definitions(),
+			$settings_definitions->get_bouten_rendering_methods(),
 			$current_bouten_renderer,
 			'rubymaco-bouten-renderer-'
 		),
