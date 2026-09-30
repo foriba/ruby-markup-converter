@@ -22,6 +22,18 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 ## 構成
 
+- `integration/settings-rest.php`: GET/POST 登録、権限コールバック、JSON 本文の検証、保存とエラー応答。
+
+## 設定 REST API
+
+- GET `/wp-json/rubymaco/v1/settings` は初期データを返す。
+- POST は Content-Type: application/json で4項目を直接送信する（settings で包まない）。
+- 成功時は `{"settings": {...}}` を返す。検証失敗は400、非JSONは415、保存失敗は500。
+- 500の保存失敗では一部が保存済みの場合がある。
+- 両操作に manage_options が必要。管理画面は X-WP-Nonce に wp_rest nonce を送り、ユーザー言語には `?_locale=user` を指定する。
+- Cookie/nonce 認証は WordPress 標準処理に委譲する。テストのルート登録・権限判定は代替処理で、実HTTP・Cookie・nonceの検証ではない。
+- 実環境では未ログイン、権限のないユーザー、管理者の正常nonce・欠落nonce・不正nonce、言語切り替えを確認すること。
+
 - `integration/settings-page-data.php`: 初期データの組み立て、リンク・画面文言、JSON 形式、設定変更の追従。翻訳は代替実装であり、実際の言語切り替えは画面で確認する。
 
 - `integration/settings-definitions.php`: 表示定義の形式、値クラスとの対応、内部データの除外、互換設定の注意文。

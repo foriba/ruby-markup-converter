@@ -15,6 +15,9 @@ use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+use Foriba\RubyMarkupConverter\Admin\Admin_REST_Controller;
+use Foriba\RubyMarkupConverter\Admin\Admin_Page_Data;
+use Foriba\RubyMarkupConverter\Settings\Settings_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -84,6 +87,12 @@ final class Bootstrap {
 		( new Frontend_Assets(
 			$this->plugin_info->get_directory_url(),
 			$this->plugin_info->get_version()
+		) )->register_hooks();
+
+		// REST リクエストは管理画面判定の外で登録する.
+		( new Admin_REST_Controller(
+			Settings_Service::create_default(),
+			Admin_Page_Data::create_default()
 		) )->register_hooks();
 
 		if ( is_admin() ) {

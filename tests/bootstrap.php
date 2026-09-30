@@ -152,6 +152,26 @@ function _x( $text, $context, $domain = '' ) {
 	return $text;
 }
 /**
+ * HTTP 応答のステータス整数化に必要な代替処理。
+ *
+ * @param mixed $value 整数化する値.
+ * @return int 非負整数.
+ */
+function absint( $value ) {
+	return abs( (int) $value );
+}
+/**
+ * REST リクエスト用の JSON メディア型判定を代替する。
+ *
+ * WordPress の判定式に合わせる。実際の HTTP 認証はこのテストでは扱わない。
+ *
+ * @param string $media_type メディア型.
+ * @return bool JSON メディア型の場合に true.
+ */
+function wp_is_json_media_type( $media_type ) {
+	return (bool) preg_match( '/(^|\s|,)application\/([\w!#\$&-\^\.\+]+\+)?json(\+oembed)?($|\s|;|,)/i', $media_type );
+}
+/**
  * テストで許可するプロトコルを返す。
  *
  * @return string[] プロトコル一覧.

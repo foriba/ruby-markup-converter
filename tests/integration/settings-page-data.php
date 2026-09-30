@@ -5,7 +5,7 @@
  * @package RubyMarkupConverter
  */
 
-use Foriba\RubyMarkupConverter\Admin\Settings_Page_Data;
+use Foriba\RubyMarkupConverter\Admin\Admin_Page_Data;
 use Foriba\RubyMarkupConverter\Settings\Settings_Service;
 use Foriba\RubyMarkupConverter\Settings\Settings_Definitions;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
@@ -14,7 +14,7 @@ $page_options_before = $GLOBALS['test_options'];
 $page_hooks_before   = array_keys( $GLOBALS['wp_filter'] );
 try {
 	$GLOBALS['test_options'] = array();
-	$page_data_provider      = Settings_Page_Data::create_default();
+	$page_data_provider      = Admin_Page_Data::create_default();
 	$page_data               = $page_data_provider->get();
 	check_same( array( 'settings', 'definitions', 'links', 'messages' ), array_keys( $page_data ), 'page data sections' );
 	check_same( Settings_Service::create_default()->get(), $page_data['settings'], 'settings delegation' );

@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 認可とユーザー言語の準備は呼び出し側が担当する。
  * 文字列は表示側でエスケープする。定義の翻訳キャッシュは取得元に従う。
  */
-final class Settings_Page_Data {
+final class Admin_Page_Data {
 	/**
 	 * 設定の取得元。
 	 *
@@ -44,7 +44,10 @@ final class Settings_Page_Data {
 	 * @return self 初期データの取得担当.
 	 */
 	public static function create_default(): self {
-		return new self( Settings_Service::create_default(), Settings_Definitions::create_default() );
+		return new self(
+			Settings_Service::create_default(),
+			Settings_Definitions::create_default()
+		);
 	}
 
 	/**
@@ -53,7 +56,10 @@ final class Settings_Page_Data {
 	 * @param Settings_Service     $settings_service 設定の取得元.
 	 * @param Settings_Definitions $settings_definitions 表示定義の取得元.
 	 */
-	public function __construct( Settings_Service $settings_service, Settings_Definitions $settings_definitions ) {
+	public function __construct(
+		Settings_Service $settings_service,
+		Settings_Definitions $settings_definitions
+	) {
 		$this->settings_service     = $settings_service;
 		$this->settings_definitions = $settings_definitions;
 	}
@@ -74,7 +80,11 @@ final class Settings_Page_Data {
 			'definitions' => $this->settings_definitions->get(),
 			'links'       => array(
 				// translators: URL of the user guide for the current language.
-				'user_guide' => _x( 'https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md', 'user guide URL', 'ruby-markup-converter' ),
+				'user_guide' => _x(
+					'https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md',
+					'user guide URL',
+					'ruby-markup-converter'
+				),
 			),
 			'messages'    => $this->get_messages(),
 		);
