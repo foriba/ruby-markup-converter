@@ -1,5 +1,14 @@
 # 回帰テスト
 
+## React のローカル編集確認
+
+`WP_ROOT=/path/to/wordpress node tests/admin-local-edit.cjs` でブラウザのスモークテストを実行できます。
+事前に `npm run build:admin` を実行してください。Playwrightのブラウザが必要です。
+インストール済みChromeを使う場合は `PLAYWRIGHT_CHANNEL=chrome` を指定します。
+PHPの実データ定義を使い、HTTP取得はモックします。実サイトへの保存・通信は行いません。
+デスクトップ／モバイル幅で全解除、タブ間の編集保持、再読み込み時の復元、GETのみであることを確認します。
+このテストはWordPress全体の管理画面・認証の検証ではありません。
+
 プラグイン直下で実行します。追加のテストライブラリは不要です。
 初回およびクラスの追加・移動後は `composer autoload:runtime` を実行してください。
 `vendor-dev/` は開発ツール用、`vendor/` はプラグイン実行用です。

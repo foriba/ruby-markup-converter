@@ -1,9 +1,10 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
 import type { AdminConfig, PageData } from './types';
+import SettingsForm from './settings-form';
 import './index.scss';
 
 /**
- * Read-only startup screen. Saving and preview controls follow in the next step.
+ * Load initial settings. Editing remains local until saving is connected.
  *
  * @param props        Component properties.
  * @param props.config PHP-provided connection settings and messages.
@@ -64,34 +65,7 @@ function App( { config }: { config: AdminConfig } ) {
 				</div>
 			) }
 			{ ! failed && ! data && <p role="status">{ messages.loading }</p> }
-			{ ! failed && data && (
-				<dl className="rubymaco-admin-summary">
-					{ (
-						[
-							[ 'apply_mode', 'apply_modes', 'conversion_scope' ],
-							[ 'bouten_style', 'bouten_styles', 'bouten_style' ],
-							[
-								'bouten_rendering_method',
-								'bouten_rendering_methods',
-								'bouten_rendering_method',
-							],
-						] as const
-					 ).map( ( [ setting, definition, label ] ) => (
-						<div key={ setting }>
-							<dt>{ messages[ label ] }</dt>
-							<dd>
-								{
-									data.definitions[ definition ].find(
-										( choice ) =>
-											choice.value ===
-											data.settings[ setting ]
-									)?.label
-								}
-							</dd>
-						</div>
-					) ) }
-				</dl>
-			) }
+			{ ! failed && data && <SettingsForm data={ data } /> }
 		</>
 	);
 }

@@ -1,18 +1,20 @@
 #rubymaco-admin-root {
 	max-width: 960px;
 
-	.rubymaco-admin-summary > div {
-		display: grid;
-		grid-template-columns: minmax(160px, 1fr) minmax(0, 3fr);
-		gap: 16px;
-		padding: 16px 0;
-		border-bottom: 1px solid #c3c4c7;
-	}
+	overflow-wrap: anywhere;
 
-	dt { font-weight: 600; }
-	dd { margin: 0; overflow-wrap: anywhere; }
-
-	@media (max-width: 600px) {
-		.rubymaco-admin-summary > div { grid-template-columns: 1fr; gap: 8px; }
-	}
+	.rubymaco-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+	.nav-tab { margin-left: 0; white-space: normal; cursor: pointer; }
+	[role="tabpanel"] { padding-top: 20px; }
+	.rubymaco-field { margin: 0 0 24px; min-width: 0; }
+	legend { font-weight: 600; margin-bottom: 12px; }
+	.rubymaco-choice { margin-bottom: 14px; }
+	.description { margin: 6px 0 0 25px; max-width: 760px; }
+	.rubymaco-rule { padding: 16px 0; border-bottom: 1px solid #c3c4c7; }
+	.rubymaco-rule label { font-weight: 600; }
+	.rubymaco-rule ul { margin-left: 25px; }
+	code { white-space: pre-wrap; overflow-wrap: anywhere; }
+	section { margin-bottom: 24px; }
+	section .rubymaco-field { margin-top: 20px; }
+	.rubymaco-edit-status { min-height: 24px; }
 }
