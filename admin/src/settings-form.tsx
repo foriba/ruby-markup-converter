@@ -4,6 +4,7 @@ import { saveSettings } from './settings-api';
 import SettingChoices from './setting-choices';
 import SettingsTabs from './settings-tabs';
 import MarkupRuleFields from './markup-rule-fields';
+import useSettingsPreview from './use-settings-preview';
 
 /**
  * 設定を編集し、認証付きのREST APIを通じて保存する。
@@ -29,6 +30,11 @@ export default function SettingsForm( {
 	const savePending = useRef( false );
 	const [ tab, setTab ] = useState( 'basic' );
 	const { messages, definitions } = data;
+	const preview = useSettingsPreview(
+		config,
+		settings,
+		definitions.markup_rules
+	);
 	const dirty =
 		settings.apply_mode !== savedSettings.apply_mode ||
 		settings.bouten_style !== savedSettings.bouten_style ||
@@ -81,6 +87,23 @@ export default function SettingsForm( {
 					tab={ tab }
 					onChange={ setTab }
 				/>
+				<p role="status">
+					{ preview.loading ? messages.preview_loading : '' }
+				</p>
+				{ preview.failed && (
+					<div className="notice notice-error">
+						<p role="alert">{ messages.preview_failed }</p>
+						<p>
+							<button
+								type="button"
+								className="button"
+								onClick={ preview.retry }
+							>
+								{ messages.retry }
+							</button>
+						</p>
+					</div>
+				) }
 				<div
 					role="tabpanel"
 					id="rubymaco-panel-basic"
@@ -115,6 +138,8 @@ export default function SettingsForm( {
 								) }
 								enabledRuleIds={ settings.enabled_rule_ids }
 								exampleLabel={ messages.markup_example }
+								outputLabel={ messages.output_result }
+								previews={ preview.previews }
 								onChange={ ( id, checked ) =>
 									setSettings( ( current ) => ( {
 										...current,

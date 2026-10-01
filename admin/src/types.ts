@@ -31,8 +31,14 @@ export interface PageData {
 
 export interface AdminConfig {
 	url: string;
+	previewUrl: string;
 	nonce: string;
 	messages: Record< string, string >;
+}
+
+export interface RulePreview {
+	id: string;
+	examples: { text: string; html: string }[];
 }
 
 declare global {

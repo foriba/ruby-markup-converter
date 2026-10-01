@@ -20,6 +20,16 @@ const data = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
       requests.push(route.request().method());
       return route.fulfill({ json: data });
     });
+    await page.route('https://example.invalid/preview', route => {
+      requests.push('PREVIEW');
+      assert.equal(route.request().method(), 'POST');
+      const previews = data.definitions.markup_rules.map(rule => ({
+        id: rule.id, examples: rule.examples.map(text => ({
+          text, html: text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+        })),
+      }));
+      return route.fulfill({ json: { previews } });
+    });
     const mount = async () => {
       await page.goto('about:blank');
       await page.setContent('<div class="wrap" id="rubymaco-admin-root"></div>');
@@ -29,7 +39,7 @@ const data = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
       await page.evaluate(config => {
         window.wp = { element: { ...window.React, createRoot: window.ReactDOM.createRoot } };
         window.rubymacoAdmin = config;
-      }, { url: 'https://example.invalid/settings', nonce: 'test', messages: data.messages });
+      }, { url: 'https://example.invalid/settings', previewUrl: 'https://example.invalid/preview', nonce: 'test', messages: data.messages });
       await page.addStyleTag({ path: path.join(wp, 'wp-admin/css/common.min.css') });
       await page.addStyleTag({ path: path.join(wp, 'wp-admin/css/forms.min.css') });
       await page.addStyleTag({ path: path.join(root, 'admin/build/index.css') });
@@ -58,7 +68,7 @@ const data = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
       assert.equal(await page.locator('input[type=checkbox]:checked').count(), data.settings.enabled_rule_ids.length);
     }
     assert.deepEqual(errors, []);
-    assert(requests.length > 0 && requests.every(method => method === 'GET'));
-    console.log('PASS: desktop/mobile tabs, all unchecked, retained edits, reload reset, GET only');
+    assert(requests.length > 0 && requests.every(method => method === 'GET' || method === 'PREVIEW'));
+    console.log('PASS: desktop/mobile tabs, all unchecked, retained edits, reload reset, no save');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
