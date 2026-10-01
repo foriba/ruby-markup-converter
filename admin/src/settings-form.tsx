@@ -1,64 +1,9 @@
 import { useRef, useState } from '@wordpress/element';
-import type { AdminConfig, Choice, PageData, Settings } from './types';
+import type { AdminConfig, PageData, Settings } from './types';
 import { saveSettings } from './settings-api';
-
-/**
- * PHPから取得した選択肢をラジオボタンで表示する。
- *
- * @param props          コンポーネントのプロパティ。
- * @param props.name     入力項目名。
- * @param props.label    選択肢グループの見出し。
- * @param props.choices  選択肢の一覧。
- * @param props.value    現在の選択値。
- * @param props.onChange 選択変更時のコールバック。
- */
-function Choices( {
-	name,
-	label,
-	choices,
-	value,
-	onChange,
-}: {
-	name: string;
-	label: string;
-	choices: Choice[];
-	value: string;
-	onChange: ( value: string ) => void;
-} ) {
-	return (
-		<fieldset className="rubymaco-field">
-			<legend>{ label }</legend>
-			{ choices.map( ( choice ) => (
-				<div className="rubymaco-choice" key={ choice.value }>
-					<label htmlFor={ name + '-' + choice.value }>
-						<input
-							id={ name + '-' + choice.value }
-							type="radio"
-							name={ name }
-							value={ choice.value }
-							checked={ value === choice.value }
-							onChange={ () => onChange( choice.value ) }
-							aria-describedby={
-								choice.description
-									? name + '-' + choice.value + '-help'
-									: undefined
-							}
-						/>
-						{ choice.label }
-					</label>
-					{ choice.description && (
-						<p
-							className="description"
-							id={ name + '-' + choice.value + '-help' }
-						>
-							{ choice.description }
-						</p>
-					) }
-				</div>
-			) ) }
-		</fieldset>
-	);
-}
+import SettingChoices from './setting-choices';
+import SettingsTabs from './settings-tabs';
+import MarkupRuleFields from './markup-rule-fields';
 
 /**
  * 設定を編集し、認証付きのREST APIを通じて保存する。
@@ -114,10 +59,6 @@ export default function SettingsForm( {
 			savePending.current = false;
 		}
 	};
-	const tabs = [
-		{ id: 'basic', label: messages.basic_tab },
-		{ id: 'compatibility', label: messages.compatibility_tab },
-	];
 	return (
 		<>
 			<p>
@@ -135,52 +76,11 @@ export default function SettingsForm( {
 				aria-label={ messages.page_title }
 				aria-busy={ saving }
 			>
-				<div
-					className="nav-tab-wrapper rubymaco-tabs"
-					role="tablist"
-					aria-label={ messages.page_title }
-				>
-					{ tabs.map( ( item, index ) => (
-						<button
-							type="button"
-							role="tab"
-							key={ item.id }
-							id={ 'rubymaco-tab-' + item.id }
-							className={
-								'nav-tab' +
-								( tab === item.id ? ' nav-tab-active' : '' )
-							}
-							aria-selected={ tab === item.id }
-							aria-controls={ 'rubymaco-panel-' + item.id }
-							tabIndex={ tab === item.id ? 0 : -1 }
-							onClick={ () => setTab( item.id ) }
-							onKeyDown={ ( event ) => {
-								let next = index;
-								if (
-									event.key === 'ArrowRight' ||
-									event.key === 'ArrowLeft'
-								) {
-									next = ( index + 1 ) % tabs.length;
-								} else if ( event.key === 'Home' ) {
-									next = 0;
-								} else if ( event.key === 'End' ) {
-									next = tabs.length - 1;
-								} else {
-									return;
-								}
-								event.preventDefault();
-								setTab( tabs[ next ].id );
-								document
-									.getElementById(
-										'rubymaco-tab-' + tabs[ next ].id
-									)
-									?.focus();
-							} }
-						>
-							{ item.label }
-						</button>
-					) ) }
-				</div>
+				<SettingsTabs
+					messages={ messages }
+					tab={ tab }
+					onChange={ setTab }
+				/>
 				<div
 					role="tabpanel"
 					id="rubymaco-panel-basic"
@@ -188,7 +88,7 @@ export default function SettingsForm( {
 					hidden={ tab !== 'basic' }
 					tabIndex={ 0 }
 				>
-					<Choices
+					<SettingChoices
 						name="apply_mode"
 						label={ messages.conversion_scope }
 						choices={ definitions.apply_modes }
@@ -209,86 +109,30 @@ export default function SettingsForm( {
 							<h3 id={ 'rubymaco-heading-' + type }>
 								{ messages[ type ] }
 							</h3>
-							{ definitions.markup_rules
-								.filter( ( rule ) => rule.type === type )
-								.map( ( rule ) => (
-									<div
-										className="rubymaco-rule"
-										key={ rule.id }
-									>
-										<label
-											htmlFor={
-												'rubymaco-rule-' + rule.id
-											}
-										>
-											<input
-												id={
-													'rubymaco-rule-' + rule.id
-												}
-												type="checkbox"
-												checked={ settings.enabled_rule_ids.includes(
-													rule.id
-												) }
-												aria-describedby={
-													'rubymaco-rule-help-' +
-													rule.id
-												}
-												onChange={ ( event ) => {
-													const checked =
-														event.target.checked;
-													setSettings(
-														( current ) => ( {
-															...current,
-															enabled_rule_ids:
-																definitions.markup_rules
-																	.filter(
-																		(
-																			candidate
-																		) =>
-																			candidate.id ===
-																			rule.id
-																				? checked
-																				: current.enabled_rule_ids.includes(
-																						candidate.id
-																				  )
-																	)
-																	.map(
-																		(
-																			candidate
-																		) =>
-																			candidate.id
-																	),
-														} )
-													);
-												} }
-											/>
-											{ rule.titles.join( ' / ' ) }
-										</label>
-										<p
-											className="description"
-											id={
-												'rubymaco-rule-help-' + rule.id
-											}
-										>
-											{ rule.description }
-										</p>
-										<ul
-											aria-label={
-												messages.markup_example
-											}
-										>
-											{ rule.examples.map(
-												( example, index ) => (
-													<li key={ index }>
-														<code>{ example }</code>
-													</li>
+							<MarkupRuleFields
+								rules={ definitions.markup_rules.filter(
+									( rule ) => rule.type === type
+								) }
+								enabledRuleIds={ settings.enabled_rule_ids }
+								exampleLabel={ messages.markup_example }
+								onChange={ ( id, checked ) =>
+									setSettings( ( current ) => ( {
+										...current,
+										enabled_rule_ids:
+											definitions.markup_rules
+												.filter( ( rule ) =>
+													rule.id === id
+														? checked
+														: current.enabled_rule_ids.includes(
+																rule.id
+														  )
 												)
-											) }
-										</ul>
-									</div>
-								) ) }
+												.map( ( rule ) => rule.id ),
+									} ) )
+								}
+							/>
 							{ type === 'bouten' && (
-								<Choices
+								<SettingChoices
 									name="bouten_style"
 									label={ messages.bouten_style }
 									choices={ definitions.bouten_styles }
@@ -311,7 +155,7 @@ export default function SettingsForm( {
 					hidden={ tab !== 'compatibility' }
 					tabIndex={ 0 }
 				>
-					<Choices
+					<SettingChoices
 						name="bouten_rendering_method"
 						label={ messages.bouten_rendering_method }
 						choices={ definitions.bouten_rendering_methods }
