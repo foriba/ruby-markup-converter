@@ -4,10 +4,10 @@ import SettingsForm from './settings-form';
 import './index.scss';
 
 /**
- * Load initial settings. Editing remains local until saving is connected.
+ * 設定画面の初期データを取得し、接続情報とともにフォームへ渡す。
  *
- * @param props        Component properties.
- * @param props.config PHP-provided connection settings and messages.
+ * @param props        コンポーネントのプロパティ。
+ * @param props.config PHPから渡された接続情報と画面文言。
  */
 function App( { config }: { config: AdminConfig } ) {
 	const [ data, setData ] = useState< PageData | null >( null );
@@ -65,7 +65,9 @@ function App( { config }: { config: AdminConfig } ) {
 				</div>
 			) }
 			{ ! failed && ! data && <p role="status">{ messages.loading }</p> }
-			{ ! failed && data && <SettingsForm data={ data } /> }
+			{ ! failed && data && (
+				<SettingsForm data={ data } config={ config } />
+			) }
 		</>
 	);
 }

@@ -2,6 +2,10 @@
 
 ## React のローカル編集確認
 
+`node tests/admin-save.cjs` は保存通信の単体テストです。POST本文・nonce・全解除と、
+HTTPエラー・通信失敗・不正な成功応答を検証します。実HTTPやデータベースへの書き込みは行いません。
+保存中の入力ロック、二重送信防止、成功後の未保存表示解除、失敗時の入力保持は実画面でも確認してください。
+
 `WP_ROOT=/path/to/wordpress node tests/admin-local-edit.cjs` でブラウザのスモークテストを実行できます。
 事前に `npm run build:admin` を実行してください。Playwrightのブラウザが必要です。
 インストール済みChromeを使う場合は `PLAYWRIGHT_CHANNEL=chrome` を指定します。
