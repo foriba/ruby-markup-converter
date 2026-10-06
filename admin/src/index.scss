@@ -3,15 +3,16 @@
 
 	overflow-wrap: anywhere;
 
-	.rubymaco-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
-	.nav-tab { margin-left: 0; white-space: normal; cursor: pointer; }
+	.components-tab-panel__tabs { display: flex; flex-wrap: wrap; }
+	.components-tab-panel__tabs-item { white-space: normal; height: auto; min-height: 48px; }
+	.components-button { max-width: 100%; white-space: normal; height: auto; min-height: 36px; }
 	[role="tabpanel"] { padding-top: 20px; }
 	.rubymaco-field { margin: 0 0 24px; min-width: 0; }
-	legend { font-weight: 600; margin-bottom: 12px; }
-	.rubymaco-choice { margin-bottom: 14px; }
-	.description { margin: 6px 0 0 25px; max-width: 760px; }
+	.components-radio-control__label,
+	.components-checkbox-control__label { overflow-wrap: anywhere; }
+	.components-notice { margin: 16px 0; }
+	.components-notice__content { min-width: 0; }
 	.rubymaco-rule { padding: 16px 0; border-bottom: 1px solid #c3c4c7; }
-	.rubymaco-rule label { font-weight: 600; }
 	.rubymaco-rule ul { margin-left: 25px; }
 	code { white-space: pre-wrap; overflow-wrap: anywhere; }
 	section { margin-bottom: 24px; }

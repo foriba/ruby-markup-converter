@@ -1,4 +1,5 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
+import { Button, Notice, Spinner } from '@wordpress/components';
 import type { AdminConfig, PageData } from './types';
 import SettingsForm from './settings-form';
 import './index.scss';
@@ -52,19 +53,24 @@ function App( { config }: { config: AdminConfig } ) {
 		<>
 			<h1>{ messages.page_title }</h1>
 			{ failed && (
-				<div className="notice notice-error">
+				<Notice status="error" isDismissible={ false }>
 					<p role="alert">{ messages.load_failed }</p>
 					<p>
-						<button
-							className="button"
+						<Button
+							variant="secondary"
 							onClick={ () => setAttempt( attempt + 1 ) }
 						>
 							{ messages.retry }
-						</button>
+						</Button>
 					</p>
-				</div>
+				</Notice>
 			) }
-			{ ! failed && ! data && <p role="status">{ messages.loading }</p> }
+			{ ! failed && ! data && (
+				<p role="status">
+					<Spinner />
+					{ messages.loading }
+				</p>
+			) }
 			{ ! failed && data && (
 				<SettingsForm data={ data } config={ config } />
 			) }

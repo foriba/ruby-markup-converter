@@ -1,4 +1,5 @@
 import type { PageData, RulePreview } from './types';
+import { CheckboxControl } from '@wordpress/components';
 
 /**
  * 記法の選択欄・説明・例文を表示する。編集値は保持せず、変更を親へ通知する。
@@ -30,24 +31,13 @@ export default function MarkupRuleFields( {
 		<>
 			{ rules.map( ( rule ) => (
 				<div className="rubymaco-rule" key={ rule.id }>
-					<label htmlFor={ 'rubymaco-rule-' + rule.id }>
-						<input
-							id={ 'rubymaco-rule-' + rule.id }
-							type="checkbox"
-							checked={ enabledRuleIds.includes( rule.id ) }
-							aria-describedby={ 'rubymaco-rule-help-' + rule.id }
-							onChange={ ( event ) =>
-								onChange( rule.id, event.target.checked )
-							}
-						/>
-						{ rule.titles.join( ' / ' ) }
-					</label>
-					<p
-						className="description"
-						id={ 'rubymaco-rule-help-' + rule.id }
-					>
-						{ rule.description }
-					</p>
+					<CheckboxControl
+						id={ 'rubymaco-rule-' + rule.id }
+						label={ rule.titles.join( ' / ' ) }
+						help={ rule.description }
+						checked={ enabledRuleIds.includes( rule.id ) }
+						onChange={ ( checked ) => onChange( rule.id, checked ) }
+					/>
 					<ul aria-label={ exampleLabel }>
 						{ rule.examples.map( ( example, index ) => (
 							<li key={ index }>

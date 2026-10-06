@@ -9,6 +9,9 @@ if (!wp) throw new Error('Set WP_ROOT to a WordPress installation.');
 const data = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
   'require "tests/bootstrap.php"; echo json_encode(\\Foriba\\RubyMarkupConverter\\Admin\\Admin_Page_Data::create_default()->get());'
 ], { cwd: root, env: process.env, encoding: 'utf8' }));
+const packages = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
+  'echo json_encode(require getenv("WP_ROOT") . "/wp-includes/assets/script-loader-packages.php");'
+], { env: process.env, encoding: 'utf8' }));
 (async () => {
   const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || undefined });
   try {
@@ -33,15 +36,24 @@ const data = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
     const mount = async () => {
       await page.goto('about:blank');
       await page.setContent('<div class="wrap" id="rubymaco-admin-root"></div>');
-      await page.addScriptTag({ path: path.join(wp, 'wp-includes/js/dist/vendor/react.min.js') });
-      await page.addScriptTag({ path: path.join(wp, 'wp-includes/js/dist/vendor/react-dom.min.js') });
-      await page.addScriptTag({ path: path.join(wp, 'wp-includes/js/dist/vendor/react-jsx-runtime.min.js') });
+      const loaded = new Set();
+      const loadScript = async handle => {
+        if (loaded.has(handle)) return;
+        loaded.add(handle);
+        const isPackage = handle.startsWith('wp-') && packages[handle.slice(3) + '.js'];
+        for (const dependency of isPackage ? packages[handle.slice(3) + '.js'].dependencies : []) {
+          await loadScript(dependency);
+        }
+        const file = isPackage ? handle.slice(3) + '.min.js' : 'vendor/' + handle + '.min.js';
+        await page.addScriptTag({ path: path.join(wp, 'wp-includes/js/dist', file) });
+      };
+      await loadScript('wp-components');
       await page.evaluate(config => {
-        window.wp = { element: { ...window.React, createRoot: window.ReactDOM.createRoot } };
         window.rubymacoAdmin = config;
       }, { url: 'https://example.invalid/settings', previewUrl: 'https://example.invalid/preview', nonce: 'test', messages: data.messages });
       await page.addStyleTag({ path: path.join(wp, 'wp-admin/css/common.min.css') });
       await page.addStyleTag({ path: path.join(wp, 'wp-admin/css/forms.min.css') });
+      await page.addStyleTag({ path: path.join(wp, 'wp-includes/css/dist/components/style.min.css') });
       await page.addStyleTag({ path: path.join(root, 'admin/build/index.css') });
       await page.addScriptTag({ path: path.join(root, 'admin/build/index.js') });
       await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).waitFor();
@@ -53,15 +65,15 @@ const data = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
       assert.equal(await checks.count(), data.definitions.markup_rules.length);
       for (const check of await checks.all()) await check.uncheck();
       assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
-      await page.locator('input[name=apply_mode]').last().check();
-      await page.locator('input[name=bouten_style]').last().check();
+      await page.locator('.rubymaco-field').filter({ hasText: data.messages.conversion_scope }).getByRole('radio').last().check();
+      await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_style }).getByRole('radio').last().check();
       await page.getByRole('tab', { name: data.messages.compatibility_tab, exact: true }).click();
-      await page.locator('input[name=bouten_rendering_method]').last().check();
+      await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_rendering_method }).getByRole('radio').last().check();
       await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).click();
       assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
-      assert.equal(await page.locator('input[name=bouten_style]').last().isChecked(), true);
+      assert.equal(await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_style }).getByRole('radio').last().isChecked(), true);
       await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).press('ArrowRight');
-      assert.equal(await page.locator('input[name=bouten_rendering_method]').last().isChecked(), true);
+      assert.equal(await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_rendering_method }).getByRole('radio').last().isChecked(), true);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.screenshot({ path: '/tmp/rubymaco-edit-' + width + '.png', fullPage: true });
       await mount();

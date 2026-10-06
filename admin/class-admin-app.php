@@ -78,8 +78,7 @@ final class Admin_App {
 		$directory = $this->plugin_info->get_directory_path() . 'admin/build/';
 		if (
 			! is_file( $directory . 'index.asset.php' )
-			|| ! is_file( $directory . 'index.js' )
-			|| ! is_file( $directory . 'index.css' ) ) {
+			|| ! is_file( $directory . 'index.js' ) ) {
 			return;
 		}
 		$asset = require $directory . 'index.asset.php';
@@ -90,12 +89,9 @@ final class Admin_App {
 			$asset['version'],
 			true
 		);
-		wp_enqueue_style(
-			'rubymaco-admin-app',
-			$this->plugin_info->get_directory_url() . 'admin/build/index.css',
-			array(),
-			$asset['version']
-		);
+		// 独自の画面装飾は読み込まず、標準コンポーネントのスタイルを使用する.
+		wp_enqueue_style( 'wp-components' );
+		// 投稿と同じ傍点をプレビューするための描画用スタイルは維持する.
 		wp_enqueue_style(
 			'rubymaco-admin-preview',
 			$this->plugin_info->get_directory_url() . 'public/css/ruby-markup-converter.css',
@@ -127,7 +123,6 @@ final class Admin_App {
 		if (
 			! is_file( $directory . 'index.js' )
 			|| ! is_file( $directory . 'index.asset.php' )
-			|| ! is_file( $directory . 'index.css' )
 			) {
 			echo '<div class="wrap"><p role="alert">';
 			echo esc_html__( 'Unable to load settings.', 'ruby-markup-converter' );

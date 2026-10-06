@@ -1,3 +1,4 @@
+import { RadioControl } from '@wordpress/components';
 import type { Choice } from './types';
 
 /**
@@ -24,36 +25,13 @@ export default function SettingChoices( {
 	onChange: ( value: string ) => void;
 } ) {
 	return (
-		<fieldset className="rubymaco-field">
-			<legend>{ label }</legend>
-			{ choices.map( ( choice ) => (
-				<div className="rubymaco-choice" key={ choice.value }>
-					<label htmlFor={ name + '-' + choice.value }>
-						<input
-							id={ name + '-' + choice.value }
-							type="radio"
-							name={ name }
-							value={ choice.value }
-							checked={ value === choice.value }
-							onChange={ () => onChange( choice.value ) }
-							aria-describedby={
-								choice.description
-									? name + '-' + choice.value + '-help'
-									: undefined
-							}
-						/>
-						{ choice.label }
-					</label>
-					{ choice.description && (
-						<p
-							className="description"
-							id={ name + '-' + choice.value + '-help' }
-						>
-							{ choice.description }
-						</p>
-					) }
-				</div>
-			) ) }
-		</fieldset>
+		<RadioControl
+			className="rubymaco-field"
+			id={ name }
+			label={ label }
+			selected={ value }
+			options={ choices }
+			onChange={ onChange }
+		/>
 	);
 }

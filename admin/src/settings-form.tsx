@@ -1,4 +1,11 @@
 import { useRef, useState } from '@wordpress/element';
+import {
+	Button,
+	Notice,
+	Panel,
+	PanelBody,
+	Spinner,
+} from '@wordpress/components';
 import type { AdminConfig, PageData, Settings } from './types';
 import { saveSettings } from './settings-api';
 import SettingChoices from './setting-choices';
@@ -28,7 +35,6 @@ export default function SettingsForm( {
 		'idle' | 'saving' | 'saved' | 'failed'
 	>( 'idle' );
 	const savePending = useRef( false );
-	const [ tab, setTab ] = useState( 'basic' );
 	const { messages, definitions } = data;
 	const preview = useSettingsPreview(
 		config,
@@ -82,142 +88,198 @@ export default function SettingsForm( {
 				aria-label={ messages.page_title }
 				aria-busy={ saving }
 			>
-				<SettingsTabs
-					messages={ messages }
-					tab={ tab }
-					onChange={ setTab }
-				/>
-				<p role="status">
-					{ preview.loading ? messages.preview_loading : '' }
-				</p>
-				{ preview.failed && (
-					<div className="notice notice-error">
-						<p role="alert">{ messages.preview_failed }</p>
-						<p>
-							<button
-								type="button"
-								className="button"
-								onClick={ preview.retry }
-							>
-								{ messages.retry }
-							</button>
-						</p>
-					</div>
-				) }
-				<div
-					role="tabpanel"
-					id="rubymaco-panel-basic"
-					aria-labelledby="rubymaco-tab-basic"
-					hidden={ tab !== 'basic' }
-					tabIndex={ 0 }
-				>
-					<SettingChoices
-						name="apply_mode"
-						label={ messages.conversion_scope }
-						choices={ definitions.apply_modes }
-						value={ settings.apply_mode }
-						onChange={ ( value ) =>
-							setSettings( ( current ) => ( {
-								...current,
-								apply_mode: value,
-							} ) )
-						}
-					/>
-					<h2>{ messages.markup_rules }</h2>
-					{ [ 'ruby', 'bouten' ].map( ( type ) => (
-						<section
-							key={ type }
-							aria-labelledby={ 'rubymaco-heading-' + type }
-						>
-							<h3 id={ 'rubymaco-heading-' + type }>
-								{ messages[ type ] }
-							</h3>
-							<MarkupRuleFields
-								rules={ definitions.markup_rules.filter(
-									( rule ) => rule.type === type
+				<SettingsTabs messages={ messages }>
+					{ ( tab ) => (
+						<>
+							<p role="status">
+								{ preview.loading && (
+									<>
+										<Spinner />
+										{ messages.preview_loading }
+									</>
 								) }
-								enabledRuleIds={ settings.enabled_rule_ids }
-								exampleLabel={ messages.markup_example }
-								outputLabel={ messages.output_result }
-								previews={ preview.previews }
-								onChange={ ( id, checked ) =>
-									setSettings( ( current ) => ( {
-										...current,
-										enabled_rule_ids:
-											definitions.markup_rules
-												.filter( ( rule ) =>
-													rule.id === id
-														? checked
-														: current.enabled_rule_ids.includes(
-																rule.id
-														  )
-												)
-												.map( ( rule ) => rule.id ),
-									} ) )
-								}
-							/>
-							{ type === 'bouten' && (
-								<SettingChoices
-									name="bouten_style"
-									label={ messages.bouten_style }
-									choices={ definitions.bouten_styles }
-									value={ settings.bouten_style }
-									onChange={ ( value ) =>
-										setSettings( ( current ) => ( {
-											...current,
-											bouten_style: value,
-										} ) )
-									}
-								/>
+							</p>
+							{ preview.failed && (
+								<Notice status="error" isDismissible={ false }>
+									<p role="alert">
+										{ messages.preview_failed }
+									</p>
+									<p>
+										<Button
+											type="button"
+											variant="secondary"
+											onClick={ preview.retry }
+										>
+											{ messages.retry }
+										</Button>
+									</p>
+								</Notice>
 							) }
-						</section>
-					) ) }
-				</div>
-				<div
-					role="tabpanel"
-					id="rubymaco-panel-compatibility"
-					aria-labelledby="rubymaco-tab-compatibility"
-					hidden={ tab !== 'compatibility' }
-					tabIndex={ 0 }
-				>
-					<SettingChoices
-						name="bouten_rendering_method"
-						label={ messages.bouten_rendering_method }
-						choices={ definitions.bouten_rendering_methods }
-						value={ settings.bouten_rendering_method }
-						onChange={ ( value ) =>
-							setSettings( ( current ) => ( {
-								...current,
-								bouten_rendering_method: value,
-							} ) )
-						}
-					/>
-				</div>
+							<div
+								id="rubymaco-panel-basic"
+								hidden={ tab !== 'basic' }
+								tabIndex={ 0 }
+							>
+								<Panel>
+									<PanelBody
+										title={ messages.conversion_scope }
+										initialOpen={ true }
+									>
+										<SettingChoices
+											name="apply_mode"
+											label={ messages.conversion_scope }
+											choices={ definitions.apply_modes }
+											value={ settings.apply_mode }
+											onChange={ ( value ) =>
+												setSettings( ( current ) => ( {
+													...current,
+													apply_mode: value,
+												} ) )
+											}
+										/>
+									</PanelBody>
+								</Panel>
+								<Panel header={ messages.markup_rules }>
+									{ [ 'ruby', 'bouten' ].map( ( type ) => (
+										<PanelBody
+											key={ type }
+											title={ messages[ type ] }
+											initialOpen={ true }
+										>
+											<MarkupRuleFields
+												rules={ definitions.markup_rules.filter(
+													( rule ) =>
+														rule.type === type
+												) }
+												enabledRuleIds={
+													settings.enabled_rule_ids
+												}
+												exampleLabel={
+													messages.markup_example
+												}
+												outputLabel={
+													messages.output_result
+												}
+												previews={ preview.previews }
+												onChange={ ( id, checked ) =>
+													setSettings(
+														( current ) => ( {
+															...current,
+															enabled_rule_ids:
+																definitions.markup_rules
+																	.filter(
+																		(
+																			rule
+																		) =>
+																			rule.id ===
+																			id
+																				? checked
+																				: current.enabled_rule_ids.includes(
+																						rule.id
+																				  )
+																	)
+																	.map(
+																		(
+																			rule
+																		) =>
+																			rule.id
+																	),
+														} )
+													)
+												}
+											/>
+											{ type === 'bouten' && (
+												<SettingChoices
+													name="bouten_style"
+													label={
+														messages.bouten_style
+													}
+													choices={
+														definitions.bouten_styles
+													}
+													value={
+														settings.bouten_style
+													}
+													onChange={ ( value ) =>
+														setSettings(
+															( current ) => ( {
+																...current,
+																bouten_style:
+																	value,
+															} )
+														)
+													}
+												/>
+											) }
+										</PanelBody>
+									) ) }
+								</Panel>
+							</div>
+							<div
+								id="rubymaco-panel-compatibility"
+								hidden={ tab !== 'compatibility' }
+								tabIndex={ 0 }
+							>
+								<Panel>
+									<PanelBody
+										title={
+											messages.bouten_rendering_method
+										}
+										initialOpen={ true }
+									>
+										<SettingChoices
+											name="bouten_rendering_method"
+											label={
+												messages.bouten_rendering_method
+											}
+											choices={
+												definitions.bouten_rendering_methods
+											}
+											value={
+												settings.bouten_rendering_method
+											}
+											onChange={ ( value ) =>
+												setSettings( ( current ) => ( {
+													...current,
+													bouten_rendering_method:
+														value,
+												} ) )
+											}
+										/>
+									</PanelBody>
+								</Panel>
+							</div>
+						</>
+					) }
+				</SettingsTabs>
 			</fieldset>
 			{ saveStatus === 'failed' && (
-				<div className="notice notice-error">
+				<Notice status="error" isDismissible={ false }>
 					<p role="alert">{ messages.save_failed }</p>
-				</div>
+				</Notice>
 			) }
 			<p role="status" className="rubymaco-edit-status">
 				{ dirty ? messages.unsaved_changes : '' }
 			</p>
-			<p className="rubymaco-save-actions">
-				<button
+			<div className="rubymaco-save-actions">
+				<Button
 					type="button"
-					className="button button-primary"
+					variant="primary"
+					isBusy={ saving }
 					disabled={
 						saving || ( ! dirty && saveStatus !== 'failed' )
 					}
 					onClick={ save }
 				>
 					{ saving ? messages.saving : messages.save }
-				</button>
-				<span role="status">
-					{ saving && messages.saving }
-					{ saveStatus === 'saved' && ! dirty && messages.saved }
-				</span>
-			</p>
+				</Button>
+				<span role="status">{ saving && messages.saving }</span>
+			</div>
+			{ saveStatus === 'saved' && ! dirty && (
+				<Notice status="success" isDismissible={ false }>
+					{ messages.saved }
+				</Notice>
+			) }
 		</>
 	);
 }
