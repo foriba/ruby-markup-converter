@@ -1,0 +1,30 @@
+// 部品の装飾は標準UIに任せ、ページの配置と用例だけを調整する。
+#rubymaco-mockup-settings {
+ .mockup-settings { width: 100%; max-width: 1040px; margin: 0; min-width: 0; box-sizing: border-box; align-self: flex-start; overflow-wrap: anywhere; }
+ .mockup-guide { display: flex; justify-content: flex-end; padding-bottom: 20px; }
+ .mockup-section { padding: 28px 0; border-bottom: 1px solid #dcdcde; }
+ h2 { font-size: 18px; line-height: 1.5; margin: 0 0 20px; }
+ h3 { font-size: 16px; line-height: 1.5; margin: 0; }
+ .mockup-section > p { margin: 0 0 24px; }
+ .components-notice { margin: 0 0 28px; }
+ .mockup-rule-group { margin-top: 28px; }
+ .mockup-rule { padding: 24px 0; border-bottom: 1px solid #e5e5e5; min-width: 0; }
+ .mockup-rule:last-child { border-bottom: 0; }
+ .mockup-rule label { white-space: pre-line; }
+ .mockup-examples { margin: 20px 0 0 28px; background: #f6f7f7; padding: 14px 18px; }
+ .mockup-example-head, .mockup-example { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+ .mockup-example-head { color: #646970; font-size: 12px; margin-bottom: 8px; }
+ .mockup-example { align-items: center; line-height: 2.6; }
+ code { background: transparent; padding: 0; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+ .mockup-output { font-size: 15px; }
+ .mockup-bouten-style { padding: 20px 0 0; margin-left: 28px; }
+ .mockup-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 24px 0; }
+ @media (max-width: 600px) {
+  .mockup-examples { margin-left: 0; padding: 12px; }
+  .mockup-bouten-style { margin-left: 0; }
+  .mockup-example-head { display: none; }
+  .mockup-example { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 8px 0; }
+  .mockup-example > div:first-child::before { content: '記法例'; display: block; color: #646970; font-size: 12px; }
+  .mockup-output::before { content: '表示例'; display: block; color: #646970; font-size: 12px; }
+ }
+}

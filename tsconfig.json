@@ -11,6 +11,7 @@
     "include": [
         "editor/src/**/*",
         "admin/src/**/*",
-        "types/**/*"
+        "types/**/*",
+        "admin/mockup/**/*"
     ]
 }

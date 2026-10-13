@@ -9,6 +9,8 @@
         "build:blocks": "wp-scripts build --source-path=editor/src --output-path=editor/build --blocks-manifest",
         "build:admin": "wp-scripts build --source-path=admin/src --output-path=admin/build",
         "start:admin": "wp-scripts start --source-path=admin/src --output-path=admin/build",
+        "build:mockup": "wp-scripts build --source-path=admin/mockup --output-path=admin/mockup-build",
+        "start:mockup": "wp-scripts start --source-path=admin/mockup --output-path=admin/mockup-build",
         "format": "wp-scripts format editor/src admin/src",
         "lint:js": "wp-scripts lint-js editor/src admin/src --ext .js,.jsx,.ts,.tsx"
     },
@@ -30,9 +32,14 @@
         "@wordpress/block-editor": "^16.2.0",
         "@wordpress/blocks": "^15.27.0",
         "@wordpress/components": "39.0.0",
+        "@wordpress/dom-ready": "^4.56.0",
         "@wordpress/element": "8.5.0",
         "@wordpress/i18n": "^6.27.0",
         "@wordpress/rich-text": "^7.53.0",
         "@wordpress/scripts": "^34.1.0"
+    },
+    "dependencies": {
+        "@wordpress/admin-ui": "^2.11.0",
+        "@wordpress/ui": "^0.23.0"
     }
 }

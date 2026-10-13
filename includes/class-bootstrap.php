@@ -110,6 +110,7 @@ final class Bootstrap {
 		require_once $this->plugin_info->get_directory_path() . 'admin/settings-components.php';
 		require_once $this->plugin_info->get_directory_path() . 'admin/settings-view.php';
 		require_once $this->plugin_info->get_directory_path() . 'admin/settings-page.php';
+		require_once $this->plugin_info->get_directory_path() . 'admin/mockup-page.php';
 
 		add_action( 'admin_menu', 'rubymaco_add_settings_page' );
 		add_action( 'admin_init', 'rubymaco_register_settings' );
