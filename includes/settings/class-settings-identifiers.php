@@ -14,14 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * 設定登録と設定画面で共有する識別子を管理する。
+ * 設定画面と REST API で使用する識別子を管理する。
  */
 final class Settings_Identifiers {
-	/**
-	 * WordPress Settings API の設定グループ名。
-	 */
-	public const GROUP = 'rubymaco_settings';
-
 	/**
 	 * 設定ページのスラッグ。
 	 */
@@ -30,7 +25,7 @@ final class Settings_Identifiers {
 	/**
 	 * 設定画面へのアクセスに必要な権限。
 	 *
-	 * 変更する場合は、Settings API の保存処理側の権限も確認すること。
+	 * 変更する場合は、REST API の保存処理側の権限も確認すること。
 	 */
 	public const CAPABILITY = 'manage_options';
 

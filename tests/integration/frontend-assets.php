@@ -6,8 +6,6 @@
  */
 
 use Foriba\RubyMarkupConverter\Integration\Frontend_Assets;
-use Foriba\RubyMarkupConverter\Plugin_Info;
-use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
 
 /**
  * WordPress への CSS 読み込み依頼を記録する部分読み込み用の代替実装。
@@ -63,24 +61,3 @@ foreach ( array( 'https://example.invalid/plugin', 'https://example.invalid/plug
 	);
 	remove_action( 'wp_enqueue_scripts', $assets_callback );
 }
-$admin_plugin_info                = new Plugin_Info( dirname( __DIR__, 2 ) . '/ruby-markup-converter.php' );
-$GLOBALS['test_enqueued_styles']  = array();
-$GLOBALS['test_enqueued_scripts'] = array();
-do_action( 'admin_enqueue_scripts', 'dashboard' );
-check_same( array(), $GLOBALS['test_enqueued_styles'], 'other admin pages do not enqueue styles' );
-check_same( array(), $GLOBALS['test_enqueued_scripts'], 'other admin pages do not enqueue scripts' );
-do_action( 'admin_enqueue_scripts', 'settings_page_' . Settings_Identifiers::PAGE_SLUG );
-check_same(
-	array(
-		array( 'ruby-markup-converter', $admin_plugin_info->get_directory_url() . 'public/css/ruby-markup-converter.css', array(), $admin_plugin_info->get_version(), 'all' ),
-		array( 'rubymaco-settings', $admin_plugin_info->get_directory_url() . 'admin/css/settings.css', array( 'ruby-markup-converter' ), (string) filemtime( $admin_plugin_info->get_directory_path() . 'admin/css/settings.css' ), 'all' ),
-	),
-	$GLOBALS['test_enqueued_styles'],
-	'admin styles use injected plugin info'
-);
-check_same(
-	array( array( 'rubymaco-settings', $admin_plugin_info->get_directory_url() . 'admin/js/settings.js', array(), (string) filemtime( $admin_plugin_info->get_directory_path() . 'admin/js/settings.js' ), true ) ),
-	$GLOBALS['test_enqueued_scripts'],
-	'admin scripts preserve version and footer settings'
-);
-unset( $GLOBALS['test_enqueued_styles'], $GLOBALS['test_enqueued_scripts'] );

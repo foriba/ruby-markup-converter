@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * 関数ファイルの読み込みと WordPress フックの登録を取りまとめる。
+ * WordPress フックの登録を取りまとめる。
  *
  * メインファイルでプラグイン情報とオートローダーを準備した後に起動する。
  * 変換処理、設定の正規化、プラグイン情報の定義は担当しない。
@@ -102,27 +102,9 @@ final class Bootstrap {
 	}
 
 	/**
-	 * 管理画面用の関数を読み込み、フックを登録する。
+	 * React 設定画面のフックを登録する。
 	 */
 	private function boot_admin(): void {
 		( new Admin_App( $this->plugin_info ) )->register_hooks();
-		require_once $this->plugin_info->get_directory_path() . 'admin/settings-controller.php';
-		require_once $this->plugin_info->get_directory_path() . 'admin/settings-components.php';
-		require_once $this->plugin_info->get_directory_path() . 'admin/settings-view.php';
-		require_once $this->plugin_info->get_directory_path() . 'admin/settings-page.php';
-		require_once $this->plugin_info->get_directory_path() . 'admin/mockup-page.php';
-
-		add_action( 'admin_menu', 'rubymaco_add_settings_page' );
-		add_action( 'admin_init', 'rubymaco_register_settings' );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-	}
-
-	/**
-	 * 関数ベースの管理画面へプラグイン情報を渡す。
-	 *
-	 * @param string $hook_suffix 現在の管理画面フック名.
-	 */
-	public function enqueue_admin_assets( string $hook_suffix ): void {
-		rubymaco_enqueue_admin_assets( $hook_suffix, $this->plugin_info );
 	}
 }

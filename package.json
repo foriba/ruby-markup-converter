@@ -9,8 +9,6 @@
         "build:blocks": "wp-scripts build --source-path=editor/src --output-path=editor/build --blocks-manifest",
         "build:admin": "wp-scripts build --source-path=admin/src --output-path=admin/build",
         "start:admin": "wp-scripts start --source-path=admin/src --output-path=admin/build",
-        "build:mockup": "wp-scripts build --source-path=admin/mockup --output-path=admin/mockup-build",
-        "start:mockup": "wp-scripts start --source-path=admin/mockup --output-path=admin/mockup-build",
         "format": "wp-scripts format editor/src admin/src",
         "lint:js": "wp-scripts lint-js editor/src admin/src --ext .js,.jsx,.ts,.tsx"
     },

@@ -11,6 +11,7 @@ use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
 
 use Foriba\RubyMarkupConverter\Bootstrap;
+use Foriba\RubyMarkupConverter\Admin\Admin_App;
 use Foriba\RubyMarkupConverter\Plugin_Info;
 
 $registered_content_filters = array_values(
@@ -45,19 +46,20 @@ $registered_assets_callback = $registered_assets[0]['function'];
 $registered_admin_assets = array_values(
 	array_filter(
 		$GLOBALS['wp_filter']['admin_enqueue_scripts']->callbacks[10],
-		static fn( array $entry ): bool => is_array( $entry['function'] ) && $entry['function'][0] instanceof Bootstrap
+		static fn( array $entry ): bool => is_array( $entry['function'] ) && $entry['function'][0] instanceof Admin_App
 	)
 );
 check_same( 1, count( $registered_admin_assets ), 'Bootstrap registers one admin assets callback' );
 $registered_admin_assets_callback = $registered_admin_assets[0]['function'];
+check_same( false, has_action( 'admin_init', 'rubymaco_register_settings' ), 'legacy form registration removed' );
+check_same( false, has_action( 'admin_menu', 'rubymaco_add_settings_page' ), 'legacy menu registration removed' );
 
 foreach ( array(
 	array( 'init', $registered_init_callback, 10, 1 ),
 	array( 'init', $registered_block_init_callback, 10, 1 ),
 	array( 'wp_enqueue_scripts', $registered_assets_callback, 10, 1 ),
 	array( 'render_block_rubymaco/content', $registered_block_callback, 10, 2 ),
-	array( 'admin_menu', 'rubymaco_add_settings_page', 10, 1 ),
-	array( 'admin_init', 'rubymaco_register_settings', 10, 1 ),
+	array( 'admin_menu', array( $registered_admin_assets_callback[0], 'register_page' ), 10, 1 ),
 	array( 'admin_enqueue_scripts', $registered_admin_assets_callback, 10, 1 ),
 ) as [$hook, $callback, $priority, $accepted_args] ) {
 	check_same( $priority, has_filter( $hook, $callback ), 'hook priority: ' . $hook );
@@ -89,7 +91,13 @@ foreach ( $GLOBALS['wp_filter'] as $hook => $hook_object ) {
 check_same( $before_boot, $after_boot, 'repeated boot leaves hooks unchanged' );
 check_same( $before_shortcodes, $GLOBALS['shortcode_tags'], 'repeated boot leaves shortcodes unchanged' );
 add_shortcode( 'rubymaco', $registered_shortcode_callback );
-remove_action( 'admin_enqueue_scripts', array( $bootstrap, 'enqueue_admin_assets' ) );
+foreach ( $GLOBALS['wp_filter']['admin_enqueue_scripts']->callbacks[10] as $entry ) {
+	$callback = $entry['function'];
+	if ( is_array( $callback ) && $callback[0] instanceof Admin_App && $callback !== $registered_admin_assets_callback ) {
+		remove_action( 'admin_enqueue_scripts', $callback );
+		remove_action( 'admin_menu', array( $callback[0], 'register_page' ) );
+	}
+}
 
 foreach ( $GLOBALS['wp_filter']['wp_enqueue_scripts']->callbacks[10] as $entry ) {
 	$callback = $entry['function'];

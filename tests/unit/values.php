@@ -108,6 +108,5 @@ check_same( Apply_Mode::from( 'all' ), Apply_Mode::all(), 'all factory preserves
 check_same( true, Apply_Mode::selected_areas()->equals( Apply_Mode::from( 'shortcode' ) ), 'equal apply modes' );
 check_same( false, Apply_Mode::selected_areas()->equals( Apply_Mode::all() ), 'different apply modes' );
 
-check_same( 'rubymaco_settings', Settings_Identifiers::GROUP, 'settings group compatibility' );
 check_same( 'rubymaco-settings', Settings_Identifiers::PAGE_SLUG, 'settings page slug compatibility' );
 check_same( 'manage_options', Settings_Identifiers::CAPABILITY, 'settings capability compatibility' );

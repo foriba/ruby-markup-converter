@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * 移行中はメニューに出さない別ページで起動し、既存の設定画面を維持する。
+ * 既存の設定ページスラッグを維持し、React 設定画面を提供する。
  */
 final class Admin_App {
 	/**
@@ -49,14 +49,13 @@ final class Admin_App {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
-	/** メニューを増やさず、管理者用ページを登録する。 */
+	/** 「設定」メニューに管理者用ページを登録する。 */
 	public function register_page(): void {
-		$hook            = add_submenu_page(
-			'options.php',
+		$hook            = add_options_page(
 			__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
 			__( 'Ruby Markup Converter', 'ruby-markup-converter' ),
 			Settings_Identifiers::CAPABILITY,
-			Settings_Identifiers::PAGE_SLUG . '-react',
+			Settings_Identifiers::PAGE_SLUG,
 			array( $this, 'render_page' )
 		);
 		$this->page_hook = is_string( $hook ) ? $hook : '';
