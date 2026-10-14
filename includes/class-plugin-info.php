@@ -54,20 +54,30 @@ final class Plugin_Info {
 	/**
 	 * メインファイルからプラグイン情報を取得する。
 	 *
-	 * パスは realpath() で解決せず、呼び出し元の __FILE__ をそのまま保持する。
+	 * 呼び出し元から渡されたメインファイルの絶対パス __FILE__ をそのまま保持する.
+	 * realpath() によるパスの再解決はおこなわない.
 	 *
 	 * @param string $plugin_file_path メインファイルの絶対パス。__FILE__ を渡す.
 	 * @throws InvalidArgumentException ファイルを読み取れない場合.
 	 * @throws RuntimeException プラグインの version ヘッダーが空の場合.
 	 */
 	public function __construct( string $plugin_file_path ) {
-		if ( ! is_file( $plugin_file_path ) || ! is_readable( $plugin_file_path ) ) {
-			throw new InvalidArgumentException( 'The plugin main file must be readable.' );
+		if ( ! is_file( $plugin_file_path )
+			|| ! is_readable( $plugin_file_path )
+			) {
+			throw new InvalidArgumentException(
+				'The plugin main file must be readable.'
+			);
 		}
 
-		$headers = get_file_data( $plugin_file_path, array( 'version' => 'Version' ) );
+		$headers = get_file_data(
+			$plugin_file_path,
+			array( 'version' => 'Version' )
+		);
 		if ( '' === $headers['version'] ) {
-			throw new RuntimeException( 'The plugin Version header must not be empty.' );
+			throw new RuntimeException(
+				'The plugin Version header must not be empty.'
+			);
 		}
 
 		$this->plugin_file_path      = $plugin_file_path;
