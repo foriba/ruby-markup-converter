@@ -89,8 +89,14 @@ final class Admin_App {
 			$asset['version'],
 			true
 		);
-		// 独自の画面装飾は読み込まず、標準コンポーネントのスタイルを使用する.
+		// 標準コンポーネントと、画面配置・例文用のスタイルを読み込む.
 		wp_enqueue_style( 'wp-components' );
+		wp_enqueue_style(
+			'rubymaco-admin-app',
+			$this->plugin_info->get_directory_url() . 'admin/build/index.css',
+			array( 'wp-components' ),
+			$asset['version']
+		);
 		// 投稿と同じ傍点をプレビューするための描画用スタイルは維持する.
 		wp_enqueue_style(
 			'rubymaco-admin-preview',

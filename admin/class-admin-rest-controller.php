@@ -169,7 +169,7 @@ final class Admin_REST_Controller {
 	/**
 	 * 保存前の設定で全例文を変換する。適用範囲はプレビューに影響しない。
 	 *
-	 * 有効な全ルールを定義順に適用する。無効な記法の例文も結果に含める。
+	 * 記法ごとに自身のルールを適用する。選択状態にかかわらず変換例を返す。
 	 * 任意の本文は受け付けず、保存設定の読み書きも行わない。
 	 *
 	 * @param \WP_REST_Request $request REST リクエスト.
@@ -183,18 +183,18 @@ final class Admin_REST_Controller {
 		$markup_rule_registry      = Markup_Rule_Registry::instance();
 		$markup_conversion_service = Markup_Conversion_Service::create_default();
 		$markup_renderer           = new Markup_Renderer();
-		$enabled_rules             = $markup_rule_registry->transform_rules_for( $settings['enabled_rule_ids'] );
 		$bouten_style              = Bouten_Style::from( $settings['bouten_style'] );
 		$bouten_rendering_method   = Bouten_Rendering_Method::from( $settings['bouten_rendering_method'] );
 		$previews                  = array();
 		foreach ( $markup_rule_registry->all() as $rule ) {
-			$examples = array();
+			$transform_rules = $markup_rule_registry->transform_rules_for( array( $rule->id ) );
+			$examples        = array();
 			foreach ( $rule->examples as $example ) {
 				$examples[] = array(
 					'text' => $example,
 					'html' => $markup_conversion_service->convert_with_rules(
 						$markup_renderer->render_text( $example ),
-						$enabled_rules,
+						$transform_rules,
 						$bouten_style,
 						$bouten_rendering_method
 					),

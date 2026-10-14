@@ -1,24 +1,37 @@
+// 部品の装飾は標準UIに任せ、ページの配置と用例だけを調整する。
 #rubymaco-admin-root {
-	max-width: 960px;
-
-	overflow-wrap: anywhere;
-
-	.components-tab-panel__tabs { display: flex; flex-wrap: wrap; }
-	.components-tab-panel__tabs-item { white-space: normal; height: auto; min-height: 48px; }
-	.components-button { max-width: 100%; white-space: normal; height: auto; min-height: 36px; }
-	[role="tabpanel"] { padding-top: 20px; }
-	.rubymaco-field { margin: 0 0 24px; min-width: 0; }
-	.components-radio-control__label,
-	.components-checkbox-control__label { overflow-wrap: anywhere; }
-	.components-notice { margin: 16px 0; }
-	.components-notice__content { min-width: 0; }
-	.rubymaco-rule { padding: 16px 0; border-bottom: 1px solid #c3c4c7; }
-	.rubymaco-rule ul { margin-left: 25px; }
-	code { white-space: pre-wrap; overflow-wrap: anywhere; }
-	section { margin-bottom: 24px; }
-	section .rubymaco-field { margin-top: 20px; }
-	.rubymaco-edit-status { min-height: 24px; }
-	.rubymaco-preview { padding: 12px 0; line-height: 2.5; overflow-wrap: anywhere; }
-	.rubymaco-editor { border: 0; padding: 0; margin: 0; min-width: 0; }
-	.rubymaco-save-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+ max-width: 1088px;
+ min-width: 0;
+ .rubymaco-settings { width: 100%; margin: 0; min-width: 0; box-sizing: border-box; align-self: flex-start; overflow-wrap: anywhere; }
+ .rubymaco-guide { display: flex; justify-content: flex-end; padding-bottom: 20px; }
+ .rubymaco-section { padding: 28px 0; border-bottom: 1px solid #dcdcde; }
+ h2 { font-size: 18px; line-height: 1.5; margin: 0 0 20px; }
+ h3 { font-size: 16px; line-height: 1.5; margin: 0; }
+ .rubymaco-section > p { margin: 0 0 24px; }
+ .components-notice { margin: 0 0 28px; }
+ .rubymaco-rule-group { margin-top: 28px; }
+ .rubymaco-rule { padding: 24px 0; border-bottom: 1px solid #e5e5e5; min-width: 0; }
+ .rubymaco-rule:last-child { border-bottom: 0; }
+ .rubymaco-rule label { white-space: pre-line; }
+ .rubymaco-examples { margin: 20px 0 0 28px; background: #f6f7f7; padding: 14px 18px; }
+ .rubymaco-example-head, .rubymaco-example { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+ .rubymaco-example-head { color: #646970; font-size: 12px; margin-bottom: 8px; }
+ .rubymaco-example { align-items: center; line-height: 2.6; }
+ code { background: transparent; padding: 0; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+ .rubymaco-output { font-size: 15px; }
+ .rubymaco-bouten-style { padding: 20px 0 0; margin-left: 28px; }
+ .rubymaco-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px 0; }
+ .rubymaco-save-feedback { width: 100%; min-height: 74px; align-items: center; }
+ .rubymaco-save-message { grid-row: 1; min-width: 0; }
+ .rubymaco-save-feedback .rubymaco-save-buttons { grid-column: 3; grid-row: 1; margin: 0; padding-inline-start: 20px; }
+ .rubymaco-save-buttons .components-button { min-width: 160px; max-width: 100%; height: auto; min-height: 40px; white-space: normal; justify-content: center; text-align: center; }
+ .rubymaco-example-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+ @media (max-width: 600px) {
+  .rubymaco-save-feedback .rubymaco-save-buttons { grid-column: 2; grid-row: 2; padding-inline-start: 0; margin-block-start: 16px; }
+  .rubymaco-examples { margin-left: 0; padding: 12px; }
+  .rubymaco-bouten-style { margin-left: 0; }
+  .rubymaco-example-head { display: none; }
+  .rubymaco-example { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 8px 0; }
+  .rubymaco-example-label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; display: block; color: #646970; font-size: 12px; }
+ }
 }

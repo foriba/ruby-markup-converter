@@ -148,13 +148,13 @@ try {
 							$preview_text     = ( new \Foriba\RubyMarkupConverter\Markup\Markup_Renderer() )->render_text( $preview_example['text'] );
 							$expected_preview = \Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service::create_default()->convert_with_rules(
 								$preview_text,
-								$preview_registry->transform_rules_for( $preview_ids ),
+								$preview_registry->transform_rules_for( array( $preview_item['id'] ) ),
 								\Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style::from( $preview_style ),
 								\Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method::from( $preview_method )
 							);
 							\check_same( $expected_preview, $preview_example['html'], 'preview uses explicit settings and existing converter' );
 							if ( array() === $preview_ids ) {
-								\check_same( $preview_text, $preview_example['html'], 'disabled rules leave examples unconverted' );
+								\check_same( true, $preview_text !== $preview_example['html'], 'disabled rules still show converted examples' );
 							}
 						}
 					}

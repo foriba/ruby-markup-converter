@@ -21,6 +21,10 @@ const packages = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
     page.on('pageerror', error => errors.push(error.message));
     await page.route('https://example.invalid/settings', route => {
       requests.push(route.request().method());
+      if (route.request().method() === 'POST') {
+        data.settings = route.request().postDataJSON();
+        return route.fulfill({ json: { settings: data.settings } });
+      }
       return route.fulfill({ json: data });
     });
     await page.route('https://example.invalid/preview', route => {
@@ -58,29 +62,35 @@ const packages = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
       await page.addScriptTag({ path: path.join(root, 'admin/build/index.js') });
       await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).waitFor();
     };
+    const initialSettings = structuredClone(data.settings);
     for (const width of [1280, 390]) {
+      data.settings = structuredClone(initialSettings);
       await page.setViewportSize({ width, height: 900 });
       await mount();
-      const checks = page.getByRole('checkbox');
+      const checks = page.getByRole('checkbox', {name: /.+/});
       assert.equal(await checks.count(), data.definitions.markup_rules.length);
       for (const check of await checks.all()) await check.uncheck();
       assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
-      await page.locator('.rubymaco-field').filter({ hasText: data.messages.conversion_scope }).getByRole('radio').last().check();
-      await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_style }).getByRole('radio').last().check();
+      await page.getByRole('region', { name: data.messages.conversion_scope, exact: true }).getByRole('radio', {name: /.+/}).last().check();
+      await page.locator('.rubymaco-bouten-style').getByRole('radio', {name: /.+/}).last().check();
       await page.getByRole('tab', { name: data.messages.compatibility_tab, exact: true }).click();
-      await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_rendering_method }).getByRole('radio').last().check();
+      await page.getByRole('switch').check();
       await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).click();
       assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
-      assert.equal(await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_style }).getByRole('radio').last().isChecked(), true);
+      assert.equal(await page.locator('.rubymaco-bouten-style').getByRole('radio', {name: /.+/}).last().isChecked(), true);
       await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).press('ArrowRight');
-      assert.equal(await page.locator('.rubymaco-field').filter({ hasText: data.messages.bouten_rendering_method }).getByRole('radio').last().isChecked(), true);
+      assert.equal(await page.getByRole('switch').isChecked(), true);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.screenshot({ path: '/tmp/rubymaco-edit-' + width + '.png', fullPage: true });
+      await page.getByRole('button', { name: data.messages.save, exact: true }).click();
+      await page.getByText(data.messages.saved, {exact: true}).waitFor();
+      assert.deepEqual(data.settings.enabled_rule_ids, []);
+      assert.equal(data.settings.bouten_rendering_method, 'custom');
       await mount();
-      assert.equal(await page.locator('input[type=checkbox]:checked').count(), data.settings.enabled_rule_ids.length);
+      assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
     }
     assert.deepEqual(errors, []);
-    assert(requests.length > 0 && requests.every(method => method === 'GET' || method === 'PREVIEW'));
-    console.log('PASS: desktop/mobile tabs, all unchecked, retained edits, reload reset, no save');
+    assert(requests.length > 0 && requests.every(method => method === 'GET' || method === 'PREVIEW' || method === 'POST'));
+    console.log('PASS: desktop/mobile tabs, all unchecked, retained edits, save, reload persistence (mock HTTP)');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
