@@ -10,7 +10,7 @@
  * @wordpress-plugin
  * Plugin Name:       Ruby Markup Converter
  * Plugin URI:        https://github.com/foriba/ruby-markup-converter/
- * Description:       Automatically convert plain-text ruby notations into display-ready HTML.
+ * Description:       Paste manuscripts written for novel submission sites into WordPress and display supported markup as ruby annotations and bouten.
  * Version:           1.1.0
  * Requires at least: 6.8
  * Requires PHP:      7.4
@@ -32,4 +32,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-( new Bootstrap( new Plugin_Info( __FILE__ ) ) )->boot();
+( new Bootstrap(
+	new Plugin_Info( __FILE__ )
+) )->boot();
