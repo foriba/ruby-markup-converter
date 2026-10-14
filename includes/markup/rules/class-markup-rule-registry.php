@@ -75,17 +75,6 @@ final class Markup_Rule_Registry {
 	}
 
 	/**
-	 * 設定画面で使用する記法一覧を取得する。
-	 *
-	 * 配列への変換や HTML エスケープは行わない。
-	 *
-	 * @return Markup_Rule[] 定義順の記法一覧。
-	 */
-	public function for_settings_view(): array {
-		return $this->all();
-	}
-
-	/**
 	 * すべての親ルールの ID を定義順に取得する。
 	 *
 	 * @return string[] 親ルールの ID 一覧。

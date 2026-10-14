@@ -88,15 +88,18 @@ function get_option( $key, $default_value = false ) {
 	return array_key_exists( $key, $GLOBALS['test_options'] ) ? $GLOBALS['test_options'][ $key ] : $default_value;
 }
 /**
- * 設定の更新を禁止する。
+ * 通常は設定の更新を禁止し、保存テスト中だけ代替処理に委譲する。
  *
  * @param string $key 設定キー.
  * @param mixed  $value 保存値.
  * @param mixed  $autoload 自動読み込み指定.
- * @return void
+ * @return bool 代替処理の更新結果.
  * @throws RuntimeException データベース操作が呼ばれた場合.
  */
 function update_option( $key, $value, $autoload = null ) {
+	if ( isset( $GLOBALS['test_option_writer'] ) ) {
+		return ( $GLOBALS['test_option_writer'] )( $key, $value, $autoload );
+	}
 	unset( $key, $value, $autoload );
 	throw new RuntimeException( 'Unexpected database write' );
 }
@@ -135,6 +138,38 @@ function delete_option( $key ) {
 function __( $text, $domain = '' ) {
 	unset( $domain );
 	return $text;
+}
+/**
+ * 文脈付き翻訳の代替実装。実際の翻訳は行わない。
+ *
+ * @param string $text 元の文字列.
+ * @param string $context 翻訳文脈.
+ * @param string $domain 翻訳ドメイン.
+ * @return string 元の文字列.
+ */
+function _x( $text, $context, $domain = '' ) {
+	unset( $context, $domain );
+	return $text;
+}
+/**
+ * HTTP 応答のステータス整数化に必要な代替処理。
+ *
+ * @param mixed $value 整数化する値.
+ * @return int 非負整数.
+ */
+function absint( $value ) {
+	return abs( (int) $value );
+}
+/**
+ * REST リクエスト用の JSON メディア型判定を代替する。
+ *
+ * WordPress の判定式に合わせる。実際の HTTP 認証はこのテストでは扱わない。
+ *
+ * @param string $media_type メディア型.
+ * @return bool JSON メディア型の場合に true.
+ */
+function wp_is_json_media_type( $media_type ) {
+	return (bool) preg_match( '/(^|\s|,)application\/([\w!#\$&-\^\.\+]+\+)?json(\+oembed)?($|\s|;|,)/i', $media_type );
 }
 /**
  * テストで許可するプロトコルを返す。

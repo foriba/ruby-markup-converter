@@ -282,3 +282,31 @@ ZIP内部の最上位は必ず `ruby-markup-converter/` とします。
 
 - [WordPress公式：Using Subversion](https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/)
 - [Composer公式：classmap](https://getcomposer.org/doc/04-schema.md#classmap)
+# 管理画面用 React の開発
+
+既存のブロックと同じ `@wordpress/scripts` を使います。
+
+- `npm run build`: ブロックと管理画面の両方をビルド。
+- `npm run build:blocks`: 従来のブロックだけをビルド。
+- `npm run build:admin`: 管理画面だけをビルド。
+- `npm start`: ブロックの変更を監視。
+- `npm run start:admin`: 管理画面の変更を監視。
+
+管理画面のソースは `admin/src/`、生成物は `admin/build/` です。
+配布準備スクリプトも `npm run build` を使うため、両方を生成します。
+ソースは配布から除外し、生成物と依存関係・バージョンを含む `index.asset.php` は配布します。
+
+管理画面の「設定 → Ruby Markup Converter」から開きます。
+URLは `/wp-admin/options-general.php?page=rubymaco-settings` です。
+旧PHP画面とモックアップは削除済みです。保存キー・保存値は従来のものを維持しています。
+
+編集値は保存するまでReact内に保持します。保存中は編集と二重送信を防止し、
+成功時はチェック付きの保存済み表示になり、5秒後に通常表示へ戻ります。
+再編集時は未保存表示を優先します。通信失敗時は編集値を保持して再試行できます。
+
+表示例は初回に全描画方式・傍点種類の組み合わせを取得し、画面内で保持します。
+記法の有効・無効にかかわらず変換例を表示し、傍点の切り替えは再通信せずに反映します。
+キャッシュは永続保存せず、ページ再読み込み時に再取得します。
+
+保存後の再読み込み、全解除、投稿への反映、通常メニューからのアクセス、
+他の管理画面に専用アセットを読み込まないことを確認してください。

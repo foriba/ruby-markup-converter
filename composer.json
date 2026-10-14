@@ -22,6 +22,9 @@
     },
     "autoload": {
         "classmap": [
+            "admin/class-admin-app.php",
+            "admin/class-admin-page-data.php",
+            "admin/class-admin-rest-controller.php",
             "includes/class-bootstrap.php",
             "includes/class-plugin-info.php",
             "includes/integration/",
