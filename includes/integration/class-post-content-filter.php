@@ -29,7 +29,7 @@ final class Post_Content_Filter {
 	 *
 	 * @var Markup_Conversion_Service
 	 */
-	private Markup_Conversion_Service $service;
+	private Markup_Conversion_Service $markup_conversion_service;
 
 	/**
 	 * 適用モードの取得元。
@@ -41,12 +41,15 @@ final class Post_Content_Filter {
 	/**
 	 * 必要な依存オブジェクトを受け取る。設定の取得やフック登録は行わない。
 	 *
-	 * @param Markup_Conversion_Service $service             本文の変換サービス.
+	 * @param Markup_Conversion_Service $markup_conversion_service 本文の変換サービス.
 	 * @param Apply_Mode_Resolver       $apply_mode_resolver 適用モードの取得元.
 	 */
-	public function __construct( Markup_Conversion_Service $service, Apply_Mode_Resolver $apply_mode_resolver ) {
-		$this->service             = $service;
-		$this->apply_mode_resolver = $apply_mode_resolver;
+	public function __construct(
+		Markup_Conversion_Service $markup_conversion_service,
+		Apply_Mode_Resolver $apply_mode_resolver
+	) {
+		$this->markup_conversion_service = $markup_conversion_service;
+		$this->apply_mode_resolver       = $apply_mode_resolver;
 	}
 
 	/**
@@ -55,7 +58,10 @@ final class Post_Content_Filter {
 	 * 同じインスタンスの再登録は WordPress が同一コールバックとして扱う。
 	 */
 	public function register_hooks(): void {
-		add_action( 'init', array( $this, 'maybe_register_content_filter' ) );
+		add_action(
+			'init',
+			array( $this, 'maybe_register_content_filter' )
+		);
 	}
 
 	/**
@@ -69,7 +75,11 @@ final class Post_Content_Filter {
 			return;
 		}
 
-		add_filter( 'the_content', array( $this, 'filter_content' ), 9 );
+		add_filter(
+			'the_content',
+			array( $this, 'filter_content' ),
+			9
+		);
 	}
 
 	/**
@@ -79,6 +89,6 @@ final class Post_Content_Filter {
 	 * @return string 変換後の投稿本文.
 	 */
 	public function filter_content( string $content ): string {
-		return $this->service->convert( $content );
+		return $this->markup_conversion_service->convert( $content );
 	}
 }

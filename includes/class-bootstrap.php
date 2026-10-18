@@ -25,21 +25,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WordPress フックの登録を取りまとめる。
+ * WordPress フックの登録を取りまとめる.
  *
  * メインファイルでプラグイン情報とオートローダーを準備した後に起動する。
  * 変換処理、設定の正規化、プラグイン情報の定義は担当しない。
  */
 final class Bootstrap {
 	/**
-	 * プラグインの配置情報とバージョン。
+	 * プラグインの配置情報とバージョン.
 	 *
 	 * @var Plugin_Info
 	 */
 	private Plugin_Info $plugin_info;
 
 	/**
-	 * 起動に必要なプラグイン情報を受け取る。
+	 * 起動に必要なプラグイン情報を受け取る.
 	 *
 	 * @param Plugin_Info $plugin_info プラグイン情報.
 	 */
@@ -48,16 +48,16 @@ final class Bootstrap {
 	}
 
 	/**
-	 * このインスタンスで起動済みかどうか。
+	 * このインスタンスで起動済みかどうか.
 	 *
 	 * @var bool
 	 */
 	private bool $booted = false;
 
 	/**
-	 * 必要な機能を読み込み、従来と同じタイミングで登録する。
+	 * 必要な機能を生成し、WordPress に処理を登録する.
 	 *
-	 * 同じインスタンスでの再呼び出しは何もしない。
+	 * 同じインスタンスで再度呼び出された場合は、何もせずに終了する.
 	 */
 	public function boot(): void {
 		if ( $this->booted ) {
@@ -102,7 +102,7 @@ final class Bootstrap {
 	}
 
 	/**
-	 * React 設定画面のフックを登録する。
+	 * React 設定画面のフックを登録する.
 	 */
 	private function boot_admin(): void {
 		( new Admin_App( $this->plugin_info ) )->register_hooks();
