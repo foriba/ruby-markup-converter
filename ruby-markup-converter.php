@@ -10,7 +10,7 @@
  * @wordpress-plugin
  * Plugin Name:       Ruby Markup Converter
  * Plugin URI:        https://github.com/foriba/ruby-markup-converter/
- * Description:       Paste manuscripts written for novel submission sites into WordPress and display supported markup as ruby annotations and bouten.
+ * Description:       Converts ruby and emphasis mark notation from Japanese novel-sharing sites for WordPress, without modifying the original text.
  * Version:           1.1.0
  * Requires at least: 6.8
  * Requires PHP:      7.4
