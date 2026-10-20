@@ -26,15 +26,17 @@ final class Shortcode {
 	 *
 	 * @var Markup_Conversion_Service
 	 */
-	private Markup_Conversion_Service $service;
+	private Markup_Conversion_Service $markup_conversion_service;
 
 	/**
 	 * 変換サービスを受け取る。設定の取得や登録は行わない。
 	 *
-	 * @param Markup_Conversion_Service $service 記法の変換サービス.
+	 * @param Markup_Conversion_Service $markup_conversion_service 記法の変換サービス.
 	 */
-	public function __construct( Markup_Conversion_Service $service ) {
-		$this->service = $service;
+	public function __construct(
+		Markup_Conversion_Service $markup_conversion_service
+	) {
+		$this->markup_conversion_service = $markup_conversion_service;
 	}
 
 	/**
@@ -43,7 +45,10 @@ final class Shortcode {
 	 * 同じインスタンスで再登録しても同じコールバックで上書きされる。
 	 */
 	public function register_hooks(): void {
-		add_shortcode( 'rubymaco', array( $this, 'render_shortcode' ) );
+		add_shortcode(
+			'rubymaco',
+			array( $this, 'render_shortcode' )
+		);
 	}
 
 	/**
@@ -55,9 +60,12 @@ final class Shortcode {
 	 * @param string|null          $content ショートコード本文.
 	 * @return string 変換後の本文.
 	 */
-	public function render_shortcode( array $atts, ?string $content = null ): string {
+	public function render_shortcode(
+		array $atts,
+		?string $content = null
+	): string {
 		unset( $atts );
 
-		return $this->service->convert( (string) $content );
+		return $this->markup_conversion_service->convert( (string) $content );
 	}
 }

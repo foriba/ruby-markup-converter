@@ -35,7 +35,7 @@ final class Blocks {
 	 *
 	 * @var Markup_Conversion_Service
 	 */
-	private Markup_Conversion_Service $service;
+	private Markup_Conversion_Service $markup_conversion_service;
 
 	/**
 	 * 適用モードの取得元。
@@ -47,14 +47,18 @@ final class Blocks {
 	/**
 	 * 必要な依存を受け取る。設定の取得やフック登録は行わない。
 	 *
-	 * @param Markup_Conversion_Service $service             記法の変換サービス.
-	 * @param Apply_Mode_Resolver       $apply_mode_resolver 適用モードの取得元.
-	 * @param string                    $plugin_directory   プラグインのディレクトリ.
+	 * @param Markup_Conversion_Service $markup_conversion_service 記法の変換サービス.
+	 * @param Apply_Mode_Resolver       $apply_mode_resolver       適用モードの取得元.
+	 * @param string                    $plugin_directory          プラグインのディレクトリ.
 	 */
-	public function __construct( Markup_Conversion_Service $service, Apply_Mode_Resolver $apply_mode_resolver, string $plugin_directory ) {
-		$this->service             = $service;
-		$this->apply_mode_resolver = $apply_mode_resolver;
-		$this->plugin_directory    = rtrim( $plugin_directory, '/\\' ) . '/';
+	public function __construct(
+		Markup_Conversion_Service $markup_conversion_service,
+		Apply_Mode_Resolver $apply_mode_resolver,
+		string $plugin_directory
+	) {
+		$this->markup_conversion_service = $markup_conversion_service;
+		$this->apply_mode_resolver       = $apply_mode_resolver;
+		$this->plugin_directory          = rtrim( $plugin_directory, '/\\' ) . '/';
 	}
 
 	/**
@@ -64,7 +68,13 @@ final class Blocks {
 	 */
 	public function register_hooks(): void {
 		add_action( 'init', array( $this, 'register_blocks' ) );
-		add_filter( 'render_block_rubymaco/content', array( $this, 'render_content_block' ), 10, 2 );
+
+		add_filter(
+			'render_block_rubymaco/content',
+			array( $this, 'render_content_block' ),
+			10,
+			2
+		);
 	}
 
 	/**
@@ -86,11 +96,14 @@ final class Blocks {
 	 * @param array<string, mixed> $block         ブロック情報.
 	 * @return string 変換後の HTML.
 	 */
-	public function render_content_block( string $block_content, array $block ): string {
+	public function render_content_block(
+		string $block_content,
+		array $block
+	): string {
 		unset( $block );
 
 		return $this->apply_mode_resolver->get()->equals( Apply_Mode::all() )
 			? $block_content
-			: $this->service->convert( $block_content );
+			: $this->markup_conversion_service->convert( $block_content );
 	}
 }

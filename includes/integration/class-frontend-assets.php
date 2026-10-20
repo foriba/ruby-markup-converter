@@ -31,17 +31,20 @@ final class Frontend_Assets {
 	 *
 	 * @var string
 	 */
-	private string $version;
+	private string $plugin_version;
 
 	/**
 	 * アセットの参照元とバージョンを受け取る。
 	 *
-	 * @param string $plugin_url プラグインの公開 URL.
-	 * @param string $version    プラグインのバージョン.
+	 * @param string $plugin_url     プラグインの公開 URL.
+	 * @param string $plugin_version プラグインのバージョン.
 	 */
-	public function __construct( string $plugin_url, string $version ) {
-		$this->plugin_url = rtrim( $plugin_url, '/' );
-		$this->version    = $version;
+	public function __construct(
+		string $plugin_url,
+		string $plugin_version
+	) {
+		$this->plugin_url     = rtrim( $plugin_url, '/' );
+		$this->plugin_version = $plugin_version;
 	}
 
 	/**
@@ -50,7 +53,10 @@ final class Frontend_Assets {
 	 * 同じインスタンスの再登録は WordPress が同一コールバックとして扱う。
 	 */
 	public function register_hooks(): void {
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+		add_action(
+			'wp_enqueue_scripts',
+			array( $this, 'enqueue_styles' )
+		);
 	}
 
 	/**
@@ -61,7 +67,7 @@ final class Frontend_Assets {
 			'ruby-markup-converter',
 			$this->plugin_url . '/public/css/ruby-markup-converter.css',
 			array(),
-			$this->version
+			$this->plugin_version
 		);
 	}
 }

@@ -42,7 +42,7 @@ final class Post_Content_Filter {
 	 * 必要な依存オブジェクトを受け取る。設定の取得やフック登録は行わない。
 	 *
 	 * @param Markup_Conversion_Service $markup_conversion_service 本文の変換サービス.
-	 * @param Apply_Mode_Resolver       $apply_mode_resolver 適用モードの取得元.
+	 * @param Apply_Mode_Resolver       $apply_mode_resolver       適用モードの取得元.
 	 */
 	public function __construct(
 		Markup_Conversion_Service $markup_conversion_service,
@@ -68,7 +68,7 @@ final class Post_Content_Filter {
 	 * 全文変換モードの場合のみ本文フィルターを登録する。
 	 *
 	 * 設定はオブジェクト生成時ではなく init のコールバック実行時に取得する。
-	 * 従来どおり、本文フィルターの優先度は 9 とする。
+	 * 本文フィルターの優先度は 9 とする。
 	 */
 	public function maybe_register_content_filter(): void {
 		if ( ! $this->apply_mode_resolver->get()->equals( Apply_Mode::all() ) ) {
