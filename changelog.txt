@@ -1,0 +1,14 @@
+Changelog Archive
+
+= 0.9.1 =
+
+- Addressed WordPress.org review feedback.
+
+= 0.9.0 =
+
+- Initial review submission.
+- Added support for multiple ruby markup styles.
+- Added bouten markup support.
+- Added shortcode and full-content conversion modes.
+- Added a settings screen with previews.
+- Added selectable bouten styles and rendering methods.

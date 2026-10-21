@@ -1,6 +1,6 @@
 === Ruby Markup Converter ===
 Contributors: Foriba
-Tags: ruby, furigana, japanese, typography, block, converter
+Tags: ruby, japanese, typography, block, converter
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -12,155 +12,127 @@ Converts ruby and emphasis mark notation from Japanese novel-sharing sites for W
 
 == Description ==
 
-Ruby Markup Converter lets you publish manuscripts written for online novel submission sites on WordPress using the ruby and bouten (emphasis dots) notation already in your text.
+= Want to Publish Your Manuscripts Written for Japanese Novel-Sharing Sites on WordPress, Too? =
 
-Copy and paste your manuscript from a text file into a Ruby Markup Converter block, or write directly in the block using the same notation. Supported notations are displayed as ruby annotations and bouten when readers view the post, without having to add each annotation again in the editor.
+Ruby Markup Converter is a plugin that automatically converts ruby (furigana) and emphasis mark (bouten) notation used on Japanese novel-sharing sites and elsewhere into a format that displays correctly in WordPress, without modifying the original text.
 
-If you normally write directly in the WordPress editor and add ruby annotations one at a time, you may not need this plugin. WordPress 6.3 and later includes built-in support for adding ruby annotations in the block editor.
+Simply copy and paste your manuscript from a text file. There's no need to add ruby annotations or emphasis marks one by one. Of course, you can also type the same notation directly into the WordPress editor.
 
-Ruby Markup Converter is primarily designed for Japanese typesetting and Japanese novel markup conventions, but the conversion itself is not limited to Japanese text. Any text that follows a supported markup pattern can be converted.
+---
 
-Place a Ruby Markup Converter block wherever markup conversion should apply. You can also enable conversion for the entire post content.
+= Key Features =
+- **Use your original manuscripts as they are:** Supported ruby and bouten notation is converted automatically, so there's no need to rewrite your text.
+- **Easy to use:** Simply paste your manuscript into the Ruby Markup Converter block.
+- **Choose the conversion scope:** Convert notation within a dedicated block or throughout the entire post content.
+- **Flexible settings:** Enable or disable individual markup rules and choose how bouten marks are displayed.
 
-The plugin includes an admin settings screen where you can choose the conversion scope, enable or disable individual markup styles, and choose how bouten should be rendered.
+---
 
-Supported Markup Styles:
+= Support for Languages Other Than Japanese =
+
+Although Ruby Markup Converter is designed with Japanese typography and novel-writing conventions in mind, it is not limited to Japanese. Text in other languages can also be converted as long as it follows the supported markup rules.
+
+---
+
+= Supported Markup Styles =
 
 * Ruby:
 
-  * ｜BaseText《RubyAnnotation》
-  * BaseText《RubyAnnotation》
-  * BaseText(RubyAnnotation)
-  * [[rb:BaseText > RubyAnnotation]]
-  * #BaseText__RubyAnnotation__#
-  * {{ruby|BaseText|RubyAnnotation}}
+  * `｜BaseText《RubyAnnotation》`
+  * `BaseText《RubyAnnotation》`
+  * `BaseText(RubyAnnotation)`
+  * `[[rb:BaseText > RubyAnnotation]]`
+  * `#BaseText__RubyAnnotation__#`
+  * `{{ruby|BaseText|RubyAnnotation}}`
 
 * Bouten (Emphasis):
 
-  * 《《Emphasis》》
+  * `《《Emphasis》》`
 
 == Installation ==
 
-1. Install using the WordPress built-in Plugin installer, or Extract the zip file and drop the contents in the wp-content/plugins/ directory of your WordPress installation.
+1. Install the plugin using the built-in WordPress plugin installer, or manually upload the extracted files to the `wp-content/plugins/` directory.
 2. Activate the plugin through the `Plugins` menu in WordPress.
-3. Open `Settings > Ruby Markup Converter`.
-4. Choose the conversion scope and markup rules you want to use.
+3. Go to `Settings > Ruby Markup Converter`.
+4. Select the conversion scope and markup rules you want to use.
 5. Save your settings.
 
 == Usage ==
 
-= Using the Ruby Markup Converter block =
+Ruby Markup Converter supports three ways to convert ruby and bouten notation:
 
-1. Open a post or page in the block editor.
-2. Add the `Ruby Markup Converter` block.
-3. Paste your manuscript into a Paragraph block inside it, keeping the supported ruby and bouten notation as written. You can also type directly using the same notation.
-4. Preview or publish the post to see the notation displayed as ruby annotations and bouten. In the editor, the notation remains as written.
+= Ruby Markup Converter Block =
 
-= Using the shortcode =
+Add the Ruby Markup Converter block to a post or page, then paste or type your text inside it. Supported notation is automatically converted when the content is displayed.
 
-You can also wrap text in `[rubymaco]...[/rubymaco]` to convert supported notation within that area. For new content in the block editor, the Ruby Markup Converter block is recommended; existing shortcodes continue to work.
+= Shortcode =
 
-1. In the block editor, add a Shortcode block. In the Classic Editor, enter the shortcode directly in the post content.
-2. Place your text between the opening and closing shortcode tags, for example: `[rubymaco]｜BaseText《RubyAnnotation》 and 《《Emphasis》》[/rubymaco]`.
-3. Preview or publish the post to see the converted result. Only the markup rules enabled in the plugin settings are applied.
+Wrap your text in `[rubymaco]...[/rubymaco]` to convert supported notation within that section. This method is also available in the Classic Editor.
 
-= Converting the entire post content =
+= Entire Post Content =
 
-If you prefer to write markup directly in the post content without placing it inside Ruby Markup Converter blocks, open `Settings > Ruby Markup Converter` and set the conversion scope to `Apply to Entire Post Content`.
-
-This also includes text inside Ruby Markup Converter blocks and `[rubymaco]...[/rubymaco]` shortcodes.
-
-This mode is convenient for posts that are mostly written with ruby or bouten markup, but unintended text may also be converted. Long posts may also take more processing.
+Enable Apply to Entire Post Content in the plugin settings to automatically convert supported notation throughout the post content.
 
 == Documentation ==
 
-For detailed instructions, examples, and troubleshooting, see the user guides:
-
-* [Ruby Markup Converter User Guide](https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md)
+For detailed instructions, examples, configuration options, and troubleshooting, see the [Ruby Markup Converter User Guide](https://github.com/foriba/ruby-markup-converter/blob/main/docs/en-US/user-guide.md).
 
 == Frequently Asked Questions ==
 
-= How do I use the plugin safely at first? =
+= Can I choose which markup styles to convert? =
 
-Start with the selected-area mode and place a Ruby Markup Converter block around the text you want to convert. This keeps conversion limited to the content you choose.
-
-= Can I apply conversions to the entire post content? =
-
-Yes. You can switch the conversion scope in the settings screen to apply markup conversion to the entire post content. This is convenient, but selected-area conversion is safer when only part of a post uses ruby or bouten markup.
-
-= Can I use the shortcode? =
-
-Yes. The `[rubymaco]...[/rubymaco]` shortcode is supported. For new content created with the block editor, using the Ruby Markup Converter block is recommended.
-
-= Does the plugin support bouten? =
-
-Yes. The plugin supports bouten markup using `《《Emphasis》》`, and you can choose both the bouten style and the rendering method.
-
-= Can I enable only specific markup styles? =
-
-Yes. Each supported markup rule can be enabled or disabled individually from the settings screen.
+Yes. You can enable or disable each supported ruby and bouten markup rule individually in the plugin settings. You can also choose the bouten style and rendering method.
 
 = What happens when I uninstall the plugin? =
 
-Uninstalling the plugin removes its saved settings but does not delete or rewrite your posts or pages. Ruby and bouten notation remains in your text and is displayed as written instead of being converted into annotations or emphasis dots. Any manually written `[rubymaco]...[/rubymaco]` shortcode tags also remain visible.
+Uninstalling the plugin removes its saved settings but does not delete or modify your posts or pages. Ruby and bouten notation remains in the original text and is no longer converted. Any manually written `[rubymaco]...[/rubymaco]` shortcode tags also remain visible.
+
+== Screenshots ==
+
+1. Plugin settings screen.
+2. Adding the Ruby Markup Converter block.
+3. Example of entering or pasting text into the block.
+4. Preview showing the converted ruby and bouten notation.
+
+= Sample Text Credit =
+
+The sample text shown in the screenshots is an excerpt from Wagahai wa Neko de Aru (『吾輩は猫である』; I Am a Cat) by Natsume Soseki. The original work is in the public domain, and the text was obtained from [Aozora Bunko](https://www.aozora.gr.jp/).
+
+Source: [『吾輩は猫である』 — Aozora Bunko](https://www.aozora.gr.jp/cards/000148/card789.html)
 
 == Changelog ==
 
 = 1.2.0 =
-
-* Redesigned the settings screen using WordPress UI components and React, with separate sections for ruby and bouten.
-* Moved the custom bouten rendering option to the Compatibility Settings tab.
-* Added clearer feedback for unsaved changes, saving, and save results.
-* Refactored internal code and added regression tests while preserving existing saved settings and markup conversion behavior.
+- Redesigned the settings screen for easier navigation and configuration.
+- Improved feedback when saving settings or making changes.
+- Moved the custom bouten rendering option to Compatibility Settings.
+- Improved internal reliability while preserving existing settings and conversion behavior.
+- Corrected the documentation to remove an inaccurate statement about built-in ruby support in WordPress.
 
 = 1.1.0 =
 
-* Added the Ruby Markup Converter block for converting markup within a specific block area.
-* Changed the default bouten rendering method to CSS text-emphasis.
-* Fixed unintended markup conversion within HTML tags and attributes that could break the displayed content.
-* Fixed bouten markup immediately following kanji being misinterpreted as ruby markup.
-* Fixed ampersands being displayed incorrectly with the custom bouten renderer.
-* Fixed default markup rules being re-enabled when all rules were disabled.
-* Updated the minimum required WordPress version to 6.8.
+- Added the Ruby Markup Converter block for easier use in the block editor.
+- Changed the default bouten rendering method to CSS text-emphasis.
+- Prevented markup conversion inside HTML tags and attributes to avoid potential display issues.
+- Fixed bouten markup immediately following kanji being incorrectly interpreted as ruby markup.
+- Fixed incorrect display of ampersands when using the custom bouten renderer.
+- Fixed an issue where disabling all markup rules caused the settings to revert to their defaults.
+- Updated the minimum required WordPress version to 6.8.
 
 = 1.0.1 =
 
-* Improved internal option management.
+- Improved internal settings management.
 
 = 1.0.0 =
 
-* Initial public release.
-
-= 0.9.1 =
-
-* Addressed WordPress.org review feedback.
-
-= 0.9.0 =
-
-* Initial review submission
-* Added support for multiple ruby markup styles
-* Added bouten markup support
-* Added shortcode-only and full-content conversion modes
-* Added admin settings screen with previews
-* Added selectable bouten style and rendering method
+- Initial public release.
 
 == Upgrade Notice ==
 
 = 1.2.0 =
 
-Redesigned settings screen with clearer save feedback and faster bouten preview switching. Existing settings are preserved. Custom bouten rendering is now under Compatibility Settings.
+The settings screen has been redesigned. Existing settings are preserved, and no action is required after updating. Custom bouten rendering is now under Compatibility Settings.
 
 = 1.1.0 =
-Adds a dedicated conversion block, preserves HTML structure during conversion, and fixes bouten markup after kanji being mistaken for ruby. Requires WordPress 6.8 or later.
 
-= 1.0.0 =
-
-* Initial public release.
-
-= 0.9.1 =
-
-* Addressed WordPress.org review feedback.
-
-= 0.9.0 =
-
-Initial review submission.
+Requires WordPress 6.8 or later. Adds a dedicated conversion block and fixes several markup conversion issues.
