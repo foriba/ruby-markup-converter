@@ -91,14 +91,8 @@ Uninstalling the plugin removes its saved settings but does not delete or modify
 
 1. Plugin settings screen.
 2. Adding the Ruby Markup Converter block.
-3. Example of entering or pasting text into the block.
+3. Example of entering or pasting text into the block. Sample text: Wagahai wa Neko de Aru (I Am a Cat) by Natsume Soseki (public domain). Source: Aozora Bunko.
 4. Preview showing the converted ruby and bouten notation.
-
-= Sample Text Credit =
-
-The sample text shown in the screenshots is an excerpt from Wagahai wa Neko de Aru (『吾輩は猫である』; I Am a Cat) by Natsume Soseki. The original work is in the public domain, and the text was obtained from [Aozora Bunko](https://www.aozora.gr.jp/).
-
-Source: [『吾輩は猫である』 — Aozora Bunko](https://www.aozora.gr.jp/cards/000148/card789.html)
 
 == Changelog ==
 
