@@ -78,6 +78,39 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 ## 安全性と対象範囲
 
+### 変換対象の判定（v1.3.0 開発中）
+
+`Conversion_Target_Policy::resolve()` は、全体の `Apply_Mode`、投稿別指定
+（`null`: 継承、`true`: 有効、`false`: 無効）、カテゴリ一致の真偽値を受け取ります。
+DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立しています。
+
+1. 投稿別の無効指定 → `NONE`（ブロック・ショートコードも変換しない）。
+2. 投稿別の有効指定 → `FULL_CONTENT`。
+3. 全体が全文変換 → `FULL_CONTENT`。
+4. 対象カテゴリに一致 → `FULL_CONTENT`。
+5. その他 → `SELECTED_AREAS`（ブロック・ショートコードのみ。なければ無変換）。
+
+カテゴリ一致は、選択カテゴリ自身またはその子孫に一つでも所属する場合です。
+投稿 ID が不明な入口では投稿別指定を継承、カテゴリ一致を false とし、
+別の投稿やカテゴリの ID を推測して利用しません。
+
+`unit/conversion-target-policy.php` で全12通りと、判定状態を持ち越さないことを検証します。
+投稿別設定の取得は `Post_Conversion_Override_Resolver::get( $post_id )` で行います。
+メタキーは `_rubymaco_conversion_override`、保存値は `inherit`・`enabled`・
+`disabled` です。未保存や不正値は継承となり、読み取り時の補正保存はしません。
+投稿と固定ページで同じ取得方法を使います。ID 不明時は 0 を渡します。
+
+`Category_Target_Matcher::matches( $post_id, $selected_category_ids )` は、
+所属カテゴリと WordPress の `get_ancestors()` が返す祖先一覧を照合します。
+選択 ID は正規化済みの正の整数配列を渡します。子の選択で親や兄弟は対象になりません。
+対象未選択、カテゴリなし、取得エラーは不一致です。取得結果を独自にキャッシュしません。
+
+`integration/post-conversion-override.php` と `integration/category-target-matcher.php`
+で、取得 API の引数、未保存・不正値、子孫・兄弟・複数所属、エラー、変更追従を検証します。
+投稿メタ・カテゴリ取得 API は代替実装なので、実 DB や WordPress 自体の階層探索は検証対象外です。
+投稿メタの登録・保存・削除、対象カテゴリ一覧の保存・正規化、各変換入口への接続は未実装です。
+現段階では既存の変換動作を変更しません。
+
 ### 複数ルールの現行仕様
 
 - 設定の選択順ではなく、レジストリの定義順に適用する。重複した選択は一度だけ扱う。
