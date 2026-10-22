@@ -13,6 +13,7 @@ use Foriba\RubyMarkupConverter\Integration\Blocks;
 use Foriba\RubyMarkupConverter\Integration\Frontend_Assets;
 use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
+use Foriba\RubyMarkupConverter\Integration\Post_Conversion_Meta;
 use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Admin\Admin_REST_Controller;
@@ -87,6 +88,9 @@ final class Bootstrap {
 			$this->plugin_info->get_directory_url(),
 			$this->plugin_info->get_version()
 		) )->register_hooks();
+
+		// 投稿別設定を標準の投稿メタ REST API に登録する.
+		( new Post_Conversion_Meta() )->register_hooks();
 
 		// REST リクエストは管理画面判定の外で登録する.
 		( new Admin_REST_Controller(

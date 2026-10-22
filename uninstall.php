@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Override_Resolver;
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
@@ -18,3 +19,5 @@ require_once __DIR__ . '/vendor/autoload.php';
 foreach ( Option_Keys::values() as $rubymaco_option_key ) {
 	delete_option( $rubymaco_option_key );
 }
+
+delete_post_meta_by_key( Post_Conversion_Override_Resolver::META_KEY );

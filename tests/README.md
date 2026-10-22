@@ -108,8 +108,32 @@ DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立�
 `integration/post-conversion-override.php` と `integration/category-target-matcher.php`
 で、取得 API の引数、未保存・不正値、子孫・兄弟・複数所属、エラー、変更追従を検証します。
 投稿メタ・カテゴリ取得 API は代替実装なので、実 DB や WordPress 自体の階層探索は検証対象外です。
-投稿メタの登録・保存・削除、対象カテゴリ一覧の保存・正規化、各変換入口への接続は未実装です。
-現段階では既存の変換動作を変更しません。
+各変換入口への接続は未実装なので、現段階では既存の変換動作を変更しません。
+
+### 変換対象の保存・取得
+
+- `Target_Category_Settings` は `rubymaco_target_category_ids` を読み書きします。
+  `get()` は正の整数かつ現存するカテゴリだけを返し、補正保存はしません。
+  `validate()` は正の整数のリストを要求し、存在しないカテゴリ・型違い・連想配列を拒否します。
+  重複は除去して昇順にします。空配列は全解除です。
+  `save()` は管理権限を確認してから検証・保存し、保存後の値も照合します。
+  HTTP から呼び出す際の nonce 確認は通信層の責務です。
+- 既存の設定用 REST API は4項目の契約を維持しています。
+  カテゴリ用サービスの REST 接続と選択 UI は後続作業です。
+- `Post_Conversion_Meta` は `init` で投稿・固定ページのメタを登録します。
+  WordPress 標準の投稿 REST API の `meta` で取得・保存でき、
+  `inherit`・`enabled`・`disabled` の enum と編集コンテキストを指定します。
+  権限判定の対象ユーザーが、その投稿を編集できることを要求します。
+  認証・nonce・保存処理は WordPress に委譲します。投稿タイプの custom-fields 対応が必要です。
+  PHP から直接メタを更新するコードの権限確認は呼び出し側の責務です。
+- 未保存は継承です。無効化しただけでは保存データは削除しません。
+  アンインストール時には対象カテゴリ設定とプラグイン専用の投稿メタを削除します。
+
+`integration/target-category-settings.php` は空配列・不正入力・権限・保存失敗を検証します。
+`integration/post-conversion-meta.php` はメタ登録引数・投稿別権限・WordPress の実 REST スキーマ検証を確認します。
+`integration/uninstall.php` は削除するキーを記録して検証します。
+これらは DB・権限・登録 API の代替処理を使うため、実 HTTP の認証・nonce と投稿メタ保存は
+実環境で別途確認してください。既存投稿への一括書き込みは行いません。
 
 ### 複数ルールの現行仕様
 

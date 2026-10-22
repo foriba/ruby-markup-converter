@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 投稿メタから共通判定用の三状態を取得する。
  *
  * 投稿 ID をグローバル変数から推測せず、保存や権限判定も行わない。
- * メタの登録・保存 API とアンインストール時の削除は、保存機能の追加時に接続する。
+ * メタの登録と保存時の権限確認は Post_Conversion_Meta が担当する。
  */
 final class Post_Conversion_Override_Resolver {
 	/** 投稿別設定のメタキー。 */

@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * 設定値の取得・保存・検証や、初期値の定義は行わない。
  */
 final class Option_Keys {
+	/** 全文変換の対象カテゴリ ID 一覧の保存キー。 */
+	public const TARGET_CATEGORY_IDS = 'rubymaco_target_category_ids';
 	/**
 	 * 有効な記法ルール ID 一覧の保存キー。
 	 */
@@ -57,6 +59,7 @@ final class Option_Keys {
 			self::BOUTEN_STYLE,
 			self::APPLY_MODE,
 			self::BOUTEN_RENDERING_METHOD,
+			self::TARGET_CATEGORY_IDS,
 		);
 	}
 }
