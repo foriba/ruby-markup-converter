@@ -123,7 +123,12 @@ final class Markup_Transformer {
 					continue;
 				}
 			}
-			if ( '#tag' === $processor->get_token_type() && ! $processor->is_tag_closer() && $processor->has_class( 'rubymaco-bouten' ) ) {
+			// 投稿一覧テンプレートや別投稿の本文を外側の投稿設定で変換しない.
+			if ( '#tag' === $processor->get_token_type() && ! $processor->is_tag_closer()
+				&& ( $processor->has_class( 'rubymaco-bouten' )
+					|| $processor->has_class( 'wp-block-post-content' )
+					|| $processor->has_class( 'wp-block-query' )
+					|| $processor->has_class( 'wp-block-post-template' ) ) ) {
 				$protected_depth = $depth;
 				continue;
 			}

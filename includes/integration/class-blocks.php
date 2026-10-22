@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Integration;
 
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
-use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
+use Foriba\RubyMarkupConverter\Service\Conversion_Target_Policy;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -38,27 +38,27 @@ final class Blocks {
 	private Markup_Conversion_Service $markup_conversion_service;
 
 	/**
-	 * 適用モードの取得元。
+	 * 投稿ごとの変換範囲の取得元。
 	 *
-	 * @var Apply_Mode_Resolver
+	 * @var Conversion_Target_Resolver
 	 */
-	private Apply_Mode_Resolver $apply_mode_resolver;
+	private Conversion_Target_Resolver $conversion_target_resolver;
 
 	/**
 	 * 必要な依存を受け取る。設定の取得やフック登録は行わない。
 	 *
-	 * @param Markup_Conversion_Service $markup_conversion_service 記法の変換サービス.
-	 * @param Apply_Mode_Resolver       $apply_mode_resolver       適用モードの取得元.
-	 * @param string                    $plugin_directory          プラグインのディレクトリ.
+	 * @param Markup_Conversion_Service  $markup_conversion_service 記法の変換サービス.
+	 * @param Conversion_Target_Resolver $conversion_target_resolver 変換範囲の取得元.
+	 * @param string                     $plugin_directory          プラグインのディレクトリ.
 	 */
 	public function __construct(
 		Markup_Conversion_Service $markup_conversion_service,
-		Apply_Mode_Resolver $apply_mode_resolver,
+		Conversion_Target_Resolver $conversion_target_resolver,
 		string $plugin_directory
 	) {
-		$this->markup_conversion_service = $markup_conversion_service;
-		$this->apply_mode_resolver       = $apply_mode_resolver;
-		$this->plugin_directory          = rtrim( $plugin_directory, '/\\' ) . '/';
+		$this->markup_conversion_service  = $markup_conversion_service;
+		$this->conversion_target_resolver = $conversion_target_resolver;
+		$this->plugin_directory           = rtrim( $plugin_directory, '/\\' ) . '/';
 	}
 
 	/**
@@ -73,7 +73,7 @@ final class Blocks {
 			'render_block_rubymaco/content',
 			array( $this, 'render_content_block' ),
 			10,
-			2
+			3
 		);
 	}
 
@@ -88,21 +88,24 @@ final class Blocks {
 	}
 
 	/**
-	 * ブロック内の記法を変換する。全文変換モードでは本文側に任せる。
+	 * 投稿別の無効指定を除き、明示範囲の記法を変換する。
 	 *
-	 * 適用モードは生成時ではなく、レンダリングのたびに取得する。
+	 * 投稿文脈と適用範囲をレンダリングのたびに取得する。
+	 * 全文変換済みの ruby 要素などは変換サービスが保護する。
 	 *
 	 * @param string               $block_content レンダリング済み HTML.
 	 * @param array<string, mixed> $block         ブロック情報.
+	 * @param \WP_Block|null       $instance      投稿文脈を持つブロック.
 	 * @return string 変換後の HTML.
 	 */
 	public function render_content_block(
 		string $block_content,
-		array $block
+		array $block,
+		?\WP_Block $instance = null
 	): string {
 		unset( $block );
 
-		return $this->apply_mode_resolver->get()->equals( Apply_Mode::all() )
+		return Conversion_Target_Policy::NONE === $this->conversion_target_resolver->get( Post_Context::block_id( $instance ) )
 			? $block_content
 			: $this->markup_conversion_service->convert( $block_content );
 	}

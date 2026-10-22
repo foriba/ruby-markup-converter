@@ -50,6 +50,7 @@ try {
 	}
 	require __DIR__ . '/integration/target-category-settings.php';
 	require __DIR__ . '/integration/post-conversion-meta.php';
+	require __DIR__ . '/integration/conversion-target-entries.php';
 	require __DIR__ . '/integration/uninstall.php';
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain CLI output, not HTML.
 	echo "PASS: $count assertions (PHP " . PHP_VERSION . ", WordPress $test_wp_version)\n";

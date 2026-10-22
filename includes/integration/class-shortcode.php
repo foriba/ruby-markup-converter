@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Integration;
 
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
+use Foriba\RubyMarkupConverter\Service\Conversion_Target_Policy;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,14 +31,24 @@ final class Shortcode {
 	private Markup_Conversion_Service $markup_conversion_service;
 
 	/**
+	 * 変換範囲の取得元。
+	 *
+	 * @var Conversion_Target_Resolver
+	 */
+	private Conversion_Target_Resolver $conversion_target_resolver;
+
+	/**
 	 * 変換サービスを受け取る。設定の取得や登録は行わない。
 	 *
-	 * @param Markup_Conversion_Service $markup_conversion_service 記法の変換サービス.
+	 * @param Markup_Conversion_Service  $markup_conversion_service 記法の変換サービス.
+	 * @param Conversion_Target_Resolver $conversion_target_resolver 変換範囲の取得元.
 	 */
 	public function __construct(
-		Markup_Conversion_Service $markup_conversion_service
+		Markup_Conversion_Service $markup_conversion_service,
+		Conversion_Target_Resolver $conversion_target_resolver
 	) {
-		$this->markup_conversion_service = $markup_conversion_service;
+		$this->markup_conversion_service  = $markup_conversion_service;
+		$this->conversion_target_resolver = $conversion_target_resolver;
 	}
 
 	/**
@@ -66,6 +78,9 @@ final class Shortcode {
 	): string {
 		unset( $atts );
 
+		if ( Conversion_Target_Policy::NONE === $this->conversion_target_resolver->get( Post_Context::current_id() ) ) {
+			return (string) $content;
+		}
 		return $this->markup_conversion_service->convert( (string) $content );
 	}
 }

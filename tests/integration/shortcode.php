@@ -6,11 +6,12 @@
  */
 
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
 $saved_shortcode_callback = $GLOBALS['shortcode_tags']['rubymaco'];
-$shortcode                = new Shortcode( Markup_Conversion_Service::create_default() );
+$shortcode                = new Shortcode( Markup_Conversion_Service::create_default(), Conversion_Target_Resolver::create_default() );
 check_same( $saved_shortcode_callback, $GLOBALS['shortcode_tags']['rubymaco'], 'construction does not replace shortcode' );
 $shortcode->register_hooks();
 check_same( array( $shortcode, 'render_shortcode' ), $GLOBALS['shortcode_tags']['rubymaco'], 'shortcode registration' );

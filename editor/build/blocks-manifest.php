@@ -18,6 +18,9 @@ return array(
 		'attributes' => array(
 			
 		),
+		'usesContext' => array(
+			'postId'
+		),
 		'textdomain' => 'ruby-markup-converter',
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css'

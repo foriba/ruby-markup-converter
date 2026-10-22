@@ -6,7 +6,7 @@
  */
 
 use Foriba\RubyMarkupConverter\Integration\Blocks;
-use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
@@ -20,7 +20,7 @@ function wp_register_block_types_from_metadata_collection( $path, $manifest = nu
 	$GLOBALS['test_block_registration'] = array( $path, $manifest );
 }
 
-$blocks                = new Blocks( Markup_Conversion_Service::create_default(), new Apply_Mode_Resolver(), dirname( __DIR__, 2 ) );
+$blocks                = new Blocks( Markup_Conversion_Service::create_default(), Conversion_Target_Resolver::create_default(), dirname( __DIR__, 2 ) );
 $block_init_callback   = array( $blocks, 'register_blocks' );
 $block_render_callback = array( $blocks, 'render_content_block' );
 check_same( false, has_action( 'init', $block_init_callback ), 'construction does not register blocks' );

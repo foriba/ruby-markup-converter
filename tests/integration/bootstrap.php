@@ -58,7 +58,7 @@ foreach ( array(
 	array( 'init', $registered_init_callback, 10, 1 ),
 	array( 'init', $registered_block_init_callback, 10, 1 ),
 	array( 'wp_enqueue_scripts', $registered_assets_callback, 10, 1 ),
-	array( 'render_block_rubymaco/content', $registered_block_callback, 10, 2 ),
+	array( 'render_block_rubymaco/content', $registered_block_callback, 10, 3 ),
 	array( 'admin_menu', array( $registered_admin_assets_callback[0], 'register_page' ), 10, 1 ),
 	array( 'admin_enqueue_scripts', $registered_admin_assets_callback, 10, 1 ),
 ) as [$hook, $callback, $priority, $accepted_args] ) {

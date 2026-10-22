@@ -13,6 +13,7 @@
 		"rubymaco"
 	],
 	"attributes": {},
+	"usesContext": [ "postId" ],
 	"textdomain": "ruby-markup-converter",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
