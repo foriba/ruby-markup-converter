@@ -58,16 +58,17 @@ final class Target_Category_Settings {
 	}
 
 	/**
-	 * 管理権限を確認し、全入力を検証してから保存する。
+	 * カテゴリ管理権限を確認し、全入力を検証してから保存する。
 	 *
 	 * 不正な入力の場合は validate() の InvalidArgumentException をそのまま返す。
 	 *
 	 * @param mixed $value カテゴリ ID リスト.
 	 * @return int[] 保存した値.
 	 * @throws \RuntimeException 権限不足または保存失敗の場合.
+	 * @phpstan-throws \InvalidArgumentException|\RuntimeException
 	 */
 	public function save( $value ): array {
-		if ( ! current_user_can( Settings_Identifiers::CAPABILITY ) ) {
+		if ( ! current_user_can( Settings_Identifiers::CATEGORY_CAPABILITY ) ) {
 			throw new \RuntimeException( 'Not allowed to update conversion targets.' );
 		}
 		$ids = $this->validate( $value );

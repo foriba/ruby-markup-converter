@@ -29,6 +29,9 @@ final class Settings_Identifiers {
 	 */
 	public const CAPABILITY = 'manage_options';
 
+	/** 対象カテゴリを管理するための権限。 */
+	public const CATEGORY_CAPABILITY = 'manage_categories';
+
 	/**
 	 * 定数のみを使用するため、インスタンス化を禁止する。
 	 */
