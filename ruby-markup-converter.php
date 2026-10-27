@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name
+ * Ruby Markup Converter
  *
- * @package           PluginPackage
+ * @package           RubyMarkupConverter
  * @author            Foriba
  * @copyright         2026 Foriba
  * @license           GPL-2.0-or-later
@@ -28,6 +28,26 @@ use Foriba\RubyMarkupConverter\Plugin_Info;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+// 実行用 vendor/ を生成せずに設置された場合は、致命的エラーにせず管理画面で知らせる.
+if ( ! is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+	add_action(
+		'admin_notices',
+		static function (): void {
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return;
+			}
+			wp_admin_notice(
+				esc_html__(
+					'Ruby Markup Converter could not start because required files are missing. Please reinstall the plugin.',
+					'ruby-markup-converter'
+				),
+				array( 'type' => 'error' )
+			);
+		}
+	);
+	return;
 }
 
 require_once __DIR__ . '/vendor/autoload.php';

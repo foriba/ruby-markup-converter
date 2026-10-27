@@ -28,6 +28,15 @@ check_same( '', do_shortcode( '[rubymaco /]' ), 'self closing shortcode' );
 check_same( '', do_shortcode( '[rubymaco][/rubymaco]' ), 'empty shortcode' );
 check_same( '', $shortcode->render_shortcode( array() ), 'missing content' );
 check_same( '[rubymaco]漢字《かんじ》[/rubymaco]', do_shortcode( '[[rubymaco]漢字《かんじ》[/rubymaco]]' ), 'escaped shortcode remains literal' );
+add_shortcode(
+	'rubymaco_test_inner',
+	static function () {
+		return '漢字《かんじ》';
+	}
+);
+check_same( 'まえ' . $ruby . 'あと', do_shortcode( '[rubymaco]まえ[rubymaco_test_inner]あと[/rubymaco]' ), 'nested shortcode output is converted' );
+check_same( '[rubymaco_test_inner]', do_shortcode( '[rubymaco][[rubymaco_test_inner]][/rubymaco]' ), 'escaped nested shortcode remains literal' );
+remove_shortcode( 'rubymaco_test_inner' );
 $GLOBALS['test_options'] = array( Option_Keys::ENABLED_MARKUP_RULES => array() );
 check_same( '漢字《かんじ》', do_shortcode( '[rubymaco]漢字《かんじ》[/rubymaco]' ), 'disabled rules after construction' );
 $GLOBALS['test_options'] = array();

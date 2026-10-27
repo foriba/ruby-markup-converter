@@ -88,6 +88,14 @@ try {
 	check_same( $entry_mixed_source, $entry_filter->filter_content( $entry_mixed_source ), 'Disabled post preserves ruby and bouten' );
 	check_same( $entry_mixed_source, $entry_blocks->render_content_block( $entry_mixed_source, array() ), 'Disabled block preserves ruby and bouten' );
 	check_same( $entry_mixed_source, do_shortcode( '[rubymaco]' . $entry_mixed_source . '[/rubymaco]' ), 'Disabled shortcode preserves ruby and bouten' );
+	add_shortcode(
+		'rubymaco_test_inner',
+		static function () use ( $entry_source ) {
+			return $entry_source;
+		}
+	);
+	check_same( $entry_source, do_shortcode( '[rubymaco][rubymaco_test_inner][/rubymaco]' ), 'Disabled shortcode still expands nested shortcodes' );
+	remove_shortcode( 'rubymaco_test_inner' );
 	$GLOBALS['test_override_meta'][20] = 'enabled';
 	check_same( $entry_html, $entry_filter->filter_content( $entry_source ), 'Page enable is reflected immediately' );
 	$GLOBALS['post'] = null;

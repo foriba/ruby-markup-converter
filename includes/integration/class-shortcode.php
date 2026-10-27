@@ -67,6 +67,7 @@ final class Shortcode {
 	 * ショートコード内の本文を変換する。
 	 *
 	 * 属性は使用しない。本文がない場合は空文字を返す。
+	 * 内側のショートコードは変換範囲にかかわらず展開し、その出力も変換対象にする。
 	 *
 	 * @param array<string, mixed> $atts    ショートコード属性.
 	 * @param string|null          $content ショートコード本文.
@@ -78,9 +79,10 @@ final class Shortcode {
 	): string {
 		unset( $atts );
 
+		$content = do_shortcode( (string) $content );
 		if ( Conversion_Target_Policy::NONE === $this->conversion_target_resolver->get( Post_Context::current_id() ) ) {
-			return (string) $content;
+			return $content;
 		}
-		return $this->markup_conversion_service->convert( (string) $content );
+		return $this->markup_conversion_service->convert( $content );
 	}
 }
