@@ -162,7 +162,7 @@ final class Markup_Rule_Registry {
 					'それが真実《しんじつ》の愛《あい》です。',
 				),
 				__(
-					'Supports both the "｜BaseText《RubyAnnotation》" and "BaseText《RubyAnnocation》" markup styles. The former explicitly specifies both the base text and ruby annotation, with no restrictions on character types. Both full-width and half-width vertical bars are supported. The latter automatically treats the preceding kanji characters as the base text, so the base text is limited to kanji.',
+					'Supports both the "｜BaseText《RubyAnnotation》" and "BaseText《RubyAnnotation》" markup styles. The former explicitly specifies both the base text and ruby annotation, with no restrictions on character types. Both full-width and half-width vertical bars are supported. The latter automatically treats the preceding kanji characters as the base text, so the base text is limited to kanji.',
 					'ruby-markup-converter'
 				), // ja-jp: '「｜親文字《ルビ》」および「親文字《ルビ》」の2つの形式に対応します。前者は親文字とルビを明示的に指定する形式で、親文字・ルビともに文字種の制約はありません。縦棒は全角・半角のいずれにも対応します。後者は《ルビ》の直前の漢字を自動的に親文字として扱うため、親文字は漢字限定となります。'.
 				true,
