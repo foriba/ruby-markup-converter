@@ -30,9 +30,6 @@ export interface PageData {
 }
 
 export interface AdminConfig {
-	url: string;
-	previewUrl: string;
-	nonce: string;
 	messages: Record< string, string >;
 }
 

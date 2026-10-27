@@ -4,15 +4,16 @@
 
 `node tests/admin-save-feedback.cjs` は通常・未保存・保存中・成功・失敗時のメッセージ、ボタン、Noticeを検証します。成功表示の5秒後の解除と再編集時のタイマー解除は実画面でも確認してください。
 
-`node tests/admin-save.cjs` は保存通信の単体テストです。POST本文・nonce・全解除と、
-HTTPエラー・通信失敗・不正な成功応答を検証します。実HTTPやデータベースへの書き込みは行いません。
+`node tests/admin-save.cjs` は保存通信の単体テストです。apiFetchへの要求（パス・POST本文）・全解除と、
+HTTPエラー・通信失敗・不正な成功応答を検証します。URL・nonce・ユーザー言語はapiFetchに任せるため、要求に含めないことも確認します。実HTTPやデータベースへの書き込みは行いません。
 保存中の入力ロック、二重送信防止、成功後の未保存表示解除、失敗時の入力保持は実画面でも確認してください。
 
 `WP_ROOT=/path/to/wordpress node tests/admin-local-edit.cjs` でブラウザのスモークテストを実行できます。
 事前に `npm run build:admin` を実行してください。Playwrightのブラウザが必要です。
 インストール済みChromeを使う場合は `PLAYWRIGHT_CHANNEL=chrome` を指定します。
 PHPの実データ定義を使い、HTTP取得はモックします。実サイトへの保存・通信は行いません。
-デスクトップ／モバイル幅で全解除、タブ間の編集保持、モックAPIへの保存、再読み込み時の復元を確認します。実DBへの書き込みは行いません。
+WordPress本体の `wp-api-fetch` を本体と同じ設定で読み込みます。
+デスクトップ／モバイル幅で全解除、タブ間の編集保持、モックAPIへの保存、nonce期限切れ時の再取得と再送信、再読み込み時の復元を確認します。実DBへの書き込みは行いません。
 プレビュー通信は未変換の例文を返すモックであり、変換内容はPHPの回帰テストで検証します。
 `node tests/admin-preview.cjs` はプレビュー通信の本文、応答形式、不正応答、通信失敗、中止を検証します。
 `node tests/admin-preview-state.cjs` は初回の全描画パターン取得、通信なしの切り替え、ルビの参照維持、部分失敗・再試行・古い応答の無視を検証します。キャッシュは画面内だけで保持し、再読み込み時に再取得します。
@@ -52,7 +53,7 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 - POST `/wp-json/rubymaco/v1/settings/preview` は同じ4項目を受け取り、保存せずに例文を変換する。任意の本文や追加項目は受け付けない。
 - プレビュー応答は `{"previews":[{"id":"記法ID","examples":[{"text":"例文","html":"変換結果"}]}]}`。全記法を定義順で返し、各記法自身のルールで例文を変換する。全解除でも変換例を表示する。実際の投稿に適用するルールは保存された選択状態に従う。
 - 適用範囲は検証するがプレビュー結果には影響しない。傍点スタイル・描画方式は送信された値を使う。表示時にはプラグインの描画用CSSも必要。
-- 全操作に manage_options が必要。管理画面は X-WP-Nonce に wp_rest nonce を送り、ユーザー言語には `?_locale=user` を指定する。
+- 全操作に manage_options が必要。管理画面は `wp-api-fetch` を使い、URL、wp_rest nonce の送信と期限切れ時の再取得、ユーザー言語の `?_locale=user` を WordPress に任せる。
 - Cookie/nonce 認証は WordPress 標準処理に委譲する。テストのルート登録・権限判定は代替処理で、実HTTP・Cookie・nonceの検証ではない。
 - 実環境では未ログイン、権限のないユーザー、管理者の正常nonce・欠落nonce・不正nonce、言語切り替えを確認すること。
 

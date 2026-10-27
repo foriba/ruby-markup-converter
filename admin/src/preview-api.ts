@@ -1,16 +1,15 @@
-import type { AdminConfig, PageData, RulePreview, Settings } from './types';
+import apiFetch from '@wordpress/api-fetch';
+import type { PageData, RulePreview, Settings } from './types';
 
 /**
  * 固定例文の変換結果を取得し、記法IDと例文の対応を検証する。
  *
- * @param config   接続情報。
  * @param settings 編集中の設定。
  * @param rules    PHP側の記法定義。
  * @param signal   設定変更時の中止通知。
  * @return 検証済みのプレビュー一覧。
  */
 export async function fetchPreview(
-	config: AdminConfig,
 	settings: Settings,
 	rules: PageData[ 'definitions' ][ 'markup_rules' ],
 	signal: AbortSignal
@@ -24,20 +23,12 @@ export async function fetchPreview(
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return -- タイマーはfinallyで解除する。
 	const timeout = setTimeout( abort, 30000 );
 	try {
-		const response = await fetch( config.previewUrl, {
+		const body: unknown = await apiFetch( {
+			path: '/rubymaco/v1/settings/preview',
 			method: 'POST',
-			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': config.nonce,
-			},
-			body: JSON.stringify( settings ),
+			data: settings,
 			signal: controller.signal,
 		} );
-		if ( ! response.ok ) {
-			throw new Error( 'Preview request failed' );
-		}
-		const body: unknown = await response.json();
 		if (
 			! body ||
 			typeof body !== 'object' ||

@@ -1,15 +1,17 @@
-import type { AdminConfig, PageData, Settings } from './types';
+import apiFetch from '@wordpress/api-fetch';
+import type { PageData, Settings } from './types';
+
+/** 設定の取得・保存 API のパス。URL・nonce・ユーザー言語は apiFetch に任せる。 */
+export const SETTINGS_PATH = '/rubymaco/v1/settings';
 
 /**
  * 4項目の設定を保存する。成功応答の形式が不正な場合も失敗として扱う。
  *
- * @param config      接続情報。
  * @param settings    編集中の設定。
  * @param definitions PHPから取得した選択肢の定義。
  * @return サーバーで保存を確認した設定。
  */
 export async function saveSettings(
-	config: AdminConfig,
 	settings: Settings,
 	definitions: PageData[ 'definitions' ]
 ): Promise< Settings > {
@@ -17,20 +19,12 @@ export async function saveSettings(
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return -- タイマーは必ずfinallyで解除する。
 	const timeout = setTimeout( () => controller.abort(), 30000 );
 	try {
-		const response = await fetch( config.url, {
+		const body: unknown = await apiFetch( {
+			path: SETTINGS_PATH,
 			method: 'POST',
-			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': config.nonce,
-			},
-			body: JSON.stringify( settings ),
+			data: settings,
 			signal: controller.signal,
 		} );
-		if ( ! response.ok ) {
-			throw new Error( 'Settings save failed' );
-		}
-		const body: unknown = await response.json();
 		if ( ! body || typeof body !== 'object' || ! ( 'settings' in body ) ) {
 			throw new Error( 'Invalid save response' );
 		}
