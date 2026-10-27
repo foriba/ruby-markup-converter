@@ -96,6 +96,14 @@ Uninstalling the plugin removes its saved settings but does not delete or modify
 
 == Changelog ==
 
+= 1.3.0 =
+- Added an option to convert the full text of posts in selected categories.
+- Added per-post and per-page conversion settings in the block editor.
+- Fixed some kanji, such as 𠮟 and 﨑, not being recognized as base text in ruby notation without an explicit base text.
+- Fixed shortcodes nested inside [rubymaco]...[/rubymaco] not being processed.
+- Fixed settings failing to save after the settings screen had been left open for a long time.
+- Fixed typos and improved overall stability.
+
 = 1.2.0 =
 - Redesigned the settings screen for easier navigation and configuration.
 - Improved feedback when saving settings or making changes.
@@ -122,6 +130,10 @@ Uninstalling the plugin removes its saved settings but does not delete or modify
 - Initial public release.
 
 == Upgrade Notice ==
+
+= 1.3.0 =
+
+Adds category and per-post conversion settings. Ruby notation without an explicit base text now recognizes more kanji, and shortcodes nested inside [rubymaco] are now processed, so some existing content may display differently.
 
 = 1.2.0 =
 
