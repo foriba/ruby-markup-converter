@@ -49,7 +49,7 @@ final class Admin_Category_Controller {
 		if ( ! current_user_can( Settings_Identifiers::CATEGORY_CAPABILITY ) ) {
 			return;
 		}
-		echo '<div class="form-field"><label>Ruby Markup Converter</label>';
+		echo '<div class="form-field"><label for="rubymaco-category-enabled">Ruby Markup Converter</label>';
 		$this->render_field( 0 );
 		echo '</div>';
 	}

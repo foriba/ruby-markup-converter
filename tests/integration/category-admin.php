@@ -156,6 +156,7 @@ try {
 	$category_controller->render_add_field();
 	$category_html = ob_get_clean();
 	\check_same( true, false !== strpos( $category_html, 'Full-content mode' ), 'full-content mode explained' );
+	\check_same( true, false !== strpos( $category_html, '<label for="rubymaco-category-enabled">Ruby Markup Converter</label>' ), 'add form title labels the checkbox' );
 	$GLOBALS['test_admin_capabilities'] = array();
 	ob_start();
 	$category_controller->render_add_field();
