@@ -23,6 +23,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Markup_Rule_Registry {
 	/**
+	 * 親文字を明示しない記法で、親文字として扱う漢字の連続。
+	 *
+	 * 統合漢字・拡張 A・互換漢字・第 2〜3 面の拡張漢字と 々〆〇〤 を対象にし、
+	 * 漢字ごとに直後の異体字セレクタを 1 つまで含める。
+	 * \p{Han} は PCRE2 10.40 以降で《 や 「 などの記号も含むため使わない。
+	 * ヶ は含めない。必要な場合は親文字を明示する記法で書く。
+	 *
+	 * @var string
+	 */
+	private const IMPLICIT_BASE_TEXT = '((?:[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{20000}-\x{3FFFF}々〆〇〤][\x{FE00}-\x{FE0F}\x{E0100}-\x{E01EF}]?)+)';
+
+	/**
 	 * 共通の取得窓口で使用するインスタンス。
 	 *
 	 * @var self|null
@@ -173,7 +185,7 @@ final class Markup_Rule_Registry {
 					),
 					new Transform_Rule(
 						Rule_Type::ruby(),
-						'/([一-龯々〆〤]+)《([^<>《》]+?)》/u'
+						'/' . self::IMPLICIT_BASE_TEXT . '《([^<>《》]+?)》/u'
 					),
 				)
 			),
@@ -194,7 +206,7 @@ final class Markup_Rule_Registry {
 				array(
 					new Transform_Rule(
 						Rule_Type::ruby(),
-						'/([一-龯々〆〤]+)\(([ぁ-ゖァ-ヺー・]+)\)/u'
+						'/' . self::IMPLICIT_BASE_TEXT . '\(([ぁ-ゖァ-ヺー・]+)\)/u'
 					),
 				)
 			),
