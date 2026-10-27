@@ -86,6 +86,10 @@ const packages = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
       await page.addScriptTag({ path: path.join(root, 'admin/build/index.js') });
       await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).waitFor();
     };
+    // 記法のチェックボックスだけを数える. 互換性タブのスイッチ (role=switch) は含めない.
+    const checkedRules = () => page.getByRole('checkbox', { checked: true });
+    const basicTab = () => page.getByRole('tab', { name: data.messages.basic_tab, exact: true });
+    const compatibilityTab = () => page.getByRole('tab', { name: data.messages.compatibility_tab, exact: true });
     const initialSettings = structuredClone(data.settings);
     for (const width of [1280, 390]) {
       data.settings = structuredClone(initialSettings);
@@ -94,26 +98,35 @@ const packages = JSON.parse(execFileSync(process.env.PHP_BINARY || 'php', ['-r',
       const checks = page.getByRole('checkbox', {name: /.+/});
       assert.equal(await checks.count(), data.definitions.markup_rules.length);
       for (const check of await checks.all()) await check.uncheck();
-      assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
+      assert.equal(await checkedRules().count(), 0);
       await page.getByRole('region', { name: data.messages.conversion_scope, exact: true }).getByRole('radio', {name: /.+/}).last().check();
       await page.locator('.rubymaco-bouten-style').getByRole('radio', {name: /.+/}).last().check();
       await page.getByRole('tab', { name: data.messages.compatibility_tab, exact: true }).click();
       await page.getByRole('switch').check();
-      await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).click();
-      assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
+      await basicTab().click();
+      // パネルの切り替え完了 (互換性タブのスイッチが消える) を待ってから数える.
+      await page.getByRole('switch').waitFor({ state: 'hidden' });
+      assert.equal(await basicTab().getAttribute('aria-selected'), 'true');
+      assert.equal(await checkedRules().count(), 0);
       assert.equal(await page.locator('.rubymaco-bouten-style').getByRole('radio', {name: /.+/}).last().isChecked(), true);
-      await page.getByRole('tab', { name: data.messages.basic_tab, exact: true }).press('ArrowRight');
+      // Tabs は手動アクティベーション: 矢印キーはフォーカス移動のみで、Enter で選択する.
+      await basicTab().press('ArrowRight');
+      assert.equal(await compatibilityTab().evaluate(tab => tab === document.activeElement), true);
+      assert.equal(await basicTab().getAttribute('aria-selected'), 'true');
+      await compatibilityTab().press('Enter');
+      await page.getByRole('switch').waitFor();
       assert.equal(await page.getByRole('switch').isChecked(), true);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.screenshot({ path: '/tmp/rubymaco-edit-' + width + '.png', fullPage: true });
       expireNonceOnce = true;
       await page.getByRole('button', { name: data.messages.save, exact: true }).click();
-      await page.getByText(data.messages.saved, {exact: true}).waitFor();
+      // #a11y-speak-polite の読み上げ用テキストと重複しないよう、管理画面の範囲内に絞る.
+      await page.locator('#rubymaco-admin-root').getByText(data.messages.saved, {exact: true}).waitFor();
       assert.equal(savedWithNonce, 'refreshed', 'expired nonce is refreshed and the save is retried');
       assert.deepEqual(data.settings.enabled_rule_ids, []);
       assert.equal(data.settings.bouten_rendering_method, 'custom');
       await mount();
-      assert.equal(await page.locator('input[type=checkbox]:checked').count(), 0);
+      assert.equal(await checkedRules().count(), 0);
     }
     assert.deepEqual(errors, []);
     assert.equal(nonceRefreshes, 2);
