@@ -95,7 +95,7 @@ final class Markup_Rule_Registry {
 		$ids = array();
 
 		foreach ( $this->all() as $rule ) {
-			$ids[] = $rule->id;
+			$ids[] = $rule->get_id();
 		}
 
 		return $ids;
@@ -110,8 +110,8 @@ final class Markup_Rule_Registry {
 		$ids = array();
 
 		foreach ( $this->all() as $rule ) {
-			if ( $rule->enabled_by_default ) {
-				$ids[] = $rule->id;
+			if ( $rule->is_enabled_by_default() ) {
+				$ids[] = $rule->get_id();
 			}
 		}
 
@@ -141,7 +141,7 @@ final class Markup_Rule_Registry {
 		$transform_rules = array();
 
 		foreach ( $this->all() as $rule ) {
-			if ( ! isset( $wanted[ $rule->id ] ) ) {
+			if ( ! isset( $wanted[ $rule->get_id() ] ) ) {
 				continue;
 			}
 

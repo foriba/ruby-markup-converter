@@ -39,13 +39,24 @@ foreach ( Rule_Type::cases() as $rule_type ) {
 	$input  = array( $child, $child );
 	$parent = new Markup_Rule( 'test', array( 'title' ), array( 'example' ), 'description', true, $input );
 	check_same( $rule_type, $parent->get_type(), 'parent derives child type' );
+	check_same( 'test', $parent->get_id(), 'parent preserves ID' );
+	check_same( array( 'title' ), $parent->get_titles(), 'parent preserves titles' );
+	check_same( array( 'example' ), $parent->get_examples(), 'parent preserves examples' );
+	check_same( 'description', $parent->get_description(), 'parent preserves description' );
+	check_same( true, $parent->is_enabled_by_default(), 'parent preserves default state' );
+	check_same( array(), get_object_vars( $parent ), 'markup rule exposes no public properties' );
 	check_same( $input, $parent->get_transform_rules(), 'child order is preserved' );
 	$input[0]  = new Transform_Rule( Rule_Type::ruby(), '/(other)/u' );
 	$output    = $parent->get_transform_rules();
 	$output[0] = $input[0];
 	check_same( array( $child, $child ), $parent->get_transform_rules(), 'input and returned arrays cannot replace stored children' );
 	foreach ( array(
+		array( $parent, 'id', 'changed' ),
 		array( $parent, 'type', Rule_Type::bouten() ),
+		array( $parent, 'titles', array() ),
+		array( $parent, 'examples', array() ),
+		array( $parent, 'description', '' ),
+		array( $parent, 'enabled_by_default', false ),
 		array( $parent, 'transform_rules', array() ),
 		array( $child, 'type', Rule_Type::bouten() ),
 		array( $child, 'pattern', '' ),
@@ -69,6 +80,33 @@ foreach ( array( array(), array( null ), array( 'invalid' ), array( new stdClass
 		$thrown = true;
 	}
 	check_same( true, $thrown, 'invalid children rejected' );
+}
+$listed_rule = new Markup_Rule(
+	'test',
+	array(
+		'b' => 'title',
+		5   => 'second',
+	),
+	array( 3 => 'example' ),
+	'',
+	false,
+	array( $ruby_child )
+);
+check_same( array( 'title', 'second' ), $listed_rule->get_titles(), 'titles are stored as a list' );
+check_same( array( 'example' ), $listed_rule->get_examples(), 'examples are stored as a list' );
+check_same( false, $listed_rule->is_enabled_by_default(), 'disabled default state preserved' );
+foreach ( array(
+	'titles'   => array( array( 'title', null ), array( 'example' ) ),
+	'examples' => array( array( 'title' ), array( 'example', 1 ) ),
+	'nested'   => array( array( array( 'title' ) ), array( 'example' ) ),
+) as $invalid_label => $invalid_texts ) {
+	$thrown = false;
+	try {
+		new Markup_Rule( 'test', $invalid_texts[0], $invalid_texts[1], '', false, array( $ruby_child ) );
+	} catch ( InvalidArgumentException $e ) {
+		$thrown = true;
+	}
+	check_same( true, $thrown, 'non-string display text rejected: ' . $invalid_label );
 }
 
 check_same( 'rubymaco_enabled_markup_rules', Option_Keys::ENABLED_MARKUP_RULES, 'enabled rules storage key' );

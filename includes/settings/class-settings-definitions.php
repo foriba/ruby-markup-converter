@@ -68,11 +68,11 @@ final class Settings_Definitions {
 		$markup_rules = array();
 		foreach ( $this->markup_rule_registry->all() as $rule ) {
 			$markup_rules[] = array(
-				'id'          => $rule->id,
+				'id'          => $rule->get_id(),
 				'type'        => $rule->get_type()->get_value(),
-				'titles'      => array_values( $rule->titles ),
-				'description' => $rule->description,
-				'examples'    => array_values( $rule->examples ),
+				'titles'      => $rule->get_titles(),
+				'description' => $rule->get_description(),
+				'examples'    => $rule->get_examples(),
 			);
 		}
 

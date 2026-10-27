@@ -32,11 +32,11 @@ check_same( Markup_Rule_Registry::instance()->ids(), array_column( $definitions_
 foreach ( Markup_Rule_Registry::instance()->all() as $definition_index => $definition_rule ) {
 	check_same(
 		array(
-			'id'          => $definition_rule->id,
+			'id'          => $definition_rule->get_id(),
 			'type'        => $definition_rule->get_type()->get_value(),
-			'titles'      => array_values( $definition_rule->titles ),
-			'description' => $definition_rule->description,
-			'examples'    => array_values( $definition_rule->examples ),
+			'titles'      => $definition_rule->get_titles(),
+			'description' => $definition_rule->get_description(),
+			'examples'    => $definition_rule->get_examples(),
 		),
 		$definitions_data['markup_rules'][ $definition_index ],
 		'rule contains only display metadata'
