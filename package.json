@@ -5,12 +5,14 @@
     "main": "index.js",
     "scripts": {
         "start": "wp-scripts start --source-path=editor/src --output-path=editor/build --blocks-manifest",
-        "build": "npm run build:blocks && npm run build:admin",
+        "build": "npm run build:blocks && npm run build:admin && npm run build:post-settings",
+        "build:post-settings": "wp-scripts build --source-path=editor/settings/src --output-path=editor/settings/build",
+        "start:post-settings": "wp-scripts start --source-path=editor/settings/src --output-path=editor/settings/build",
         "build:blocks": "wp-scripts build --source-path=editor/src --output-path=editor/build --blocks-manifest",
         "build:admin": "wp-scripts build --source-path=admin/src --output-path=admin/build",
         "start:admin": "wp-scripts start --source-path=admin/src --output-path=admin/build",
-        "format": "wp-scripts format editor/src admin/src",
-        "lint:js": "wp-scripts lint-js editor/src admin/src --ext .js,.jsx,.ts,.tsx"
+        "format": "wp-scripts format editor/src editor/settings/src admin/src",
+        "lint:js": "wp-scripts lint-js editor/src editor/settings/src admin/src --ext .js,.jsx,.ts,.tsx"
     },
     "repository": {
         "type": "git",

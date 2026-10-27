@@ -49,7 +49,9 @@ try {
 		require __DIR__ . '/' . $file;
 	}
 	require __DIR__ . '/integration/target-category-settings.php';
+	require __DIR__ . '/integration/category-admin.php';
 	require __DIR__ . '/integration/post-conversion-meta.php';
+	require __DIR__ . '/integration/post-settings.php';
 	require __DIR__ . '/integration/conversion-target-entries.php';
 	require __DIR__ . '/integration/uninstall.php';
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain CLI output, not HTML.

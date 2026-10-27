@@ -33,7 +33,7 @@ function get_term( $id, $taxonomy ) {
  * @return bool 管理者か.
  */
 function current_user_can( $capability ) {
-	\check_same( Settings_Identifiers::CAPABILITY, $capability, 'Category save requires management permission' );
+	\check_same( Settings_Identifiers::CATEGORY_CAPABILITY, $capability, 'Category save requires category management permission' );
 	return $GLOBALS['test_target_admin'];
 }
 

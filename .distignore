@@ -36,6 +36,7 @@ TODO.md
 # Build sources and debug artifacts
 /scripts
 /editor/src
+/editor/settings/src
 /admin/src
 /types
 *.css.map

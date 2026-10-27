@@ -28,6 +28,12 @@ function register_rest_route( $rest_namespace, $route, $args ) {
  * @return bool 許可状態.
  */
 function current_user_can( $capability ) {
+	if ( isset( $GLOBALS['test_admin_capabilities'] ) ) {
+		return $GLOBALS['test_admin_capabilities'][ $capability ] ?? false;
+	}
+	if ( 'manage_categories' === $capability ) {
+		return false;
+	}
 	\check_same( 'manage_options', $capability, 'REST requires management capability' );
 	return $GLOBALS['test_rest_allowed'];
 }
