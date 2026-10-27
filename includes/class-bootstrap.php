@@ -43,6 +43,13 @@ final class Bootstrap {
 	private Plugin_Info $plugin_info;
 
 	/**
+	 * このインスタンスで起動済みかどうか.
+	 *
+	 * @var bool
+	 */
+	private bool $booted = false;
+
+	/**
 	 * 起動に必要なプラグイン情報を受け取る.
 	 *
 	 * @param Plugin_Info $plugin_info プラグイン情報.
@@ -50,13 +57,6 @@ final class Bootstrap {
 	public function __construct( Plugin_Info $plugin_info ) {
 		$this->plugin_info = $plugin_info;
 	}
-
-	/**
-	 * このインスタンスで起動済みかどうか.
-	 *
-	 * @var bool
-	 */
-	private bool $booted = false;
 
 	/**
 	 * 必要な機能を生成し、WordPress に処理を登録する.
