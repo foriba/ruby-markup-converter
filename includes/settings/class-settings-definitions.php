@@ -109,16 +109,16 @@ final class Settings_Definitions {
 			Conversion_Mode::SELECTED => array(
 				'label'       => __( 'Apply Only Within Selected Areas', 'ruby-markup-converter' ), // ja-jp: '指定範囲内のみ適用'.
 				'description' => __(
-					'Converts markup within Ruby Markup Converter blocks. Markup inside manually written [rubymaco]...[/rubymaco] shortcodes is also converted.',
-					// ja-jp: 'Ruby Markup Converter ブロック内の記法を変換します。手書きの [rubymaco]〜[/rubymaco] ショートコード内の記法も変換されます。'.
+					'Converts the full text of posts in categories selected on the category screen, and of posts and pages set to convert their full text in the editor. Markup in Ruby Markup Converter blocks and [rubymaco] shortcodes is also converted. See the user guide for details.',
+					// ja-jp: 'カテゴリー画面で選択したカテゴリーの投稿と、編集画面で本文全体の変換を選んだ投稿・固定ページは、本文全体を変換します。Ruby Markup Converter ブロックと [rubymaco] ショートコード内の記法も変換されます。詳しくはユーザーガイドをご覧ください。'.
 					'ruby-markup-converter'
 				),
 			),
 			Conversion_Mode::ALL      => array(
 				'label'       => __( 'Apply to Entire Post Content', 'ruby-markup-converter' ), // ja-jp: '投稿本文全体に適用'.
 				'description' => __(
-					'Automatically converts markup throughout the post content without placing it inside Ruby Markup Converter blocks. This is more convenient, but unintended text may also be converted and long posts may take more processing.',
-					// ja-jp: 'Ruby Markup Converter ブロック内に配置しなくても、投稿本文内の記法を自動的に変換します。手軽に使用できますが、意図しない箇所まで変換されたり、長い投稿では処理が増えたりする場合があります。'.
+					'Converts markup throughout all posts and pages, except those set not to be converted. This is convenient, but unintended text may also be converted and long posts may take more processing.',
+					// ja-jp: '変換しないを選んだものを除き、すべての投稿・固定ページで本文全体の記法を変換します。手軽ですが、意図しない箇所まで変換されたり、長い投稿では処理が増えたりする場合があります。'.
 					'ruby-markup-converter'
 				),
 			),
