@@ -2,6 +2,8 @@
 #rubymaco-admin-root {
  max-width: 1088px;
  min-width: 0;
+ // Page のヘッダー（最初の子）は画面上端に固定されるため、管理バーの下に固定し、タブなどより手前に表示する.
+ .rubymaco-page > :first-child { top: var(--wp-admin--admin-bar--height, 0px); z-index: 2; }
  .rubymaco-settings { width: 100%; margin: 0; min-width: 0; box-sizing: border-box; align-self: flex-start; overflow-wrap: anywhere; }
  .rubymaco-guide { display: flex; justify-content: flex-end; padding-bottom: 20px; }
  .rubymaco-section { padding: 28px 0; border-bottom: 1px solid #dcdcde; }
@@ -27,6 +29,8 @@
  .rubymaco-save-buttons .components-button { min-width: 160px; max-width: 100%; height: auto; min-height: 40px; white-space: normal; justify-content: center; text-align: center; }
  .rubymaco-example-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
  @media (max-width: 600px) {
+  // この幅では管理バーが固定されないため、ヘッダーは画面上端に固定する.
+  .rubymaco-page > :first-child { top: 0; }
   .rubymaco-save-feedback .rubymaco-save-buttons { grid-column: 2; grid-row: 2; padding-inline-start: 0; margin-block-start: 16px; }
   .rubymaco-examples { margin-left: 0; padding: 12px; }
   .rubymaco-bouten-style { margin-left: 0; }

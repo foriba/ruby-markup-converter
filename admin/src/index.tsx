@@ -47,6 +47,7 @@ function App( { config }: { config: AdminConfig } ) {
 	const messages = data ? data.messages : config.messages;
 	return (
 		<Page
+			className="rubymaco-page"
 			hasPadding
 			showSidebarToggle={ false }
 			title={ messages.page_title }
