@@ -22,6 +22,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * HTML API のデコード済みテキスト、または通常の文字列を受け取る。
  * 文字参照のように見える入力も文字列として保持し、HTML として解釈しない。
  * 設定の取得や記法の解析は行わない。WordPress のエスケープ関数を使用する。
+ *
+ * タグと属性は固定の形で組み立て、可変の文字列はすべてエスケープするため、
+ * 生成後に wp_kses() で検査しない。NUL 文字はエスケープ時に取り除く。
  */
 final class Markup_Renderer {
 	/**
@@ -42,13 +45,11 @@ final class Markup_Renderer {
 	 * @return string ルビ HTML。
 	 */
 	public function render_ruby( string $base_text, string $ruby_text ): string {
-		$html = '<ruby class="rubymaco-ruby" data-rt="' .
-			esc_attr( str_replace( '&', '&amp;', $ruby_text ) ) .
+		return '<ruby class="rubymaco-ruby" data-rt="' .
+			esc_attr( $this->preserve_references( $ruby_text ) ) .
 			'">' . $this->escape_text( $base_text ) .
 			'<rp>（</rp><rt>' . $this->escape_text( $ruby_text ) .
 			'</rt><rp>）</rp></ruby>';
-
-		return wp_kses( $html, $this->allowed_html() );
 	}
 
 	/**
@@ -79,10 +80,9 @@ final class Markup_Renderer {
 		}
 
 		$method = $is_custom ? 'custom' : 'text-emphasis';
-		$html   = '<span class="rubymaco-bouten rubymaco-bouten--' . $method .
-			' rubymaco-bouten--' . esc_attr( $bouten_style->get_value() ) . '">' . $body . '</span>';
 
-		return wp_kses( $html, $this->allowed_html() );
+		return '<span class="rubymaco-bouten rubymaco-bouten--' . $method .
+			' rubymaco-bouten--' . esc_attr( $bouten_style->get_value() ) . '">' . $body . '</span>';
 	}
 
 	/**
@@ -92,7 +92,17 @@ final class Markup_Renderer {
 	 * @return string HTML テキスト用の文字列。
 	 */
 	private function escape_text( string $text ): string {
-		return esc_html( str_replace( '&', '&amp;', $text ) );
+		return esc_html( $this->preserve_references( $text ) );
+	}
+
+	/**
+	 * エスケープ関数が文字参照として扱わないよう & を先に変換し、NUL 文字を取り除く。
+	 *
+	 * @param string $text 未エスケープの文字列.
+	 * @return string esc_html() または esc_attr() に渡す文字列.
+	 */
+	private function preserve_references( string $text ): string {
+		return str_replace( array( "\0", '&' ), array( '', '&amp;' ), $text );
 	}
 
 	/**
@@ -107,22 +117,5 @@ final class Markup_Renderer {
 		$chars = preg_split( '//u', $text, -1, PREG_SPLIT_NO_EMPTY );
 
 		return false === $chars ? array( $text ) : $chars;
-	}
-
-	/**
-	 * 生成する HTML の許可リストを返す。
-	 *
-	 * @return array<string, array<string, bool>> タグと属性の許可リスト。
-	 */
-	private function allowed_html(): array {
-		return array(
-			'ruby' => array(
-				'class'   => true,
-				'data-rt' => true,
-			),
-			'rt'   => array(),
-			'rp'   => array(),
-			'span' => array( 'class' => true ),
-		);
 	}
 }

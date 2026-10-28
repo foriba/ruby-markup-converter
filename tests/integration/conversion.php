@@ -83,3 +83,30 @@ foreach ( array( 'dot', 'sesame' ) as $style ) {
 	}
 }
 check_same( '漢字《かんじ》', $service->convert_with_rules( '漢字《かんじ》', array(), Bouten_Style::dot(), Bouten_Rendering_Method::custom() ), 'empty rules' );
+// wp_kses() を通さなくても、同じ許可リストで検査した結果と変わらない HTML を生成する.
+$kses_allowed = array(
+	'ruby' => array(
+		'class'   => true,
+		'data-rt' => true,
+	),
+	'rt'   => array(),
+	'rp'   => array(),
+	'span' => array( 'class' => true ),
+);
+$kses_inputs  = array( '漢字', 'A&B', 'A&amp;B', '&lt;script&gt;', '<script>alert(1)</script>', '"onmouseover="x', "'quote'", 'javascript:alert(1)', "改\n行", '&#x41;&#65;&nbsp;&copy;', '&amp;#x3C;', '&&&', '>', '𠮷', "葛\u{E0100}", '', '&unknown;', '&#0;', "漢\0字" );
+foreach ( $kses_inputs as $kses_index => $kses_base ) {
+	$kses_outputs = array();
+	foreach ( $kses_inputs as $kses_annotation ) {
+		$kses_outputs[] = $renderer->render_ruby( $kses_base, $kses_annotation );
+	}
+	foreach ( Bouten_Rendering_Method::cases() as $kses_method ) {
+		foreach ( Bouten_Style::cases() as $kses_style ) {
+			$kses_outputs[] = $renderer->render_bouten( $kses_base, $kses_style, $kses_method );
+		}
+	}
+	foreach ( $kses_outputs as $kses_html ) {
+		// wp_kses() は属性値の &#039; を &apos; と書くだけで、意味は同じ.
+		check_same( $kses_html, str_replace( '&apos;', '&#039;', wp_kses( $kses_html, $kses_allowed ) ), 'renderer output needs no kses: input #' . $kses_index );
+		check_same( false, strpos( $kses_html, "\0" ), 'renderer removes NUL characters' );
+	}
+}
