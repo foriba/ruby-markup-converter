@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Integration;
 
 use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * メタの型・初期値・保存値の補正・変更権限を宣言する。
  *
- * 保存はカテゴリー画面の送信を受けて Target_Category_Settings が行う。REST API には公開しない。
+ * 保存はカテゴリー画面の送信を受けて Category_Conversion_Scope_Settings が行う。REST API には公開しない。
  */
 final class Category_Conversion_Meta {
 	/**
@@ -35,7 +35,7 @@ final class Category_Conversion_Meta {
 	public function register_meta(): void {
 		register_term_meta(
 			'category',
-			Target_Category_Settings::META_KEY,
+			Category_Conversion_Scope_Settings::META_KEY,
 			array(
 				'type'              => 'string',
 				'single'            => true,
@@ -63,7 +63,7 @@ final class Category_Conversion_Meta {
 		int $user_id
 	): bool {
 		unset( $allowed );
-		return Target_Category_Settings::META_KEY === $meta_key
+		return Category_Conversion_Scope_Settings::META_KEY === $meta_key
 			&& 0 < $term_id
 			&& user_can( $user_id, Settings_Identifiers::CATEGORY_CAPABILITY );
 	}
@@ -75,6 +75,6 @@ final class Category_Conversion_Meta {
 	 * @return string 指定値、またはそれ以外の場合は空文字.
 	 */
 	public function sanitize( $value ): string {
-		return Target_Category_Settings::FULL_CONTENT === $value ? Target_Category_Settings::FULL_CONTENT : '';
+		return Category_Conversion_Scope_Settings::FULL_CONTENT === $value ? Category_Conversion_Scope_Settings::FULL_CONTENT : '';
 	}
 }

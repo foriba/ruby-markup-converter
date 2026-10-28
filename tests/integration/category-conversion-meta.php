@@ -7,7 +7,7 @@
 
 namespace Foriba\RubyMarkupConverter\Integration;
 
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 
 /**
  * タームメタの登録内容を記録する。
@@ -18,7 +18,7 @@ use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
  * @return bool 登録結果.
  */
 function register_term_meta( $taxonomy, $key, $args ) {
-	\check_same( Target_Category_Settings::META_KEY, $key, 'Category meta key registration' );
+	\check_same( Category_Conversion_Scope_Settings::META_KEY, $key, 'Category meta key registration' );
 	$GLOBALS['test_category_meta'][ $taxonomy ] = $args;
 	return true;
 }
@@ -41,15 +41,15 @@ try {
 	\check_same( true, $category_meta_args['single'], 'Single category meta value' );
 	\check_same( '', $category_meta_args['default'], 'Missing category meta is not a target' );
 	\check_same( false, $category_meta_args['show_in_rest'], 'Category meta is not exposed in REST' );
-	\check_same( Target_Category_Settings::FULL_CONTENT, call_user_func( $category_meta_args['sanitize_callback'], Target_Category_Settings::FULL_CONTENT ), 'Sanitizer preserves enabled value' );
+	\check_same( Category_Conversion_Scope_Settings::FULL_CONTENT, call_user_func( $category_meta_args['sanitize_callback'], Category_Conversion_Scope_Settings::FULL_CONTENT ), 'Sanitizer preserves enabled value' );
 	foreach ( array( '', '0', 'true', true, 1, array(), null ) as $invalid ) {
 		\check_same( '', call_user_func( $category_meta_args['sanitize_callback'], $invalid ), 'Direct PHP invalid value is not a target' );
 	}
 	foreach ( array(
-		array( 7, 1, Target_Category_Settings::META_KEY, true ),
-		array( 8, 1, Target_Category_Settings::META_KEY, false ),
-		array( 0, 1, Target_Category_Settings::META_KEY, false ),
-		array( 7, 0, Target_Category_Settings::META_KEY, false ),
+		array( 7, 1, Category_Conversion_Scope_Settings::META_KEY, true ),
+		array( 8, 1, Category_Conversion_Scope_Settings::META_KEY, false ),
+		array( 0, 1, Category_Conversion_Scope_Settings::META_KEY, false ),
+		array( 7, 0, Category_Conversion_Scope_Settings::META_KEY, false ),
 		array( 7, 1, 'other_meta', false ),
 	) as $permission_case ) {
 		list( $test_user_id, $test_term_id, $test_meta_key, $expected_permission ) = $permission_case;

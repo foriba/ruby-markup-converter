@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Scope_Resolver;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
@@ -20,7 +20,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 // 実行用 vendor/ がない場合でも削除できるよう、キーを定義するクラスだけを直接読み込む.
 require_once __DIR__ . '/includes/settings/class-option-keys.php';
 require_once __DIR__ . '/includes/resolver/class-post-conversion-scope-resolver.php';
-require_once __DIR__ . '/includes/settings/class-target-category-settings.php';
+require_once __DIR__ . '/includes/settings/class-category-conversion-scope-settings.php';
 
 /**
  * 現在のサイトに保存したオプション、投稿メタ、タームメタを削除する。
@@ -30,7 +30,7 @@ $rubymaco_delete_site_data = static function (): void {
 		delete_option( $option_key );
 	}
 	delete_post_meta_by_key( Post_Conversion_Scope_Resolver::META_KEY );
-	delete_metadata( 'term', 0, Target_Category_Settings::META_KEY, '', true );
+	delete_metadata( 'term', 0, Category_Conversion_Scope_Settings::META_KEY, '', true );
 };
 
 if ( is_multisite() ) {

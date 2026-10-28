@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Admin;
 
 use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 use Foriba\RubyMarkupConverter\Resolver\Conversion_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
 
@@ -23,17 +23,17 @@ final class Admin_Category_Controller {
 	/**
 	 * 対象カテゴリーの保存先。
 	 *
-	 * @var Target_Category_Settings
+	 * @var Category_Conversion_Scope_Settings
 	 */
-	private Target_Category_Settings $target_category_settings;
+	private Category_Conversion_Scope_Settings $category_conversion_scope_settings;
 
 	/**
 	 * 保存担当を受け取る。
 	 *
-	 * @param Target_Category_Settings $target_category_settings カテゴリー設定.
+	 * @param Category_Conversion_Scope_Settings $category_conversion_scope_settings カテゴリー設定.
 	 */
-	public function __construct( Target_Category_Settings $target_category_settings ) {
-		$this->target_category_settings = $target_category_settings;
+	public function __construct( Category_Conversion_Scope_Settings $category_conversion_scope_settings ) {
+		$this->category_conversion_scope_settings = $category_conversion_scope_settings;
 	}
 
 	/** 標準カテゴリー画面のフックを登録する。 */
@@ -77,7 +77,7 @@ final class Admin_Category_Controller {
 		wp_nonce_field( 'rubymaco_category_' . $term_id, 'rubymaco_category_nonce', false );
 		echo '<input type="hidden" name="rubymaco_category_enabled" value="0">';
 		echo '<label for="rubymaco-category-enabled"><input type="checkbox" id="rubymaco-category-enabled" name="rubymaco_category_enabled" value="1" aria-describedby="rubymaco-category-description" ';
-		checked( $this->target_category_settings->is_enabled( $term_id ) );
+		checked( $this->category_conversion_scope_settings->is_enabled( $term_id ) );
 		echo '> ';
 		echo esc_html__( 'Convert the full text of posts in this category and its descendants.', 'ruby-markup-converter' );
 		echo '</label><p class="description" id="rubymaco-category-description">';
@@ -101,7 +101,7 @@ final class Admin_Category_Controller {
 			return false;
 		}
 		foreach ( get_ancestors( $term_id, 'category', 'taxonomy' ) as $ancestor_id ) {
-			if ( $this->target_category_settings->is_enabled( $ancestor_id ) ) {
+			if ( $this->category_conversion_scope_settings->is_enabled( $ancestor_id ) ) {
 				return true;
 			}
 		}
@@ -145,7 +145,7 @@ final class Admin_Category_Controller {
 			return;
 		}
 		try {
-			$this->target_category_settings->save( $term_id, '1' === $_POST['rubymaco_category_enabled'] );
+			$this->category_conversion_scope_settings->save( $term_id, '1' === $_POST['rubymaco_category_enabled'] );
 		} catch ( \InvalidArgumentException | \RuntimeException $error ) {
 			wp_die( esc_html__( 'The category was saved, but its Ruby Markup Converter setting could not be saved. Please reopen the category and try again.', 'ruby-markup-converter' ) );
 		}

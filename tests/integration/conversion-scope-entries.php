@@ -13,7 +13,7 @@ use Foriba\RubyMarkupConverter\Integration\Shortcode;
 use Foriba\RubyMarkupConverter\Resolver\Conversion_Scope_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 
 require_once ABSPATH . WPINC . '/class-wp-post.php';
 require_once ABSPATH . WPINC . '/class-wp-block.php';
@@ -61,7 +61,7 @@ try {
 		list( $override, $entry_mode, $category, $full, $area ) = $entry_case;
 		$GLOBALS['test_override_meta'][10]                      = $override;
 		$GLOBALS['test_options']                                = array( Option_Keys::CONVERSION_MODE => $entry_mode );
-		$GLOBALS['test_term_meta']                              = $category ? array( 1 => Target_Category_Settings::FULL_CONTENT ) : array();
+		$GLOBALS['test_term_meta']                              = $category ? array( 1 => Category_Conversion_Scope_Settings::FULL_CONTENT ) : array();
 		check_same( $full ? $entry_html : $entry_source, $entry_filter->filter_content( $entry_source ), 'Full content priority' );
 		check_same( $area ? $entry_html : $entry_source, $entry_blocks->render_content_block( $entry_source, array(), $context_block ), 'Block priority' );
 		check_same( $area ? $entry_html : $entry_source, do_shortcode( '[rubymaco]' . $entry_source . '[/rubymaco]' ), 'Shortcode priority and delimiters removed' );

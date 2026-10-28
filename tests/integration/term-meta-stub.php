@@ -16,7 +16,7 @@ namespace Foriba\RubyMarkupConverter\Settings;
  * @return mixed 保存値。未保存は登録済みの初期値と同じ空文字.
  */
 function get_term_meta( $term_id, $key, $single ) {
-	\check_same( Target_Category_Settings::META_KEY, $key, 'Category meta key' );
+	\check_same( Category_Conversion_Scope_Settings::META_KEY, $key, 'Category meta key' );
 	\check_same( true, $single, 'Category meta reads a single value' );
 	$GLOBALS['test_term_meta_reads'][] = $term_id;
 	return $GLOBALS['test_term_meta'][ $term_id ] ?? '';
@@ -31,7 +31,7 @@ function get_term_meta( $term_id, $key, $single ) {
  * @return bool 更新結果.
  */
 function update_term_meta( $term_id, $key, $value ) {
-	\check_same( Target_Category_Settings::META_KEY, $key, 'Only category meta written' );
+	\check_same( Category_Conversion_Scope_Settings::META_KEY, $key, 'Only category meta written' );
 	if ( isset( $GLOBALS['test_term_meta_writer'] ) ) {
 		return ( $GLOBALS['test_term_meta_writer'] )( $term_id, $value );
 	}
@@ -47,7 +47,7 @@ function update_term_meta( $term_id, $key, $value ) {
  * @return bool 削除結果.
  */
 function delete_term_meta( $term_id, $key ) {
-	\check_same( Target_Category_Settings::META_KEY, $key, 'Only category meta deleted' );
+	\check_same( Category_Conversion_Scope_Settings::META_KEY, $key, 'Only category meta deleted' );
 	if ( isset( $GLOBALS['test_term_meta_writer'] ) ) {
 		return ( $GLOBALS['test_term_meta_writer'] )( $term_id, null );
 	}

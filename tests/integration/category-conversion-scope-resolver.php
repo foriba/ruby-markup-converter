@@ -1,14 +1,15 @@
 <?php
 /**
- * カテゴリ一致判定を WordPress の取得 API の代替処理で検証する。
+ * カテゴリ別の変換範囲の取得を、WordPress の取得 API の代替処理で検証する。
  *
  * @package RubyMarkupConverter
  */
 
-namespace Foriba\RubyMarkupConverter\Service;
+namespace Foriba\RubyMarkupConverter\Resolver;
 
 use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Service\Conversion_Scope_Policy;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 
 /**
  * 所属カテゴリ取得の代替処理。
@@ -49,7 +50,7 @@ function update_termmeta_cache( $term_ids ) {
 }
 
 require_once ABSPATH . WPINC . '/class-wp-error.php';
-$category_matcher                   = new Category_Target_Matcher( new Target_Category_Settings() );
+$category_resolver                  = new Category_Conversion_Scope_Resolver( new Category_Conversion_Scope_Settings() );
 $target_policy                      = new Conversion_Scope_Policy();
 $GLOBALS['test_category_reads']     = array();
 $GLOBALS['test_term_meta_primes']   = array();
@@ -68,9 +69,9 @@ $GLOBALS['test_category_terms']     = array(
 	80 => array(),
 );
 try {
-	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::FULL_CONTENT );
-	\check_same( false, $category_matcher->matches( 0 ), 'Unknown ID does not match' );
-	\check_same( false, $category_matcher->matches( -10 ), 'Negative ID does not match' );
+	$GLOBALS['test_term_meta'] = array( 1 => Category_Conversion_Scope_Settings::FULL_CONTENT );
+	\check_same( null, $category_resolver->get( 0 ), 'Unknown ID has no category scope' );
+	\check_same( null, $category_resolver->get( -10 ), 'Negative ID has no category scope' );
 	\check_same( array(), $GLOBALS['test_category_reads'], 'No queries for invalid post IDs' );
 	foreach ( array(
 		array( 10, array( 1 ), true, 'Selected category itself' ),
@@ -86,30 +87,30 @@ try {
 		array( 80, array( 1 ), false, 'No categories' ),
 		array( 60, array( 1 ), false, 'Term API error' ),
 	) as $category_case ) {
-		list( $test_post_id, $selected_ids, $expected_match, $label ) = $category_case;
-		$GLOBALS['test_term_meta']                                    = array_fill_keys( $selected_ids, Target_Category_Settings::FULL_CONTENT );
-		\check_same( $expected_match, $category_matcher->matches( $test_post_id ), $label );
+		list( $test_post_id, $selected_ids, $expected_full_content, $label ) = $category_case;
+		$GLOBALS['test_term_meta'] = array_fill_keys( $selected_ids, Category_Conversion_Scope_Settings::FULL_CONTENT );
+		\check_same( $expected_full_content ? Category_Conversion_Scope_Settings::FULL_CONTENT : null, $category_resolver->get( $test_post_id ), $label );
 	}
 	// 所属カテゴリと祖先のメタは、照合前に 1 回でまとめて読み込む.
 	$GLOBALS['test_term_meta']        = array();
 	$GLOBALS['test_term_meta_primes'] = array();
-	$category_matcher->matches( 40 );
+	$category_resolver->get( 40 );
 	\check_same( array( array( 4, 2, 1 ) ), $GLOBALS['test_term_meta_primes'], 'Assigned and ancestor meta primed once' );
 	$GLOBALS['test_term_meta_primes'] = array();
-	$category_matcher->matches( 50 );
+	$category_resolver->get( 50 );
 	\check_same( array( array( 9, 3, 1 ) ), $GLOBALS['test_term_meta_primes'], 'Shared ancestors primed without duplicates' );
 	$GLOBALS['test_term_meta_primes'] = array();
-	$category_matcher->matches( 80 );
+	$category_resolver->get( 80 );
 	\check_same( array(), $GLOBALS['test_term_meta_primes'], 'No meta query without categories' );
-	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::FULL_CONTENT );
-	$category_matches          = $category_matcher->matches( 40 );
-	\check_same( Conversion_Scope_Policy::FULL_CONTENT, $target_policy->resolve( Conversion_Mode::selected(), null, $category_matches ), 'Descendant enables full conversion' );
-	\check_same( Conversion_Scope_Policy::NONE, $target_policy->resolve( Conversion_Mode::all(), Conversion_Scope_Policy::NONE, $category_matches ), 'Post disable wins over category and global mode' );
+	$GLOBALS['test_term_meta'] = array( 1 => Category_Conversion_Scope_Settings::FULL_CONTENT );
+	$category_scope            = $category_resolver->get( 40 );
+	\check_same( Conversion_Scope_Policy::FULL_CONTENT, $target_policy->resolve( Conversion_Mode::selected(), null, $category_scope ), 'Descendant enables full conversion' );
+	\check_same( Conversion_Scope_Policy::NONE, $target_policy->resolve( Conversion_Mode::all(), Conversion_Scope_Policy::NONE, $category_scope ), 'Post disable wins over category and global mode' );
 	$GLOBALS['test_category_terms'][40] = array();
-	\check_same( false, $category_matcher->matches( 40 ), 'Changed membership is not cached' );
+	\check_same( null, $category_resolver->get( 40 ), 'Changed membership is not cached' );
 	$GLOBALS['test_category_terms'][40] = array( (object) array( 'term_id' => 4 ) );
 	$GLOBALS['test_term_meta']          = array();
-	\check_same( false, $category_matcher->matches( 40 ), 'Changed selection is not cached' );
+	\check_same( null, $category_resolver->get( 40 ), 'Changed selection is not cached' );
 } finally {
 	$GLOBALS['test_term_meta'] = array();
 	unset( $GLOBALS['test_category_reads'], $GLOBALS['test_category_ancestors'], $GLOBALS['test_category_terms'], $GLOBALS['test_term_meta_primes'] );

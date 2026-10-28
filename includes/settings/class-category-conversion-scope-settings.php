@@ -1,6 +1,6 @@
 <?php
 /**
- * 対象カテゴリ設定の取得・保存。
+ * カテゴリ別の変換範囲の取得・保存。
  *
  * @package RubyMarkupConverter
  */
@@ -16,12 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * カテゴリごとの全文変換の指定を、そのカテゴリのタームメタとして保存する。
+ * カテゴリごとの変換範囲の指定を、そのカテゴリのタームメタとして保存する。
+ *
+ * 投稿別の指定（Post_Conversion_Scope_Resolver）と同じメタキー・保存値を使う。
  *
  * カテゴリの削除時はメタも WordPress が削除し、エクスポート・インポートではカテゴリと一緒に移る。
  * HTTP 層の nonce 確認は呼び出し側で行う。既存の4項目の保存とは独立する。
  */
-final class Target_Category_Settings {
+final class Category_Conversion_Scope_Settings {
 	/**
 	 * カテゴリ別の変換範囲のタームメタのキー。投稿別設定の投稿メタと同じ名前を使う。
 	 *

@@ -7,7 +7,7 @@
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Scope_Resolver;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 
 /**
  * メタ削除要求を、削除時のサイト ID とともに記録する。
@@ -95,7 +95,7 @@ function test_expected_uninstall_deletions( array $site_ids ) {
 			$expected['options'][] = array( $site_id, $key );
 		}
 		$expected['meta'][]     = array( $site_id, Post_Conversion_Scope_Resolver::META_KEY );
-		$expected['metadata'][] = array( $site_id, 'term', 0, Target_Category_Settings::META_KEY, '', true );
+		$expected['metadata'][] = array( $site_id, 'term', 0, Category_Conversion_Scope_Settings::META_KEY, '', true );
 	}
 	return $expected;
 }

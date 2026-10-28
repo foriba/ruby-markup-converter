@@ -22,7 +22,7 @@ use Foriba\RubyMarkupConverter\Admin\Admin_Page_Data;
 use Foriba\RubyMarkupConverter\Admin\Admin_App;
 use Foriba\RubyMarkupConverter\Admin\Admin_Post_Settings;
 use Foriba\RubyMarkupConverter\Admin\Admin_Category_Controller;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 use Foriba\RubyMarkupConverter\Settings\Settings_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -103,7 +103,7 @@ final class Bootstrap {
 		( new Category_Conversion_Meta() )->register_hooks();
 
 		// 標準カテゴリー画面の表示・保存を登録する.
-		( new Admin_Category_Controller( new Target_Category_Settings() ) )->register_hooks();
+		( new Admin_Category_Controller( new Category_Conversion_Scope_Settings() ) )->register_hooks();
 
 		// REST リクエストは管理画面判定の外で登録する.
 		( new Admin_REST_Controller(

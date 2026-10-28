@@ -93,7 +93,7 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 | 記法 ID | `ruby_double_angle`・`ruby_parenthesis`・`ruby_rb`・`ruby_double_underscore`・`ruby_mediawiki`・`bouten_double_bracket` | `Markup_Rule_Registry` | v1.0.0 |
 | ショートコード名 | `rubymaco` | `Shortcode` | v1.0.0 |
 | ブロック名と保存 HTML | `rubymaco/content` | `Blocks`・`editor/src/content` | v1.1.0 |
-| 投稿メタ・タームメタのキー | `_rubymaco_conversion_scope` | `Post_Conversion_Scope_Resolver`・`Target_Category_Settings` | v1.3.0 |
+| 投稿メタ・タームメタのキー | `_rubymaco_conversion_scope` | `Post_Conversion_Scope_Resolver`・`Category_Conversion_Scope_Settings` | v1.3.0 |
 | 変換範囲の保存値 | `full_content`（投稿・カテゴリ）・`none`（投稿）。継承・未指定は保存しない | 同上 | v1.3.0 |
 
 `rubymaco_apply_mode` と `rubymaco_bouten_renderer` は旧称の option 名のまま使い、
@@ -108,16 +108,16 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 投稿ごとの判定結果を「変換範囲」（`Conversion_Scope_Policy`: `FULL_CONTENT`・`BLOCKS_AND_SHORTCODES`・`NONE`）と呼び分けます。
 
 `Conversion_Scope_Policy::resolve()` は、全体の `Conversion_Mode`、投稿別に指定された変換範囲
-（`null`: 継承、または `FULL_CONTENT`・`NONE`）、カテゴリ一致の真偽値を受け取ります。
-DB や投稿 ID を参照しない純粋な判定です。それ以外の値（判定結果専用の `BLOCKS_AND_SHORTCODES` を含む）は継承として扱います。
+（`null`: 継承、または `FULL_CONTENT`・`NONE`）、カテゴリ別に指定された変換範囲（`null` または `FULL_CONTENT`）を受け取ります。
+DB や投稿 ID を参照しない純粋な判定です。それ以外の値（判定結果専用の `BLOCKS_AND_SHORTCODES` を含む）は未指定として扱います。
 
 1. 投稿別の指定がある → その範囲（`none` はブロック・ショートコードも変換しない）。
 2. 変換モードが `ALL` → `FULL_CONTENT`。
-3. 対象カテゴリに一致 → `FULL_CONTENT`。
+3. カテゴリ別の指定が `FULL_CONTENT` → `FULL_CONTENT`。
 4. その他 → `BLOCKS_AND_SHORTCODES`（ブロック・ショートコードのみ。なければ無変換）。
 
-カテゴリ一致は、選択カテゴリ自身またはその子孫に一つでも所属する場合です。
-投稿 ID が不明な入口では投稿別指定を継承、カテゴリ一致を false とし、
+カテゴリ別の指定は、指定されたカテゴリ自身またはその子孫に一つでも所属する場合に `FULL_CONTENT` になります。
+投稿 ID が不明な入口では、投稿別・カテゴリ別の指定をどちらも `null` とし、
 別の投稿やカテゴリの ID を推測して利用しません。
 
 `unit/conversion-scope-policy.php` で全12通りと、判定状態を持ち越さないことを検証します。
@@ -127,13 +127,15 @@ DB や投稿 ID を参照しない純粋な判定です。それ以外の値（�
 未保存や不正値は継承となり、読み取り時の補正保存はしません。
 投稿と固定ページで同じ取得方法を使います。ID 不明時は 0 を渡します。
 
-`Category_Target_Matcher::matches( $post_id )` は、所属カテゴリと WordPress の
-`get_ancestors()` が返す祖先のうち、いずれかが対象として指定されているかを判定します。
+カテゴリ別設定の取得は `Category_Conversion_Scope_Resolver::get( $post_id )` で行い、投稿別設定と同じく変換範囲を返します。
+所属カテゴリと WordPress の `get_ancestors()` が返す祖先のうち、いずれかに `full_content` が指定されていれば
+`FULL_CONTENT`、なければ `null` です。
 照合の前に、所属カテゴリと祖先のタームメタを `update_termmeta_cache()` でまとめて読み込みます。
 子の選択で親や兄弟は対象になりません。
-対象未選択、カテゴリなし、取得エラーは不一致です。取得結果を独自にキャッシュしません。
+対象未選択、カテゴリなし、取得エラーは `null` です。取得結果を独自にキャッシュしません。
+カテゴリ 1 件の指定の読み書きは `Category_Conversion_Scope_Settings` が担当します。
 
-`integration/post-conversion-scope.php` と `integration/category-target-matcher.php`
+`integration/post-conversion-scope.php` と `integration/category-conversion-scope-resolver.php`
 で、取得 API の引数、未保存・不正値、子孫・兄弟・複数所属、メタの一括読み込み、エラー、変更追従を検証します。
 投稿メタ・タームメタ・カテゴリ取得 API は代替実装なので、実 DB や WordPress 自体の階層探索は検証対象外です。
 ### 変換入口への接続
@@ -174,7 +176,7 @@ DB や投稿 ID を参照しない純粋な判定です。それ以外の値（�
 
 ### 変換対象の保存・取得
 
-- `Target_Category_Settings` は、カテゴリごとの指定をタームメタ `_rubymaco_conversion_scope` に保存します。
+- `Category_Conversion_Scope_Settings` は、カテゴリごとの指定をタームメタ `_rubymaco_conversion_scope` に保存します。
   キーと値は投稿別設定と同じ名前を使い、指定する場合は `full_content` を保存し、外す場合はメタを削除します。
   `is_enabled()` はカテゴリ自身の明示指定だけを返し、`full_content` 以外の保存値は未指定として扱います。補正保存はしません。
   `save()` は `manage_categories` 権限とカテゴリの存在を確認してから保存し、保存後の値も照合します。
@@ -196,7 +198,7 @@ DB や投稿 ID を参照しない純粋な判定です。それ以外の値（�
 - 未保存は継承です。無効化しただけでは保存データは削除しません。
   アンインストール時には、プラグイン専用の投稿メタとタームメタを全カテゴリから削除します。
 
-`integration/target-category-settings.php` は指定・解除・不正入力・定義外の保存値・権限・保存失敗を検証します。
+`integration/category-conversion-scope-settings.php` は指定・解除・不正入力・定義外の保存値・権限・保存失敗を検証します。
 `integration/term-meta-stub.php` は、タームメタ API とカテゴリ存在確認の代替処理を各テストに提供します。
 `integration/category-admin.php` は標準画面のフック、追加・更新・全解除、
 nonce・権限・不正入力、継承表示を検証します。認証・DB は代替実装です。

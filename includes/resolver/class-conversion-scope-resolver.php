@@ -10,9 +10,8 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Resolver;
 
 use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
-use Foriba\RubyMarkupConverter\Service\Category_Target_Matcher;
 use Foriba\RubyMarkupConverter\Service\Conversion_Scope_Policy;
-use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+use Foriba\RubyMarkupConverter\Settings\Category_Conversion_Scope_Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,11 +36,11 @@ final class Conversion_Scope_Resolver {
 	private Post_Conversion_Scope_Resolver $post_conversion_scope_resolver;
 
 	/**
-	 * カテゴリ判定。
+	 * カテゴリ別設定の取得元。
 	 *
-	 * @var Category_Target_Matcher
+	 * @var Category_Conversion_Scope_Resolver
 	 */
-	private Category_Target_Matcher $category_target_matcher;
+	private Category_Conversion_Scope_Resolver $category_conversion_scope_resolver;
 
 	/**
 	 * 優先順位の判定。
@@ -59,7 +58,7 @@ final class Conversion_Scope_Resolver {
 		return new self(
 			new Conversion_Mode_Resolver(),
 			new Post_Conversion_Scope_Resolver(),
-			new Category_Target_Matcher( new Target_Category_Settings() ),
+			new Category_Conversion_Scope_Resolver( new Category_Conversion_Scope_Settings() ),
 			new Conversion_Scope_Policy()
 		);
 	}
@@ -67,21 +66,21 @@ final class Conversion_Scope_Resolver {
 	/**
 	 * 必要な依存を受け取る。
 	 *
-	 * @param Conversion_Mode_Resolver       $conversion_mode_resolver 全体設定.
-	 * @param Post_Conversion_Scope_Resolver $post_conversion_scope_resolver 投稿別設定.
-	 * @param Category_Target_Matcher        $category_target_matcher カテゴリ判定.
-	 * @param Conversion_Scope_Policy        $conversion_scope_policy 優先順位.
+	 * @param Conversion_Mode_Resolver           $conversion_mode_resolver 全体設定.
+	 * @param Post_Conversion_Scope_Resolver     $post_conversion_scope_resolver 投稿別設定.
+	 * @param Category_Conversion_Scope_Resolver $category_conversion_scope_resolver カテゴリ別設定.
+	 * @param Conversion_Scope_Policy            $conversion_scope_policy 優先順位.
 	 */
 	public function __construct(
 		Conversion_Mode_Resolver $conversion_mode_resolver,
 		Post_Conversion_Scope_Resolver $post_conversion_scope_resolver,
-		Category_Target_Matcher $category_target_matcher,
+		Category_Conversion_Scope_Resolver $category_conversion_scope_resolver,
 		Conversion_Scope_Policy $conversion_scope_policy
 	) {
-		$this->conversion_mode_resolver       = $conversion_mode_resolver;
-		$this->post_conversion_scope_resolver = $post_conversion_scope_resolver;
-		$this->category_target_matcher        = $category_target_matcher;
-		$this->conversion_scope_policy        = $conversion_scope_policy;
+		$this->conversion_mode_resolver           = $conversion_mode_resolver;
+		$this->post_conversion_scope_resolver     = $post_conversion_scope_resolver;
+		$this->category_conversion_scope_resolver = $category_conversion_scope_resolver;
+		$this->conversion_scope_policy            = $conversion_scope_policy;
 	}
 
 	/**
@@ -94,12 +93,12 @@ final class Conversion_Scope_Resolver {
 	 * @return string Conversion_Scope_Policy の判定定数.
 	 */
 	public function get( int $post_id ): string {
-		$override = $this->post_conversion_scope_resolver->get( $post_id );
-		$mode     = $this->conversion_mode_resolver->get();
-		$matches  = false;
-		if ( null === $override && ! $mode->equals( Conversion_Mode::all() ) && 0 < $post_id ) {
-			$matches = $this->category_target_matcher->matches( $post_id );
+		$post_scope     = $this->post_conversion_scope_resolver->get( $post_id );
+		$mode           = $this->conversion_mode_resolver->get();
+		$category_scope = null;
+		if ( null === $post_scope && ! $mode->equals( Conversion_Mode::all() ) && 0 < $post_id ) {
+			$category_scope = $this->category_conversion_scope_resolver->get( $post_id );
 		}
-		return $this->conversion_scope_policy->resolve( $mode, $override, $matches );
+		return $this->conversion_scope_policy->resolve( $mode, $post_scope, $category_scope );
 	}
 }
