@@ -49,6 +49,11 @@ for (const type of ['post', 'page']) {
 		assert.equal(control.selected, value);
 		control.onChange('disabled');
 		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_override: 'disabled' } }));
+		control.onChange('enabled');
+		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_override: 'enabled' } }));
+		// 継承に戻すときは null を送り、保存時に REST API がメタを削除する.
+		control.onChange('inherit');
+		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_override: null } }));
 		assert.equal(meta.other, 'keep');
 	}
 }
@@ -62,9 +67,15 @@ render().props.children.props.onChange('invalid');
 assert.equal(edits.length, before);
 meta = { _rubymaco_conversion_override: 'invalid' };
 assert.equal(render().props.children.props.selected, 'inherit');
+for (const missing of [null, undefined, '']) {
+	meta = { _rubymaco_conversion_override: missing };
+	assert.equal(render().props.children.props.selected, 'inherit', 'deleted or missing meta inherits');
+}
+meta = {};
+assert.equal(render().props.children.props.selected, 'inherit', 'unregistered meta key inherits');
 postType = 'attachment';
 assert.equal(render(), null);
 postType = 'post';
 meta = undefined;
 assert.equal(render(), null);
-console.log('PASS: post/page, three states, isolated meta edits, saving lock, invalid input and unsupported contexts');
+console.log('PASS: post/page, three states, inherit deletes meta, isolated meta edits, saving lock, invalid input and unsupported contexts');
