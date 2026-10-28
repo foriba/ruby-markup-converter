@@ -21,9 +21,10 @@ Simply copy and paste your manuscript from a text file. There's no need to add r
 ---
 
 = Key Features =
+- **Convert by category or by post:** Select a category to convert every post in it, or choose for each post and page whether to convert it. No need to add blocks to each post.
 - **Use your original manuscripts as they are:** Supported ruby and bouten notation is converted automatically, so there's no need to rewrite your text.
-- **Easy to use:** Simply paste your manuscript into the Ruby Markup Converter block.
-- **Choose the conversion scope:** Convert notation within a dedicated block or throughout the entire post content.
+- **Easy to use:** Simply paste your manuscript into a post in a selected category, or into the Ruby Markup Converter block.
+- **Choose where to convert:** Convert only part of a post with a dedicated block, or convert all posts and pages.
 - **Flexible settings:** Enable or disable individual markup rules and choose how bouten marks are displayed.
 
 ---
@@ -59,11 +60,19 @@ Although Ruby Markup Converter is designed with Japanese typography and novel-wr
 
 == Usage ==
 
-Ruby Markup Converter supports three ways to convert ruby and bouten notation:
+Ruby Markup Converter offers several ways to choose where ruby and bouten notation is converted:
+
+= By Category =
+
+Open `Posts > Categories`, edit a category, and check the Ruby Markup Converter option. The full text of posts in that category and its child categories is converted.
+
+= By Post or Page =
+
+In the block editor, open the Ruby Markup Converter panel in the sidebar. You can convert the full text of that post or page, or turn conversion off for it, regardless of other settings.
 
 = Ruby Markup Converter Block =
 
-Add the Ruby Markup Converter block to a post or page, then paste or type your text inside it. Supported notation is automatically converted when the content is displayed.
+Add the Ruby Markup Converter block to a post or page, then paste or type your text inside it. Supported notation within the block is converted when the content is displayed.
 
 = Shortcode =
 
@@ -71,7 +80,7 @@ Wrap your text in `[rubymaco]...[/rubymaco]` to convert supported notation withi
 
 = Entire Post Content =
 
-Enable Apply to Entire Post Content in the plugin settings to automatically convert supported notation throughout the post content.
+Enable Apply to Entire Post Content in the plugin settings to convert supported notation throughout all posts and pages, except those set not to be converted.
 
 == Documentation ==
 
@@ -83,16 +92,23 @@ For detailed instructions, examples, configuration options, and troubleshooting,
 
 Yes. You can enable or disable each supported ruby and bouten markup rule individually in the plugin settings. You can also choose the bouten style and rendering method.
 
+= Can I exclude a specific post from conversion? =
+
+Yes. In the block editor, choose not to convert the post in the Ruby Markup Converter panel in the sidebar. Content inside Ruby Markup Converter blocks and shortcodes in that post is not converted either.
+
 = What happens when I uninstall the plugin? =
 
-Uninstalling the plugin removes its saved settings but does not delete or modify your posts or pages. Ruby and bouten notation remains in the original text and is no longer converted. Any manually written `[rubymaco]...[/rubymaco]` shortcode tags also remain visible.
+Uninstalling the plugin removes its saved settings, including the category and post conversion settings, but does not delete or modify your posts or pages. Ruby and bouten notation remains in the original text and is no longer converted. Any manually written `[rubymaco]...[/rubymaco]` shortcode tags also remain visible.
 
 == Screenshots ==
 
 1. Plugin settings screen.
-2. Adding the Ruby Markup Converter block.
-3. Example of entering or pasting text into the block. Sample text: Wagahai wa Neko de Aru (I Am a Cat) by Natsume Soseki (public domain). Source: Aozora Bunko.
-4. Preview showing the converted ruby and bouten notation.
+2. Selecting a category to convert when adding a new category.
+3. Converting the full text of posts in a category from the category edit screen.
+4. Choosing whether to convert a post in the Ruby Markup Converter panel of the post editor. Sample text: Wagahai wa Neko de Aru (I Am a Cat) by Natsume Soseki (public domain). Source: Aozora Bunko.
+5. Adding the Ruby Markup Converter block.
+6. Example of entering or pasting text into the block. Sample text: Wagahai wa Neko de Aru (I Am a Cat) by Natsume Soseki (public domain). Source: Aozora Bunko.
+7. Preview showing the converted ruby and bouten notation.
 
 == Changelog ==
 
