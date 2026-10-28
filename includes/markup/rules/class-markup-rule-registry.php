@@ -23,6 +23,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Markup_Rule_Registry {
 	/**
+	 * 親文字を明示しない記法で、親文字として扱う漢字の連続。
+	 *
+	 * 統合漢字・拡張 A・互換漢字・第 2〜3 面の拡張漢字と 々〆〇〤 を対象にし、
+	 * 漢字ごとに直後の異体字セレクタを 1 つまで含める。
+	 * \p{Han} は PCRE2 10.40 以降で《 や 「 などの記号も含むため使わない。
+	 * ヶ は含めない。必要な場合は親文字を明示する記法で書く。
+	 *
+	 * @var string
+	 */
+	private const IMPLICIT_BASE_TEXT = '((?:[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{20000}-\x{3FFFF}々〆〇〤][\x{FE00}-\x{FE0F}\x{E0100}-\x{E01EF}]?)+)';
+
+	/**
 	 * 共通の取得窓口で使用するインスタンス。
 	 *
 	 * @var self|null
@@ -83,7 +95,7 @@ final class Markup_Rule_Registry {
 		$ids = array();
 
 		foreach ( $this->all() as $rule ) {
-			$ids[] = $rule->id;
+			$ids[] = $rule->get_id();
 		}
 
 		return $ids;
@@ -98,8 +110,8 @@ final class Markup_Rule_Registry {
 		$ids = array();
 
 		foreach ( $this->all() as $rule ) {
-			if ( $rule->enabled_by_default ) {
-				$ids[] = $rule->id;
+			if ( $rule->is_enabled_by_default() ) {
+				$ids[] = $rule->get_id();
 			}
 		}
 
@@ -129,7 +141,7 @@ final class Markup_Rule_Registry {
 		$transform_rules = array();
 
 		foreach ( $this->all() as $rule ) {
-			if ( ! isset( $wanted[ $rule->id ] ) ) {
+			if ( ! isset( $wanted[ $rule->get_id() ] ) ) {
 				continue;
 			}
 
@@ -146,6 +158,7 @@ final class Markup_Rule_Registry {
 	 *
 	 * 配列の順序は設定画面の表示順と変換の適用順を兼ねる。
 	 * 表示文言は呼び出し時点のロケールで翻訳する。
+	 * 互換性維持のため、記法 ID（option に保存）は変更不可。
 	 *
 	 * @return Markup_Rule[] 定義順の記法一覧。
 	 */
@@ -162,7 +175,7 @@ final class Markup_Rule_Registry {
 					'それが真実《しんじつ》の愛《あい》です。',
 				),
 				__(
-					'Supports both the "｜BaseText《RubyAnnotation》" and "BaseText《RubyAnnocation》" markup styles. The former explicitly specifies both the base text and ruby annotation, with no restrictions on character types. Both full-width and half-width vertical bars are supported. The latter automatically treats the preceding kanji characters as the base text, so the base text is limited to kanji.',
+					'Supports both the "｜BaseText《RubyAnnotation》" and "BaseText《RubyAnnotation》" markup styles. The former explicitly specifies both the base text and ruby annotation, with no restrictions on character types. Both full-width and half-width vertical bars are supported. The latter automatically treats the preceding kanji characters as the base text, so the base text is limited to kanji.',
 					'ruby-markup-converter'
 				), // ja-jp: '「｜親文字《ルビ》」および「親文字《ルビ》」の2つの形式に対応します。前者は親文字とルビを明示的に指定する形式で、親文字・ルビともに文字種の制約はありません。縦棒は全角・半角のいずれにも対応します。後者は《ルビ》の直前の漢字を自動的に親文字として扱うため、親文字は漢字限定となります。'.
 				true,
@@ -173,7 +186,7 @@ final class Markup_Rule_Registry {
 					),
 					new Transform_Rule(
 						Rule_Type::ruby(),
-						'/([一-龯々〆〤]+)《([^<>《》]+?)》/u'
+						'/' . self::IMPLICIT_BASE_TEXT . '《([^<>《》]+?)》/u'
 					),
 				)
 			),
@@ -194,7 +207,7 @@ final class Markup_Rule_Registry {
 				array(
 					new Transform_Rule(
 						Rule_Type::ruby(),
-						'/([一-龯々〆〤]+)\(([ぁ-ゖァ-ヺー・]+)\)/u'
+						'/' . self::IMPLICIT_BASE_TEXT . '\(([ぁ-ゖァ-ヺー・]+)\)/u'
 					),
 				)
 			),

@@ -4,15 +4,17 @@
 
 `node tests/admin-save-feedback.cjs` は通常・未保存・保存中・成功・失敗時のメッセージ、ボタン、Noticeを検証します。成功表示の5秒後の解除と再編集時のタイマー解除は実画面でも確認してください。
 
-`node tests/admin-save.cjs` は保存通信の単体テストです。POST本文・nonce・全解除と、
-HTTPエラー・通信失敗・不正な成功応答を検証します。実HTTPやデータベースへの書き込みは行いません。
+`node tests/admin-save.cjs` は保存通信の単体テストです。apiFetchへの要求（パス・POST本文）・全解除と、
+HTTPエラー・通信失敗・不正な成功応答を検証します。URL・nonce・ユーザー言語はapiFetchに任せるため、要求に含めないことも確認します。実HTTPやデータベースへの書き込みは行いません。
 保存中の入力ロック、二重送信防止、成功後の未保存表示解除、失敗時の入力保持は実画面でも確認してください。
 
 `WP_ROOT=/path/to/wordpress node tests/admin-local-edit.cjs` でブラウザのスモークテストを実行できます。
 事前に `npm run build:admin` を実行してください。Playwrightのブラウザが必要です。
 インストール済みChromeを使う場合は `PLAYWRIGHT_CHANNEL=chrome` を指定します。
 PHPの実データ定義を使い、HTTP取得はモックします。実サイトへの保存・通信は行いません。
-デスクトップ／モバイル幅で全解除、タブ間の編集保持、モックAPIへの保存、再読み込み時の復元を確認します。実DBへの書き込みは行いません。
+WordPress本体の `wp-api-fetch` を本体と同じ設定で読み込みます。
+デスクトップ／モバイル幅で全解除、タブ間の編集保持、モックAPIへの保存、nonce期限切れ時の再取得と再送信、再読み込み時の復元を確認します。実DBへの書き込みは行いません。
+タブは手動アクティベーション（矢印キーでフォーカス移動、Enterで選択）を前提に、キーボードでの切り替えも確認します。
 プレビュー通信は未変換の例文を返すモックであり、変換内容はPHPの回帰テストで検証します。
 `node tests/admin-preview.cjs` はプレビュー通信の本文、応答形式、不正応答、通信失敗、中止を検証します。
 `node tests/admin-preview-state.cjs` は初回の全描画パターン取得、通信なしの切り替え、ルビの参照維持、部分失敗・再試行・古い応答の無視を検証します。キャッシュは画面内だけで保持し、再読み込み時に再取得します。
@@ -52,7 +54,7 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 - POST `/wp-json/rubymaco/v1/settings/preview` は同じ4項目を受け取り、保存せずに例文を変換する。任意の本文や追加項目は受け付けない。
 - プレビュー応答は `{"previews":[{"id":"記法ID","examples":[{"text":"例文","html":"変換結果"}]}]}`。全記法を定義順で返し、各記法自身のルールで例文を変換する。全解除でも変換例を表示する。実際の投稿に適用するルールは保存された選択状態に従う。
 - 適用範囲は検証するがプレビュー結果には影響しない。傍点スタイル・描画方式は送信された値を使う。表示時にはプラグインの描画用CSSも必要。
-- 全操作に manage_options が必要。管理画面は X-WP-Nonce に wp_rest nonce を送り、ユーザー言語には `?_locale=user` を指定する。
+- 全操作に manage_options が必要。管理画面は `wp-api-fetch` を使い、URL、wp_rest nonce の送信と期限切れ時の再取得、ユーザー言語の `?_locale=user` を WordPress に任せる。
 - Cookie/nonce 認証は WordPress 標準処理に委譲する。テストのルート登録・権限判定は代替処理で、実HTTP・Cookie・nonceの検証ではない。
 - 実環境では未ログイン、権限のないユーザー、管理者の正常nonce・欠落nonce・不正nonce、言語切り替えを確認すること。
 
@@ -62,7 +64,7 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 - `integration/settings-service.php`: 設定値取得の形式、初期値、不正値、全解除、読み取り時に保存しないこと。
 
-- `integration/post-content-filter.php`: 本文フィルタークラスの遅延登録・適用モード・変換・重複登録。
+- `integration/post-content-filter.php`: 本文フィルタークラスの遅延登録・変換モード・変換・重複登録。
 
 - `integration/bootstrap.php`: 起動時のフック・ショートコード登録、優先度、引数数、再起動時の重複。
 
@@ -76,7 +78,137 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 不具合修正時は、修正前には失敗するケースを該当ファイルへ追加してください。
 `check_same()` は厳密比較を行います。
 
+## 保存される名前（互換性）
+
+次の名前と値（文字列そのもの）はデータベースや投稿本文に保存されるため、公開後は変更しません。
+変更しないのは保存される文字列だけで、それを表す定数名・クラス名・メソッド名は変更してかまいません。
+定義箇所のコメントにも、変更しない文字列と、変更してよいものを記載しています。
+
+| 対象 | 名前・値 | 定義箇所 | 保存開始 |
+|---|---|---|---|
+| option 名 | `rubymaco_enabled_markup_rules`・`rubymaco_bouten_style`・`rubymaco_apply_mode`・`rubymaco_bouten_renderer` | `Option_Keys` | v1.0.0 |
+| 変換モードの保存値 | `all`（`ALL`）・`shortcode`（`SELECTED`） | `Conversion_Mode` | v1.0.0 |
+| 傍点スタイルの保存値 | `dot`・`sesame` | `Bouten_Style` | v1.0.0 |
+| 傍点描画方式の保存値 | `text_emphasis`・`custom` | `Bouten_Rendering_Method` | v1.0.0 |
+| 記法 ID | `ruby_double_angle`・`ruby_parenthesis`・`ruby_rb`・`ruby_double_underscore`・`ruby_mediawiki`・`bouten_double_bracket` | `Markup_Rule_Registry` | v1.0.0 |
+| ショートコード名 | `rubymaco` | `Shortcode` | v1.0.0 |
+| ブロック名と保存 HTML | `rubymaco/content` | `Blocks`・`editor/src/content` | v1.1.0 |
+| 投稿メタ・タームメタのキー | `_rubymaco_conversion_scope` | `Post_Conversion_Scope_Resolver`・`Category_Conversion_Scope_Settings` | v1.3.0 |
+| 変換範囲の保存値 | `full_content`（投稿・カテゴリ）・`none`（投稿）。継承・未指定は保存しない | 同上 | v1.3.0 |
+
+`rubymaco_apply_mode` と `rubymaco_bouten_renderer` は旧称の option 名のまま使い、
+定数名（`Option_Keys::CONVERSION_MODE`・`Option_Keys::BOUTEN_RENDERING_METHOD`）だけを現在の名前にしています。
+設定 REST API の項目名（`apply_mode` など）も option 名に合わせています。
+
 ## 安全性と対象範囲
+
+### 変換対象の判定（v1.3.0 開発中）
+
+用語は、サイト全体の方針を「変換モード」（`Conversion_Mode`: `ALL`・`SELECTED`）、
+投稿ごとの判定結果を「変換範囲」（`Conversion_Scope_Policy`: `FULL_CONTENT`・`BLOCKS_AND_SHORTCODES`・`NONE`）と呼び分けます。
+
+`Conversion_Scope_Policy::resolve()` は、全体の `Conversion_Mode`、投稿別に指定された変換範囲
+（`null`: 継承、または `FULL_CONTENT`・`NONE`）、カテゴリ別に指定された変換範囲（`null` または `FULL_CONTENT`）を受け取ります。
+DB や投稿 ID を参照しない純粋な判定です。それ以外の値（判定結果専用の `BLOCKS_AND_SHORTCODES` を含む）は未指定として扱います。
+
+1. 投稿別の指定がある → その範囲（`none` はブロック・ショートコードも変換しない）。
+2. 変換モードが `ALL` → `FULL_CONTENT`。
+3. カテゴリ別の指定が `FULL_CONTENT` → `FULL_CONTENT`。
+4. その他 → `BLOCKS_AND_SHORTCODES`（ブロック・ショートコードのみ。なければ無変換）。
+
+カテゴリ別の指定は、指定されたカテゴリ自身またはその子孫に一つでも所属する場合に `FULL_CONTENT` になります。
+投稿 ID が不明な入口では、投稿別・カテゴリ別の指定をどちらも `null` とし、
+別の投稿やカテゴリの ID を推測して利用しません。
+
+`unit/conversion-scope-policy.php` で全12通りと、判定状態を持ち越さないことを検証します。
+投稿別設定の取得は `Post_Conversion_Scope_Resolver::get( $post_id )` で行います。
+メタキーは `_rubymaco_conversion_scope`、保存値は判定結果と同じ `full_content`・`none` です。
+継承の場合はメタを保存しません（エディタは `null` を送って削除します。REST API とエディタ上の表現は `inherit`）。
+未保存や不正値は継承となり、読み取り時の補正保存はしません。
+投稿と固定ページで同じ取得方法を使います。ID 不明時は 0 を渡します。
+
+カテゴリ別設定の取得は `Category_Conversion_Scope_Resolver::get( $post_id )` で行い、投稿別設定と同じく変換範囲を返します。
+所属カテゴリと WordPress の `get_ancestors()` が返す祖先のうち、いずれかに `full_content` が指定されていれば
+`FULL_CONTENT`、なければ `null` です。
+照合の前に、所属カテゴリと祖先のタームメタを `update_termmeta_cache()` でまとめて読み込みます。
+子の選択で親や兄弟は対象になりません。
+対象未選択、カテゴリなし、取得エラーは `null` です。取得結果を独自にキャッシュしません。
+カテゴリ 1 件の指定の読み書きは `Category_Conversion_Scope_Settings` が担当します。
+
+`integration/post-conversion-scope.php` と `integration/category-conversion-scope-resolver.php`
+で、取得 API の引数、未保存・不正値、子孫・兄弟・複数所属、メタの一括読み込み、エラー、変更追従を検証します。
+投稿メタ・タームメタ・カテゴリ取得 API は代替実装なので、実 DB や WordPress 自体の階層探索は検証対象外です。
+### 変換入口への接続
+
+`Conversion_Scope_Resolver::get( $post_id )` が設定取得と共通判定を接続します。
+投稿別指定または全体設定で決まる場合は、カテゴリ照会を省略します。
+
+- 本文フィルターは全モードで登録し、本文ごとに FULL_CONTENT の場合だけ変換します。
+  優先度は 8 です。do_blocks() の優先度 9 より前に、その投稿の保存本文を処理します。
+  他の動的ブロックが後から生成する HTML を外側の投稿設定で一括変換する処理ではありません。
+- 本文とショートコードは処理中のグローバル WP_Post を使います。
+  独自コードが任意の投稿本文を渡す際は、その投稿文脈も設定する必要があります。
+  queried object ID は使用しません。
+- 独自ブロックは usesContext の postId を優先します。明示文脈がなければ現在の投稿、
+  不正な明示文脈なら 0 とします。ビルド済みメタデータも更新しています。
+- ブロックとショートコードは NONE の場合だけ変換を抑止します。
+  ショートコードの登録は維持し、無効時も囲み記法を除いた本文を返します。
+- 標準の投稿本文ブロックの wp-block-post-content 要素は、その投稿自身の処理結果として
+  外側の変換対象から保護します。独自ブロック内に別投稿を表示する場合にも適用します。
+  wp-block-query と wp-block-post-template も保護し、一覧テンプレート内の記法を
+  各投稿の文脈が確定する前に外側の投稿設定で変換しないようにします。
+  他のプラグイン独自の投稿表示処理には、その実装に応じた文脈設定が必要です。
+
+`integration/conversion-scope-entries.php` は全12通りを三つの入口で検証し、
+固定ページ、異なるブロック文脈、文脈なし、設定変更、二重変換防止、別投稿の保護を確認します。
+ブロックの文脈と描画順序はテスト用に構成しています。実際の Query Loop・投稿本文ブロック、
+認証済みの実 DB 設定、テーマ固有のフィルターは実画面でも確認してください。
+標準の「投稿 → カテゴリー」の新規追加・編集フォームに選択欄を追加しています。
+投稿・固定ページのブロックエディタでは、右サイドバーの Ruby Markup Converter パネルから
+継承・全文変換・無変換を選択します。投稿の保存・更新に連動し、独自の保存通信は行いません。
+クラシックエディタの UI はこの実装の対象外です。
+ビルドは `npm run build:post-settings`、監視ビルドは `npm run start:post-settings` です。
+通常の `npm run build` と配布準備スクリプトにも含まれます。
+`node tests/post-settings.cjs` は表示対象・三状態・メタ編集要求・保存中の操作抑止を検証します。
+実画面では投稿と固定ページそれぞれで保存後に再読み込みし、選択の保持と公開側の変換を確認してください。
+無変換ではブロック・ショートコードも変換しないこと、継承に戻すと全体・カテゴリ設定に従うことも確認します。
+編集者・投稿者・寄稿者は、それぞれ編集可能な投稿で確認してください。
+
+### 変換対象の保存・取得
+
+- `Category_Conversion_Scope_Settings` は、カテゴリごとの指定をタームメタ `_rubymaco_conversion_scope` に保存します。
+  キーと値は投稿別設定と同じ名前を使い、指定する場合は `full_content` を保存し、外す場合はメタを削除します。
+  `is_enabled()` はカテゴリ自身の明示指定だけを返し、`full_content` 以外の保存値は未指定として扱います。補正保存はしません。
+  `save()` は `manage_categories` 権限とカテゴリの存在を確認してから保存し、保存後の値も照合します。
+  カテゴリを削除すると、メタも WordPress が削除します。エクスポート・インポートではカテゴリと一緒に移ります。
+  HTTP から呼び出す際の nonce 確認は通信層の責務です。
+- `Category_Conversion_Meta` は `init` で category のタームメタを登録します。
+  型・初期値・保存値の補正・`manage_categories` による変更権限を宣言し、REST API には公開しません。
+- 既存の設定用 REST API は4項目の契約を維持しています。
+  カテゴリ選択は標準のカテゴリー追加・更新時に保存します。専用 REST API は設けません。
+  選択解除はそのカテゴリーの明示指定だけを外し、他のカテゴリーの選択は維持します。
+  親カテゴリーからの継承と全文変換モードの対象であることは説明文で示します。
+  専用 nonce と選択値のないクイック編集・REST・インポートでは変更しません。
+- `Post_Conversion_Meta` は `init` で投稿・固定ページのメタを登録します。
+  WordPress 標準の投稿 REST API の `meta` で取得・保存でき、
+  `inherit`・`enabled`・`disabled` の enum と編集コンテキストを指定します。
+  権限判定の対象ユーザーが、その投稿を編集できることを要求します。
+  認証・nonce・保存処理は WordPress に委譲します。投稿タイプの custom-fields 対応が必要です。
+  PHP から直接メタを更新するコードの権限確認は呼び出し側の責務です。
+- 未保存は継承です。無効化しただけでは保存データは削除しません。
+  アンインストール時には、プラグイン専用の投稿メタとタームメタを全カテゴリから削除します。
+
+`integration/category-conversion-scope-settings.php` は指定・解除・不正入力・定義外の保存値・権限・保存失敗を検証します。
+`integration/term-meta-stub.php` は、タームメタ API とカテゴリ存在確認の代替処理を各テストに提供します。
+`integration/category-admin.php` は標準画面のフック、追加・更新・全解除、
+nonce・権限・不正入力、継承表示を検証します。認証・DB は代替実装です。
+実画面では追加・更新後の再表示、親カテゴリー配下の投稿の変換、
+クイック編集後も選択が維持されることを確認してください。
+`integration/post-conversion-meta.php` はメタ登録引数・投稿別権限・WordPress の実 REST スキーマ検証を確認します。
+`integration/category-conversion-meta.php` はタームメタの登録引数・権限・保存値の補正を確認します。
+`integration/uninstall.php` は削除するキーを記録して検証します。
+これらは DB・権限・登録 API の代替処理を使うため、実 HTTP の認証・nonce と投稿メタ保存は
+実環境で別途確認してください。既存の投稿やカテゴリへの一括書き込みは行いません。
 
 ### 複数ルールの現行仕様
 

@@ -103,15 +103,13 @@ final class Admin_App {
 			array(),
 			$this->plugin_info->get_version()
 		);
+		// REST API の URL・nonce・ユーザー言語は wp-api-fetch に任せ、初期表示の文言だけを渡す.
 		$messages = Admin_Page_Data::create_default()->get()['messages'];
 		wp_add_inline_script(
 			'rubymaco-admin-app',
 			'window.rubymacoAdmin = ' . wp_json_encode(
 				array(
-					'url'        => add_query_arg( '_locale', 'user', rest_url( 'rubymaco/v1/settings' ) ),
-					'previewUrl' => add_query_arg( '_locale', 'user', rest_url( 'rubymaco/v1/settings/preview' ) ),
-					'nonce'      => wp_create_nonce( 'wp_rest' ),
-					'messages'   => $messages,
+					'messages' => $messages,
 				),
 				JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
 			) . ';',

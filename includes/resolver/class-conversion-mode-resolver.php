@@ -1,6 +1,6 @@
 <?php
 /**
- * 適用モードの設定取得と正規化。
+ * 変換モードの設定取得と正規化。
  *
  * @package RubyMarkupConverter
  */
@@ -10,31 +10,31 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Resolver;
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * 保存済みの適用モードを検証済みの値オブジェクトとして提供する。
+ * 保存済みの変換モードを検証済みの値オブジェクトとして提供する。
  *
  * 保存値は従来どおり文字列とし、読み取り時に型を変換する。
  * 設定の登録・保存、表示用の翻訳、HTML エスケープは行わない。
- * 使用前に WordPress、設定キーの定義、Apply_Mode を読み込むこと。
+ * 使用前に WordPress、設定キーの定義、Conversion_Mode を読み込むこと。
  */
-final class Apply_Mode_Resolver {
+final class Conversion_Mode_Resolver {
 	/**
 	 * 保存済みの設定を取得する。
 	 *
 	 * 未保存時や不正値の場合は初期値を返す。保存済みデータは変更しない。
 	 * 結果はキャッシュせず、呼び出しごとに WordPress から取得する。
 	 *
-	 * @return Apply_Mode 検証済みの適用モード.
+	 * @return Conversion_Mode 検証済みの変換モード.
 	 */
-	public function get(): Apply_Mode {
+	public function get(): Conversion_Mode {
 		$value = get_option(
-			Option_Keys::APPLY_MODE,
+			Option_Keys::CONVERSION_MODE,
 			$this->default_value()->get_value()
 		);
 
@@ -46,10 +46,10 @@ final class Apply_Mode_Resolver {
 	/**
 	 * 未保存時や不正値時に使用する初期値を返す。
 	 *
-	 * @return Apply_Mode ブロックまたはショートコードの指定範囲を変換するモード.
+	 * @return Conversion_Mode ブロックまたはショートコードの指定範囲を変換するモード.
 	 */
-	public function default_value(): Apply_Mode {
-		return Apply_Mode::selected_areas();
+	public function default_value(): Conversion_Mode {
+		return Conversion_Mode::selected();
 	}
 
 	/**
@@ -58,10 +58,10 @@ final class Apply_Mode_Resolver {
 	 * 大文字・小文字や前後の空白は補正しない。
 	 * スラッシュ除去など、リクエスト固有の前処理は呼び出し側で行う。
 	 *
-	 * @param string $value 適用モードの保存値または入力値.
-	 * @return Apply_Mode 検証済みの適用モード.
+	 * @param string $value 変換モードの保存値または入力値.
+	 * @return Conversion_Mode 検証済みの変換モード.
 	 */
-	public function normalize( string $value ): Apply_Mode {
-		return Apply_Mode::try_from( $value ) ?? $this->default_value();
+	public function normalize( string $value ): Conversion_Mode {
+		return Conversion_Mode::try_from( $value ) ?? $this->default_value();
 	}
 }

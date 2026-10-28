@@ -61,6 +61,8 @@ final class Markup_Transformer {
 	/**
 	 * ルール一覧を与えられた順序で適用する。
 	 *
+	 * 本文の HTML は 1 回だけ解析し、各テキストにすべてのルールを順に適用する。
+	 * 後のルールは、前のルールが生成した HTML を対象にせず、変換されずに残った部分だけを対象にする。
 	 * 正規表現とキャプチャ構造は検証済みの内部定義を前提とする。
 	 *
 	 * @param string                  $content HTML を含む本文.
@@ -75,30 +77,35 @@ final class Markup_Transformer {
 		Bouten_Style $bouten_style,
 		Bouten_Rendering_Method $bouten_rendering_method
 	): string {
-		foreach ( $rules as $rule ) {
-			if ( '' === $rule->get_pattern() ) {
-				continue;
-			}
-			$content = $this->transform_html( $content, $rule, $bouten_style, $bouten_rendering_method );
+		$rules = array_values(
+			array_filter(
+				$rules,
+				static function ( Transform_Rule $rule ): bool {
+					return '' !== $rule->get_pattern();
+				}
+			)
+		);
+		if ( array() === $rules ) {
+			return $content;
 		}
 
-		return $content;
+		return $this->transform_html( $content, $rules, $bouten_style, $bouten_rendering_method );
 	}
 
 	/**
-	 * HTML の保護対象を除外し、単一ルールを適用する。
+	 * HTML の保護対象を除外し、各テキストにルール一覧を適用する。
 	 *
-	 * HTML API が処理を完了できない場合は、このルール適用前の本文を返す。
+	 * HTML API が処理を完了できない場合は、変換前の本文を返す。
 	 *
 	 * @param string                  $content HTML を含む本文.
-	 * @param Transform_Rule          $rule 適用するルール.
+	 * @param Transform_Rule[]        $rules 空でないルール一覧.
 	 * @param Bouten_Style            $bouten_style 傍点スタイル.
 	 * @param Bouten_Rendering_Method $bouten_rendering_method 傍点描画方式.
 	 * @return string 変換後の本文.
 	 */
 	private function transform_html(
 		string $content,
-		Transform_Rule $rule,
+		array $rules,
 		Bouten_Style $bouten_style,
 		Bouten_Rendering_Method $bouten_rendering_method
 	): string {
@@ -123,7 +130,12 @@ final class Markup_Transformer {
 					continue;
 				}
 			}
-			if ( '#tag' === $processor->get_token_type() && ! $processor->is_tag_closer() && $processor->has_class( 'rubymaco-bouten' ) ) {
+			// 投稿一覧テンプレートや別投稿の本文を外側の投稿設定で変換しない.
+			if ( '#tag' === $processor->get_token_type() && ! $processor->is_tag_closer()
+				&& ( $processor->has_class( 'rubymaco-bouten' )
+					|| $processor->has_class( 'wp-block-post-content' )
+					|| $processor->has_class( 'wp-block-query' )
+					|| $processor->has_class( 'wp-block-post-template' ) ) ) {
 				$protected_depth = $depth;
 				continue;
 			}
@@ -132,7 +144,7 @@ final class Markup_Transformer {
 				continue;
 			}
 
-			$html = $this->transform_text( $processor->get_modifiable_text(), $rule, $bouten_style, $bouten_rendering_method );
+			$html = $this->transform_text( $processor->get_modifiable_text(), $rules, $bouten_style, $bouten_rendering_method );
 			if ( null === $html ) {
 				continue;
 			}
@@ -167,37 +179,75 @@ final class Markup_Transformer {
 	}
 
 	/**
-	 * デコード済みテキストの記法を HTML に変換する。
+	 * デコード済みテキストの記法を、ルール一覧の順に HTML へ変換する。
+	 *
+	 * テキストを未変換の文字列と生成済みの HTML に分けて保持し、
+	 * 各ルールは未変換の文字列だけを検索する。
 	 *
 	 * @param string                  $text デコード済みテキスト.
-	 * @param Transform_Rule          $rule 適用するルール.
+	 * @param Transform_Rule[]        $rules 適用するルール一覧.
 	 * @param Bouten_Style            $bouten_style 傍点スタイル.
 	 * @param Bouten_Rendering_Method $bouten_rendering_method 傍点描画方式.
-	 * @return string|null 生成した HTML。未一致または正規表現エラー時は null.
+	 * @return string|null 生成した HTML。どのルールにも一致しない場合と正規表現エラー時は null.
 	 */
 	private function transform_text(
 		string $text,
-		Transform_Rule $rule,
+		array $rules,
 		Bouten_Style $bouten_style,
 		Bouten_Rendering_Method $bouten_rendering_method
 	): ?string {
-		if ( ! preg_match_all( $rule->get_pattern(), $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+		/**
+		 * 未変換の文字列（is_html が false）と生成済みの HTML の並び。
+		 *
+		 * @var array<int, array{is_html: bool, value: string}> $segments
+		 */
+		$segments = array(
+			array(
+				'is_html' => false,
+				'value'   => $text,
+			),
+		);
+		$changed  = false;
+		foreach ( $rules as $rule ) {
+			$is_ruby = $rule->get_type()->equals( Rule_Type::ruby() );
+			$next    = array();
+			foreach ( $segments as $segment ) {
+				if ( $segment['is_html']
+					|| ! preg_match_all( $rule->get_pattern(), $segment['value'], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+					$next[] = $segment;
+					continue;
+				}
+				$changed = true;
+				$offset  = 0;
+				foreach ( $matches as $match ) {
+					$next[] = array(
+						'is_html' => false,
+						'value'   => substr( $segment['value'], $offset, $match[0][1] - $offset ),
+					);
+					$next[] = array(
+						'is_html' => true,
+						'value'   => $is_ruby
+							? $this->renderer->render_ruby( $match[1][0], $match[2][0] )
+							: $this->renderer->render_bouten( $match[1][0], $bouten_style, $bouten_rendering_method ),
+					);
+					$offset = $match[0][1] + strlen( $match[0][0] );
+				}
+				$next[] = array(
+					'is_html' => false,
+					'value'   => substr( $segment['value'], $offset ),
+				);
+			}
+			$segments = $next;
+		}
+		if ( ! $changed ) {
 			return null;
 		}
-		$is_ruby = $rule->get_type()->equals( Rule_Type::ruby() );
-		$html    = '';
-		$offset  = 0;
-		foreach ( $matches as $match ) {
+
+		$html = '';
+		foreach ( $segments as $segment ) {
 			// HTML API がデコードしたテキストを再エスケープする際、文字参照そのものの表示を保つ.
-			$html .= $this->renderer->render_text( substr( $text, $offset, $match[0][1] - $offset ) );
-			if ( $is_ruby ) {
-				$html .= $this->renderer->render_ruby( $match[1][0], $match[2][0] );
-			} else {
-				$html .= $this->renderer->render_bouten( $match[1][0], $bouten_style, $bouten_rendering_method );
-			}
-			$offset = $match[0][1] + strlen( $match[0][0] );
+			$html .= $segment['is_html'] ? $segment['value'] : $this->renderer->render_text( $segment['value'] );
 		}
-		$html .= $this->renderer->render_text( substr( $text, $offset ) );
 
 		return $html;
 	}

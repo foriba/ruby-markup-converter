@@ -22,11 +22,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class Rule_Type {
 	/**
 	 * ルビの種別値。
+	 *
+	 * 互換性維持のため、保存値 'ruby' は変更不可。
 	 */
 	public const RUBY = 'ruby';
 
 	/**
 	 * 傍点の種別値。
+	 *
+	 * 互換性維持のため、保存値 'bouten' は変更不可。
 	 */
 	public const BOUTEN = 'bouten';
 

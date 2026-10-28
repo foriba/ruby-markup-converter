@@ -21,23 +21,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class Option_Keys {
 	/**
 	 * 有効な記法ルール ID 一覧の保存キー。
+	 *
+	 * 互換性維持のため、option 名 'rubymaco_enabled_markup_rules' は変更不可。
 	 */
 	public const ENABLED_MARKUP_RULES = 'rubymaco_enabled_markup_rules';
 
 	/**
 	 * 傍点スタイルの保存キー。
+	 *
+	 * 互換性維持のため、option 名 'rubymaco_bouten_style' は変更不可。
 	 */
 	public const BOUTEN_STYLE = 'rubymaco_bouten_style';
 
 	/**
-	 * 適用モードの保存キー。
+	 * 変換モード（Conversion_Mode）の保存キー。
+	 *
+	 * 互換性維持のため、option 名 'rubymaco_apply_mode' は変更不可。
 	 */
-	public const APPLY_MODE = 'rubymaco_apply_mode';
+	public const CONVERSION_MODE = 'rubymaco_apply_mode';
 
 	/**
 	 * 傍点描画方式の保存キー。
 	 *
-	 * 保存済み設定との互換性のため、option 名は rubymaco_bouten_renderer を維持する。
+	 * 互換性維持のため、option 名 'rubymaco_bouten_renderer' は変更不可。
 	 */
 	public const BOUTEN_RENDERING_METHOD = 'rubymaco_bouten_renderer';
 
@@ -55,7 +61,7 @@ final class Option_Keys {
 		return array(
 			self::ENABLED_MARKUP_RULES,
 			self::BOUTEN_STYLE,
-			self::APPLY_MODE,
+			self::CONVERSION_MODE,
 			self::BOUTEN_RENDERING_METHOD,
 		);
 	}

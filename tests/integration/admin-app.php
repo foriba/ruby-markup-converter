@@ -44,6 +44,7 @@ unset( $GLOBALS['test_rest_allowed'] );
 $admin_asset = require dirname( __DIR__, 2 ) . '/admin/build/index.asset.php';
 \check_same( true, in_array( 'wp-element', $admin_asset['dependencies'], true ), 'React uses WordPress element dependency' );
 \check_same( true, in_array( 'wp-components', $admin_asset['dependencies'], true ), 'UI uses WordPress standard components' );
+\check_same( true, in_array( 'wp-api-fetch', $admin_asset['dependencies'], true ), 'REST requests use WordPress api-fetch' );
 \check_same( true, is_string( $admin_asset['version'] ) && '' !== $admin_asset['version'], 'build supplies cache version' );
 foreach ( array( 'index.js', 'index.css' ) as $admin_file ) {
 	\check_same( true, is_file( dirname( __DIR__, 2 ) . '/admin/build/' . $admin_file ), 'admin build output exists' );

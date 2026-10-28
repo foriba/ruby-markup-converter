@@ -46,6 +46,15 @@ foreach ( glob( ABSPATH . WPINC . '/html-api/class-*.php' ) as $file ) {
 }
 $GLOBALS['test_options'] = array();
 /**
+ * 部分読み込み環境で WordPress エラーを識別する。
+ *
+ * @param mixed $value 判定対象.
+ * @return bool WordPress エラーの場合に true.
+ */
+function is_wp_error( $value ) {
+	return $value instanceof WP_Error;
+}
+/**
  * テスト用に先頭 8 KB のファイルヘッダーを読み取る。
  *
  * WordPress の部分読み込み用の代替実装。コンテキスト拡張は扱わない。
@@ -118,13 +127,16 @@ function add_option( $key, $value = '', $deprecated = '', $autoload = null ) {
 	throw new RuntimeException( 'Unexpected database write' );
 }
 /**
- * 設定の削除を禁止する。
+ * 通常は設定削除を禁止し、削除テスト中だけ代替処理に委譲する。
  *
  * @param string $key 設定キー.
- * @return void
+ * @return bool 代替処理の削除結果.
  * @throws RuntimeException データベース操作が呼ばれた場合.
  */
 function delete_option( $key ) {
+	if ( isset( $GLOBALS['test_option_deleter'] ) ) {
+		return ( $GLOBALS['test_option_deleter'] )( $key );
+	}
 	unset( $key );
 	throw new RuntimeException( 'Unexpected database write' );
 }

@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('react', 'react-dom', 'react-jsx-runtime', 'wp-a11y', 'wp-components', 'wp-compose', 'wp-element', 'wp-i18n', 'wp-primitives'), 'version' => 'f9adb4f248c282730e80');
+<?php return array('dependencies' => array('react', 'react-dom', 'react-jsx-runtime', 'wp-a11y', 'wp-api-fetch', 'wp-components', 'wp-compose', 'wp-element', 'wp-i18n', 'wp-primitives'), 'version' => '139ffcd7621850b501fe');

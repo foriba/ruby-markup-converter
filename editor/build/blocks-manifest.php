@@ -5,7 +5,7 @@ return array(
 		'$schema' => 'https://schemas.wp.org/trunk/block.json',
 		'apiVersion' => 3,
 		'name' => 'rubymaco/content',
-		'version' => '1.2.0',
+		'version' => '1.3.0',
 		'title' => 'Ruby Markup Converter',
 		'category' => 'text',
 		'icon' => 'editor-code',
@@ -17,6 +17,9 @@ return array(
 		),
 		'attributes' => array(
 			
+		),
+		'usesContext' => array(
+			'postId'
 		),
 		'textdomain' => 'ruby-markup-converter',
 		'editorScript' => 'file:./index.js',

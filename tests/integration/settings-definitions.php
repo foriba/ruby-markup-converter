@@ -7,7 +7,7 @@
 
 use Foriba\RubyMarkupConverter\Settings\Settings_Definitions;
 use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 
@@ -16,7 +16,7 @@ $settings_definitions       = Settings_Definitions::create_default();
 $definitions_data           = $settings_definitions->get();
 check_same( array( 'apply_modes', 'markup_rules', 'bouten_styles', 'bouten_rendering_methods' ), array_keys( $definitions_data ), 'definition response keys' );
 foreach ( array(
-	'apply_modes'              => Apply_Mode::values(),
+	'apply_modes'              => Conversion_Mode::values(),
 	'bouten_styles'            => Bouten_Style::values(),
 	'bouten_rendering_methods' => Bouten_Rendering_Method::values(),
 ) as $definition_key => $definition_values ) {
@@ -32,11 +32,11 @@ check_same( Markup_Rule_Registry::instance()->ids(), array_column( $definitions_
 foreach ( Markup_Rule_Registry::instance()->all() as $definition_index => $definition_rule ) {
 	check_same(
 		array(
-			'id'          => $definition_rule->id,
+			'id'          => $definition_rule->get_id(),
 			'type'        => $definition_rule->get_type()->get_value(),
-			'titles'      => array_values( $definition_rule->titles ),
-			'description' => $definition_rule->description,
-			'examples'    => array_values( $definition_rule->examples ),
+			'titles'      => $definition_rule->get_titles(),
+			'description' => $definition_rule->get_description(),
+			'examples'    => $definition_rule->get_examples(),
 		),
 		$definitions_data['markup_rules'][ $definition_index ],
 		'rule contains only display metadata'

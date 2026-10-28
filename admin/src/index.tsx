@@ -1,15 +1,17 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
 import { Button, Notice, Spinner } from '@wordpress/components';
 import { Page } from '@wordpress/admin-ui';
+import apiFetch from '@wordpress/api-fetch';
 import type { AdminConfig, PageData } from './types';
+import { SETTINGS_PATH } from './settings-api';
 import SettingsForm from './settings-form';
 import './index.scss';
 
 /**
- * 設定画面の初期データを取得し、接続情報とともにフォームへ渡す。
+ * 設定画面の初期データを取得し、フォームへ渡す。
  *
  * @param props        コンポーネントのプロパティ。
- * @param props.config PHPから渡された接続情報と画面文言。
+ * @param props.config PHPから渡された読み込み中・失敗時の画面文言。
  */
 function App( { config }: { config: AdminConfig } ) {
 	const [ data, setData ] = useState< PageData | null >( null );
@@ -19,17 +21,10 @@ function App( { config }: { config: AdminConfig } ) {
 	useEffect( () => {
 		const controller = new AbortController();
 		setFailed( false );
-		fetch( config.url, {
-			credentials: 'same-origin',
-			headers: { 'X-WP-Nonce': config.nonce },
+		apiFetch< PageData >( {
+			path: SETTINGS_PATH,
 			signal: controller.signal,
 		} )
-			.then( ( response ) => {
-				if ( ! response.ok ) {
-					throw new Error( 'Request failed' );
-				}
-				return response.json() as Promise< PageData >;
-			} )
 			.then( ( result ) => {
 				if (
 					! result ||
@@ -47,11 +42,12 @@ function App( { config }: { config: AdminConfig } ) {
 				}
 			} );
 		return () => controller.abort();
-	}, [ config.url, config.nonce, attempt ] );
+	}, [ attempt ] );
 
 	const messages = data ? data.messages : config.messages;
 	return (
 		<Page
+			className="rubymaco-page"
 			hasPadding
 			showSidebarToggle={ false }
 			title={ messages.page_title }
@@ -75,9 +71,7 @@ function App( { config }: { config: AdminConfig } ) {
 					{ messages.loading }
 				</p>
 			) }
-			{ ! failed && data && (
-				<SettingsForm data={ data } config={ config } />
-			) }
+			{ ! failed && data && <SettingsForm data={ data } /> }
 		</Page>
 	);
 }

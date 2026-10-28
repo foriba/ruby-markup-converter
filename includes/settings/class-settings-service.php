@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Settings;
 
 use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
-use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 
@@ -40,9 +40,9 @@ final class Settings_Service {
 	/**
 	 * 適用範囲の取得元。
 	 *
-	 * @var Apply_Mode_Resolver
+	 * @var Conversion_Mode_Resolver
 	 */
-	private Apply_Mode_Resolver $apply_mode_resolver;
+	private Conversion_Mode_Resolver $conversion_mode_resolver;
 
 	/**
 	 * 傍点スタイルの取得元。
@@ -66,7 +66,7 @@ final class Settings_Service {
 	public static function create_default(): self {
 		return new self(
 			Markup_Rule_Registry::instance(),
-			new Apply_Mode_Resolver(),
+			new Conversion_Mode_Resolver(),
 			new Bouten_Style_Resolver(),
 			new Bouten_Rendering_Method_Resolver()
 		);
@@ -76,18 +76,18 @@ final class Settings_Service {
 	 * 設定の取得に使用する依存オブジェクトを受け取る。
 	 *
 	 * @param Markup_Rule_Registry             $markup_rule_registry 記法の取得元.
-	 * @param Apply_Mode_Resolver              $apply_mode_resolver 適用範囲の取得元.
+	 * @param Conversion_Mode_Resolver         $conversion_mode_resolver 適用範囲の取得元.
 	 * @param Bouten_Style_Resolver            $bouten_style_resolver 傍点スタイルの取得元.
 	 * @param Bouten_Rendering_Method_Resolver $bouten_rendering_method_resolver 傍点描画方法の取得元.
 	 */
 	public function __construct(
 		Markup_Rule_Registry $markup_rule_registry,
-		Apply_Mode_Resolver $apply_mode_resolver,
+		Conversion_Mode_Resolver $conversion_mode_resolver,
 		Bouten_Style_Resolver $bouten_style_resolver,
 		Bouten_Rendering_Method_Resolver $bouten_rendering_method_resolver
 	) {
 		$this->markup_rule_registry             = $markup_rule_registry;
-		$this->apply_mode_resolver              = $apply_mode_resolver;
+		$this->conversion_mode_resolver         = $conversion_mode_resolver;
 		$this->bouten_style_resolver            = $bouten_style_resolver;
 		$this->bouten_rendering_method_resolver = $bouten_rendering_method_resolver;
 	}
@@ -114,7 +114,7 @@ final class Settings_Service {
 		$ids = array_filter( $ids, 'is_string' );
 
 		return array(
-			'apply_mode'              => $this->apply_mode_resolver->get()->get_value(),
+			'apply_mode'              => $this->conversion_mode_resolver->get()->get_value(),
 			'enabled_rule_ids'        => array_values( array_intersect( $this->markup_rule_registry->ids(), $ids ) ),
 			'bouten_style'            => $this->bouten_style_resolver->get()->get_value(),
 			'bouten_rendering_method' => $this->bouten_rendering_method_resolver->get()->get_value(),
@@ -138,7 +138,7 @@ final class Settings_Service {
 			throw new \InvalidArgumentException( 'Settings must contain exactly the four supported fields.' );
 		}
 		foreach ( array(
-			'apply_mode'              => Apply_Mode::values(),
+			'apply_mode'              => Conversion_Mode::values(),
 			'bouten_style'            => Bouten_Style::values(),
 			'bouten_rendering_method' => Bouten_Rendering_Method::values(),
 		) as $field => $allowed ) {
@@ -179,7 +179,7 @@ final class Settings_Service {
 	public function save( array $settings ): array {
 		$validated = $this->validate( $settings );
 		$keys      = array(
-			'apply_mode'              => Option_Keys::APPLY_MODE,
+			'apply_mode'              => Option_Keys::CONVERSION_MODE,
 			'enabled_rule_ids'        => Option_Keys::ENABLED_MARKUP_RULES,
 			'bouten_style'            => Option_Keys::BOUTEN_STYLE,
 			'bouten_rendering_method' => Option_Keys::BOUTEN_RENDERING_METHOD,

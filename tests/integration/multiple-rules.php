@@ -54,3 +54,13 @@ check_same(
 	$multiple_convert( '漢字(かんじ)《《強調》》', $multiple_registry->transform_rules_for( array( 'bouten_double_bracket' ) ) ),
 	'unselected ruby syntax remains text'
 );
+
+// 本文全体を 1 回で解析しても、段落や保護要素をまたいで状態を持ち越さない.
+$multiple_paragraph = '<p>｜真実の愛《トゥルーラブ》と漢字《かんじ》、《《強調》》、#漢字__かんじ__#。</p><pre>漢字《かんじ》</pre>' . "\n";
+$multiple_converted = $multiple_convert( $multiple_paragraph, $multiple_rules );
+check_same( true, false !== strpos( $multiple_converted, '<pre>漢字《かんじ》</pre>' ), 'protected element in repeated paragraph stays literal' );
+check_same(
+	str_repeat( $multiple_converted, 300 ),
+	$multiple_convert( str_repeat( $multiple_paragraph, 300 ), $multiple_rules ),
+	'long content matches per-paragraph conversion'
+);

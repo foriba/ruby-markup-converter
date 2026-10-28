@@ -187,9 +187,9 @@ final class Admin_REST_Controller {
 		$bouten_rendering_method   = Bouten_Rendering_Method::from( $settings['bouten_rendering_method'] );
 		$previews                  = array();
 		foreach ( $markup_rule_registry->all() as $rule ) {
-			$transform_rules = $markup_rule_registry->transform_rules_for( array( $rule->id ) );
+			$transform_rules = $markup_rule_registry->transform_rules_for( array( $rule->get_id() ) );
 			$examples        = array();
-			foreach ( $rule->examples as $example ) {
+			foreach ( $rule->get_examples() as $example ) {
 				$examples[] = array(
 					'text' => $example,
 					'html' => $markup_conversion_service->convert_with_rules(
@@ -201,7 +201,7 @@ final class Admin_REST_Controller {
 				);
 			}
 			$previews[] = array(
-				'id'       => $rule->id,
+				'id'       => $rule->get_id(),
 				'examples' => $examples,
 			);
 		}

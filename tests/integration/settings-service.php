@@ -22,7 +22,7 @@ try {
 	check_same( array(), $GLOBALS['test_options'], 'reading defaults does not save them' );
 
 	$GLOBALS['test_options'] = array(
-		Option_Keys::APPLY_MODE              => 'all',
+		Option_Keys::CONVERSION_MODE         => 'all',
 		Option_Keys::ENABLED_MARKUP_RULES    => array( 'ruby_rb' ),
 		Option_Keys::BOUTEN_STYLE            => 'sesame',
 		Option_Keys::BOUTEN_RENDERING_METHOD => 'custom',
@@ -36,7 +36,7 @@ try {
 	check_same( $settings_expected, $settings_service->get(), 'same service reads changed saved values' );
 	foreach ( array( null, false, 1, '', 'unknown', array(), new stdClass() ) as $invalid_setting ) {
 		$GLOBALS['test_options'] = array(
-			Option_Keys::APPLY_MODE              => $invalid_setting,
+			Option_Keys::CONVERSION_MODE         => $invalid_setting,
 			Option_Keys::BOUTEN_STYLE            => $invalid_setting,
 			Option_Keys::BOUTEN_RENDERING_METHOD => $invalid_setting,
 		);
@@ -135,7 +135,7 @@ try {
 	check_same( $expected, $settings_service->save( $request ), 'saved response' );
 	check_same(
 		array(
-			Option_Keys::APPLY_MODE              => 'all',
+			Option_Keys::CONVERSION_MODE         => 'all',
 			Option_Keys::ENABLED_MARKUP_RULES    => array( 'ruby_rb', 'bouten_double_bracket' ),
 			Option_Keys::BOUTEN_STYLE            => 'sesame',
 			Option_Keys::BOUTEN_RENDERING_METHOD => 'custom',
@@ -147,7 +147,7 @@ try {
 	$request['enabled_rule_ids'] = array();
 	check_same( array(), $settings_service->save( $request )['enabled_rule_ids'], 'save all disabled' );
 	check_same( array(), $settings_service->get()['enabled_rule_ids'], 'all disabled persists' );
-	foreach ( array( Option_Keys::APPLY_MODE, Option_Keys::ENABLED_MARKUP_RULES, Option_Keys::BOUTEN_STYLE, Option_Keys::BOUTEN_RENDERING_METHOD ) as $index => $failure_key ) {
+	foreach ( array( Option_Keys::CONVERSION_MODE, Option_Keys::ENABLED_MARKUP_RULES, Option_Keys::BOUTEN_STYLE, Option_Keys::BOUTEN_RENDERING_METHOD ) as $index => $failure_key ) {
 		$GLOBALS['test_options'] = array();
 		$settings_failure_key    = $failure_key;
 		$settings_writes         = array();

@@ -16,7 +16,7 @@ const signals = [];
 const context = {
   exports: {}, AbortController,
   require(name) {
-    if (name === './preview-api') return { fetchPreview: async (_config, settings, _rules, signal) => {
+    if (name === './preview-api') return { fetchPreview: async (settings, _rules, signal) => {
       requests++;
       signals.push(signal);
       assert.equal(settings.apply_mode, 'shortcode');
@@ -48,14 +48,13 @@ const context = {
 vm.runInNewContext(ts.transpileModule(fs.readFileSync(path.join(__dirname, '../admin/src/use-settings-preview.ts'), 'utf8'), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
 }).outputText, context);
-const config = {};
 const definitions = {
   markup_rules: [{ id: 'ruby', type: 'ruby' }, {id: 'bouten', type: 'bouten'}],
   bouten_styles: [{value: 'dot'}, {value: 'sesame'}],
   bouten_rendering_methods: [{value: 'text_emphasis'}, {value: 'custom'}],
 };
 let settings = { apply_mode: 'shortcode', enabled_rule_ids: ['ruby'], bouten_style: 'sesame', bouten_rendering_method: 'text_emphasis' };
-const render = () => { cursor = 0; return context.exports.default(config, settings, definitions); };
+const render = () => { cursor = 0; return context.exports.default(settings, definitions); };
 const flush = () => new Promise(resolve => setImmediate(resolve));
 (async () => {
   assert.equal(render().loading, true);

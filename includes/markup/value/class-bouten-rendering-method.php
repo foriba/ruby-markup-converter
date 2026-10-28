@@ -21,12 +21,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Bouten_Rendering_Method {
 	/**
-	 * 保存値 text_emphasis。
+	 * CSS text-emphasis の描画方式値。
+	 *
+	 * 互換性維持のため、保存値 'text_emphasis' は変更不可。
 	 */
 	public const TEXT_EMPHASIS = 'text_emphasis';
 
 	/**
-	 * 保存値 custom。
+	 * 独自実装の描画方式値。
+	 *
+	 * 互換性維持のため、保存値 'custom' は変更不可。
 	 */
 	public const CUSTOM = 'custom';
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { Button, Notice, Spinner } from '@wordpress/components';
 import { Link, Tabs } from '@wordpress/ui';
-import type { AdminConfig, PageData, Settings } from './types';
+import type { PageData, Settings } from './types';
 import { saveSettings } from './settings-api';
 import ConversionScope from './conversion-scope';
 import CompatibilitySettings from './compatibility-settings';
@@ -11,17 +11,10 @@ import SaveFeedback from './save-feedback';
 /**
  * 設定を編集し、認証付きのREST APIを通じて保存する。
  *
- * @param props        コンポーネントのプロパティ。
- * @param props.data   初期設定とPHP側の表示定義。
- * @param props.config REST APIの接続情報。
+ * @param props      コンポーネントのプロパティ。
+ * @param props.data 初期設定とPHP側の表示定義。
  */
-export default function SettingsForm( {
-	data,
-	config,
-}: {
-	data: PageData;
-	config: AdminConfig;
-} ) {
+export default function SettingsForm( { data }: { data: PageData } ) {
 	const [ settings, setSettings ] = useState< Settings >( data.settings );
 	const [ savedSettings, setSavedSettings ] = useState< Settings >(
 		data.settings
@@ -31,7 +24,7 @@ export default function SettingsForm( {
 	>( 'idle' );
 	const savePending = useRef( false );
 	const { messages, definitions } = data;
-	const preview = useSettingsPreview( config, settings, definitions );
+	const preview = useSettingsPreview( settings, definitions );
 	const dirty =
 		settings.apply_mode !== savedSettings.apply_mode ||
 		settings.bouten_style !== savedSettings.bouten_style ||
@@ -63,7 +56,7 @@ export default function SettingsForm( {
 		savePending.current = true;
 		setSaveStatus( 'saving' );
 		try {
-			const result = await saveSettings( config, settings, definitions );
+			const result = await saveSettings( settings, definitions );
 			setSettings( result );
 			setSavedSettings( result );
 			setSaveStatus( 'saved' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * 全文変換モードと WordPress の本文フィルターを接続する。
+ * 投稿ごとの変換範囲と WordPress の本文フィルターを接続する。
  *
  * @package RubyMarkupConverter
  */
@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Integration;
 
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
-use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Scope_Resolver;
+use Foriba\RubyMarkupConverter\Service\Conversion_Scope_Policy;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * 起動時の init フックで適用モードに応じた本文変換を登録する。
+ * 起動時に本文フィルターを登録し、投稿ごとに適用を判定する。
  *
  * 変換はサービスに委譲し、HTML 生成や設定値の正規化は担当しない。
  * 生成しただけではフックを登録しない。register_hooks() で明示的に登録する。
@@ -32,53 +32,49 @@ final class Post_Content_Filter {
 	private Markup_Conversion_Service $markup_conversion_service;
 
 	/**
-	 * 適用モードの取得元。
+	 * 投稿ごとの変換範囲の取得元。
 	 *
-	 * @var Apply_Mode_Resolver
+	 * @var Conversion_Scope_Resolver
 	 */
-	private Apply_Mode_Resolver $apply_mode_resolver;
+	private Conversion_Scope_Resolver $conversion_scope_resolver;
 
 	/**
 	 * 必要な依存オブジェクトを受け取る。設定の取得やフック登録は行わない。
 	 *
 	 * @param Markup_Conversion_Service $markup_conversion_service 本文の変換サービス.
-	 * @param Apply_Mode_Resolver       $apply_mode_resolver       適用モードの取得元.
+	 * @param Conversion_Scope_Resolver $conversion_scope_resolver 変換範囲の取得元.
 	 */
 	public function __construct(
 		Markup_Conversion_Service $markup_conversion_service,
-		Apply_Mode_Resolver $apply_mode_resolver
+		Conversion_Scope_Resolver $conversion_scope_resolver
 	) {
 		$this->markup_conversion_service = $markup_conversion_service;
-		$this->apply_mode_resolver       = $apply_mode_resolver;
+		$this->conversion_scope_resolver = $conversion_scope_resolver;
 	}
 
 	/**
-	 * 適用モードを判定する起動時のフックを登録する。
+	 * 本文フィルターを接続する起動時のフックを登録する。
 	 *
 	 * 同じインスタンスの再登録は WordPress が同一コールバックとして扱う。
 	 */
 	public function register_hooks(): void {
 		add_action(
 			'init',
-			array( $this, 'maybe_register_content_filter' )
+			array( $this, 'register_content_filter' )
 		);
 	}
 
 	/**
-	 * 全文変換モードの場合のみ本文フィルターを登録する。
+	 * 設定にかかわらず本文フィルターを登録する。
 	 *
-	 * 設定はオブジェクト生成時ではなく init のコールバック実行時に取得する。
-	 * 本文フィルターの優先度は 9 とする。
+	 * ブロック描画の do_blocks() より前の優先度 8 で、その投稿の保存本文を変換する。
+	 * 描画済みの別投稿の本文を外側の投稿設定で再変換しない。
 	 */
-	public function maybe_register_content_filter(): void {
-		if ( ! $this->apply_mode_resolver->get()->equals( Apply_Mode::all() ) ) {
-			return;
-		}
-
+	public function register_content_filter(): void {
 		add_filter(
 			'the_content',
 			array( $this, 'filter_content' ),
-			9
+			8
 		);
 	}
 
@@ -89,6 +85,9 @@ final class Post_Content_Filter {
 	 * @return string 変換後の投稿本文.
 	 */
 	public function filter_content( string $content ): string {
+		if ( Conversion_Scope_Policy::FULL_CONTENT !== $this->conversion_scope_resolver->get( Post_Context::current_id() ) ) {
+			return $content;
+		}
 		return $this->markup_conversion_service->convert( $content );
 	}
 }
