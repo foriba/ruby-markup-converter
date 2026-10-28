@@ -68,7 +68,7 @@ $GLOBALS['test_category_terms']     = array(
 	80 => array(),
 );
 try {
-	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::ENABLED );
+	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::FULL_CONTENT );
 	\check_same( false, $category_matcher->matches( 0 ), 'Unknown ID does not match' );
 	\check_same( false, $category_matcher->matches( -10 ), 'Negative ID does not match' );
 	\check_same( array(), $GLOBALS['test_category_reads'], 'No queries for invalid post IDs' );
@@ -87,7 +87,7 @@ try {
 		array( 60, array( 1 ), false, 'Term API error' ),
 	) as $category_case ) {
 		list( $test_post_id, $selected_ids, $expected_match, $label ) = $category_case;
-		$GLOBALS['test_term_meta']                                    = array_fill_keys( $selected_ids, Target_Category_Settings::ENABLED );
+		$GLOBALS['test_term_meta']                                    = array_fill_keys( $selected_ids, Target_Category_Settings::FULL_CONTENT );
 		\check_same( $expected_match, $category_matcher->matches( $test_post_id ), $label );
 	}
 	// 所属カテゴリと祖先のメタは、照合前に 1 回でまとめて読み込む.
@@ -101,10 +101,10 @@ try {
 	$GLOBALS['test_term_meta_primes'] = array();
 	$category_matcher->matches( 80 );
 	\check_same( array(), $GLOBALS['test_term_meta_primes'], 'No meta query without categories' );
-	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::ENABLED );
+	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::FULL_CONTENT );
 	$category_matches          = $category_matcher->matches( 40 );
 	\check_same( Conversion_Target_Policy::FULL_CONTENT, $target_policy->resolve( Apply_Mode::selected_areas(), null, $category_matches ), 'Descendant enables full conversion' );
-	\check_same( Conversion_Target_Policy::NONE, $target_policy->resolve( Apply_Mode::all(), false, $category_matches ), 'Post disable wins over category and global mode' );
+	\check_same( Conversion_Target_Policy::NONE, $target_policy->resolve( Apply_Mode::all(), Conversion_Target_Policy::NONE, $category_matches ), 'Post disable wins over category and global mode' );
 	$GLOBALS['test_category_terms'][40] = array();
 	\check_same( false, $category_matcher->matches( 40 ), 'Changed membership is not cached' );
 	$GLOBALS['test_category_terms'][40] = array( (object) array( 'term_id' => 4 ) );

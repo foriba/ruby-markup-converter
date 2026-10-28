@@ -58,11 +58,11 @@ try {
 		\check_same( true, $meta_args['single'], 'Single metadata value' );
 		\check_same( 'inherit', $meta_args['default'], 'Missing metadata inherits' );
 		\check_same( array( 'edit' ), $meta_args['show_in_rest']['schema']['context'], 'Metadata exposed only in edit context' );
-		foreach ( array( 'inherit', 'enabled', 'disabled' ) as $valid ) {
+		foreach ( array( 'inherit', 'full_content', 'none' ) as $valid ) {
 			\check_same( true, rest_validate_value_from_schema( $valid, $meta_args['show_in_rest']['schema'] ), 'REST accepts valid metadata' );
 			\check_same( $valid, call_user_func( $meta_args['sanitize_callback'], $valid ), 'Sanitizer preserves state' );
 		}
-		foreach ( array( 'unknown', '', true, 1, array() ) as $invalid ) {
+		foreach ( array( 'unknown', 'enabled', 'disabled', 'selected_areas', '', true, 1, array() ) as $invalid ) {
 			\check_same( true, rest_validate_value_from_schema( $invalid, $meta_args['show_in_rest']['schema'] ) instanceof \WP_Error, 'REST rejects invalid metadata' );
 			\check_same( 'inherit', call_user_func( $meta_args['sanitize_callback'], $invalid ), 'Direct PHP invalid value inherits' );
 		}

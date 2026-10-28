@@ -75,13 +75,13 @@ final class Admin_Post_Settings {
 							'label' => __( 'Follow global and category settings', 'ruby-markup-converter' ),
 						),
 						array(
-							'value' => Post_Conversion_Override_Resolver::ENABLED,
+							'value' => Post_Conversion_Override_Resolver::FULL_CONTENT,
 							'label' => 'page' === $post->post_type
 								? __( 'Convert the full text of this page', 'ruby-markup-converter' )
 								: __( 'Convert the full text of this post', 'ruby-markup-converter' ),
 						),
 						array(
-							'value' => Post_Conversion_Override_Resolver::DISABLED,
+							'value' => Post_Conversion_Override_Resolver::NONE,
 							'label' => 'page' === $post->post_type
 								? __( 'Do not convert this page', 'ruby-markup-converter' )
 								: __( 'Do not convert this post', 'ruby-markup-converter' ),

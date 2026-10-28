@@ -45,14 +45,14 @@ try {
 	);
 	$entry_shortcode->register_hooks();
 	foreach ( array(
-		array( 'disabled', 'all', true, false, false ),
-		array( 'disabled', 'all', false, false, false ),
-		array( 'disabled', 'shortcode', true, false, false ),
-		array( 'disabled', 'shortcode', false, false, false ),
-		array( 'enabled', 'all', true, true, true ),
-		array( 'enabled', 'all', false, true, true ),
-		array( 'enabled', 'shortcode', true, true, true ),
-		array( 'enabled', 'shortcode', false, true, true ),
+		array( 'none', 'all', true, false, false ),
+		array( 'none', 'all', false, false, false ),
+		array( 'none', 'shortcode', true, false, false ),
+		array( 'none', 'shortcode', false, false, false ),
+		array( 'full_content', 'all', true, true, true ),
+		array( 'full_content', 'all', false, true, true ),
+		array( 'full_content', 'shortcode', true, true, true ),
+		array( 'full_content', 'shortcode', false, true, true ),
 		array( 'inherit', 'all', true, true, true ),
 		array( 'inherit', 'all', false, true, true ),
 		array( 'inherit', 'shortcode', true, true, true ),
@@ -61,15 +61,15 @@ try {
 		list( $override, $entry_mode, $category, $full, $area ) = $entry_case;
 		$GLOBALS['test_override_meta'][10]                      = $override;
 		$GLOBALS['test_options']                                = array( Option_Keys::APPLY_MODE => $entry_mode );
-		$GLOBALS['test_term_meta']                              = $category ? array( 1 => Target_Category_Settings::ENABLED ) : array();
+		$GLOBALS['test_term_meta']                              = $category ? array( 1 => Target_Category_Settings::FULL_CONTENT ) : array();
 		check_same( $full ? $entry_html : $entry_source, $entry_filter->filter_content( $entry_source ), 'Full content priority' );
 		check_same( $area ? $entry_html : $entry_source, $entry_blocks->render_content_block( $entry_source, array(), $context_block ), 'Block priority' );
 		check_same( $area ? $entry_html : $entry_source, do_shortcode( '[rubymaco]' . $entry_source . '[/rubymaco]' ), 'Shortcode priority and delimiters removed' );
 	}
 	$GLOBALS['test_options']       = array( Option_Keys::APPLY_MODE => 'all' );
 	$GLOBALS['test_override_meta'] = array(
-		10 => 'enabled',
-		20 => 'disabled',
+		10 => 'full_content',
+		20 => 'none',
 	);
 	$context_block->context        = array( 'postId' => 20 );
 	check_same( $entry_source, $entry_blocks->render_content_block( $entry_source, array(), $context_block ), 'Block context overrides outer global post' );
@@ -95,7 +95,7 @@ try {
 	);
 	check_same( $entry_source, do_shortcode( '[rubymaco][rubymaco_test_inner][/rubymaco]' ), 'Disabled shortcode still expands nested shortcodes' );
 	remove_shortcode( 'rubymaco_test_inner' );
-	$GLOBALS['test_override_meta'][20] = 'enabled';
+	$GLOBALS['test_override_meta'][20] = 'full_content';
 	check_same( $entry_html, $entry_filter->filter_content( $entry_source ), 'Page enable is reflected immediately' );
 	$GLOBALS['post'] = null;
 	check_same( 0, Post_Context::current_id(), 'No post context means unknown ID' );
@@ -128,7 +128,7 @@ try {
 	$render_nested_post = static function ( $content ) use ( $entry_filter, $entry_source ) {
 		$outer_post                        = $GLOBALS['post'];
 		$GLOBALS['post']                   = new WP_Post( (object) array( 'ID' => 20 ) );
-		$GLOBALS['test_override_meta'][20] = 'disabled';
+		$GLOBALS['test_override_meta'][20] = 'none';
 		try {
 			return $content . '<div class="wp-block-post-content">' . $entry_filter->filter_content( $entry_source ) . '</div>';
 		} finally {

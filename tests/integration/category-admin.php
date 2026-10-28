@@ -93,7 +93,7 @@ $category_controller                 = new Admin_Category_Controller( new Target
 try {
 	\check_same( true, isset( $GLOBALS['wp_filter']['category_add_form_fields'] ), 'category add hook registered' );
 	\check_same( true, isset( $GLOBALS['wp_filter']['category_edit_form_fields'] ), 'category edit hook registered' );
-	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::ENABLED );
+	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::FULL_CONTENT );
 	$_POST                     = array(
 		'rubymaco_category_nonce'   => 'rubymaco_category_0',
 		'rubymaco_category_enabled' => '1',
@@ -101,8 +101,8 @@ try {
 	$category_controller->save_created_category( 2 );
 	\check_same(
 		array(
-			1 => Target_Category_Settings::ENABLED,
-			2 => Target_Category_Settings::ENABLED,
+			1 => Target_Category_Settings::FULL_CONTENT,
+			2 => Target_Category_Settings::FULL_CONTENT,
 		),
 		$GLOBALS['test_term_meta'],
 		'editor adds category without replacing others'
@@ -112,7 +112,7 @@ try {
 		'rubymaco_category_enabled' => '0',
 	);
 	$category_controller->save_edited_category( 2 );
-	\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'explicit unchecked removes only edited category' );
+	\check_same( array( 1 => Target_Category_Settings::FULL_CONTENT ), $GLOBALS['test_term_meta'], 'explicit unchecked removes only edited category' );
 	foreach ( array(
 		array(),
 		array( 'rubymaco_category_enabled' => '0' ),
@@ -131,7 +131,7 @@ try {
 	) as $invalid_post ) {
 		$_POST = $invalid_post;
 		$category_controller->save_edited_category( 1 );
-		\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'missing, wrong nonce, quick edit and malformed input preserve selection' );
+		\check_same( array( 1 => Target_Category_Settings::FULL_CONTENT ), $GLOBALS['test_term_meta'], 'missing, wrong nonce, quick edit and malformed input preserve selection' );
 	}
 	$_POST                              = array(
 		'rubymaco_category_nonce'   => 'rubymaco_category_1',
@@ -139,7 +139,7 @@ try {
 	);
 	$GLOBALS['test_admin_capabilities'] = array();
 	$category_controller->save_edited_category( 1 );
-	\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'unauthorized request preserves selection' );
+	\check_same( array( 1 => Target_Category_Settings::FULL_CONTENT ), $GLOBALS['test_term_meta'], 'unauthorized request preserves selection' );
 	$GLOBALS['test_admin_capabilities'] = array( 'manage_categories' => true );
 	ob_start();
 	$category_controller->render_edit_field(

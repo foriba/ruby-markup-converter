@@ -24,8 +24,8 @@ function get_post_meta( $post_id, $key, $single ) {
 
 $override_resolver              = new Post_Conversion_Override_Resolver();
 $GLOBALS['test_override_meta']  = array(
-	10 => 'enabled',
-	20 => 'disabled',
+	10 => 'full_content',
+	20 => 'none',
 	30 => 'inherit',
 );
 $GLOBALS['test_override_reads'] = array();
@@ -34,18 +34,18 @@ try {
 	\check_same( null, $override_resolver->get( -10 ), 'Negative ID inherits' );
 	\check_same( array(), $GLOBALS['test_override_reads'], 'Invalid IDs never query metadata' );
 	foreach ( array(
-		10 => true,
-		20 => false,
+		10 => 'full_content',
+		20 => 'none',
 		30 => null,
 		40 => null,
 	) as $test_post_id => $expected ) {
 		\check_same( $expected, $override_resolver->get( $test_post_id ), 'Explicit post metadata ' . $test_post_id );
 	}
-	foreach ( array( '', null, false, true, 0, 1, '0', '1', array(), 'ENABLED', ' enabled ', 'unknown' ) as $invalid_value ) {
+	foreach ( array( '', null, false, true, 0, 1, '0', '1', array(), 'enabled', 'disabled', 'selected_areas', 'FULL_CONTENT', ' full_content ', 'unknown' ) as $invalid_value ) {
 		\check_same( null, $override_resolver->normalize( $invalid_value ), 'Invalid override inherits' );
 	}
-	$GLOBALS['test_override_meta'][10] = 'disabled';
-	\check_same( false, $override_resolver->get( 10 ), 'Metadata changes are not cached' );
+	$GLOBALS['test_override_meta'][10] = 'none';
+	\check_same( 'none', $override_resolver->get( 10 ), 'Metadata changes are not cached' );
 	\check_same( array( 10, 20, 30, 40, 10 ), $GLOBALS['test_override_reads'], 'Only explicit IDs queried' );
 } finally {
 	unset( $GLOBALS['test_override_meta'], $GLOBALS['test_override_reads'] );

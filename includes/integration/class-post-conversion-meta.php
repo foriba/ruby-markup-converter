@@ -46,8 +46,8 @@ final class Post_Conversion_Meta {
 							'type'    => 'string',
 							'enum'    => array(
 								Post_Conversion_Override_Resolver::INHERIT,
-								Post_Conversion_Override_Resolver::ENABLED,
-								Post_Conversion_Override_Resolver::DISABLED,
+								Post_Conversion_Override_Resolver::FULL_CONTENT,
+								Post_Conversion_Override_Resolver::NONE,
 							),
 							'context' => array( 'edit' ),
 						),
@@ -90,8 +90,8 @@ final class Post_Conversion_Meta {
 		if ( in_array(
 			$value,
 			array(
-				Post_Conversion_Override_Resolver::ENABLED,
-				Post_Conversion_Override_Resolver::DISABLED,
+				Post_Conversion_Override_Resolver::FULL_CONTENT,
+				Post_Conversion_Override_Resolver::NONE,
 			),
 			true
 		) ) {

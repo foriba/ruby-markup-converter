@@ -35,16 +35,16 @@ $GLOBALS['test_term_meta_writer']    = static function ( $term_id, $value ) use 
 try {
 	\check_same( false, $target_settings->is_enabled( 1 ), 'Missing category meta is not a target' );
 	$target_settings->save( 3, true );
-	\check_same( array( 3 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'Enabled category stores only its own meta' );
+	\check_same( array( 3 => Target_Category_Settings::FULL_CONTENT ), $GLOBALS['test_term_meta'], 'Enabled category stores only its own meta' );
 	\check_same( true, $target_settings->is_enabled( 3 ), 'Read saved category' );
 	\check_same( false, $target_settings->is_enabled( 1 ), 'Other categories remain unselected' );
 	$target_settings->save( 3, true );
 	\check_same( true, $target_settings->is_enabled( 3 ), 'Unchanged save succeeds' );
 	$target_settings->save( 1, true );
 	$target_settings->save( 3, false );
-	\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'Disabling deletes only that category meta' );
+	\check_same( array( 1 => Target_Category_Settings::FULL_CONTENT ), $GLOBALS['test_term_meta'], 'Disabling deletes only that category meta' );
 	$target_settings->save( 2, false );
-	\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'Disabling an unselected category succeeds without changes' );
+	\check_same( array( 1 => Target_Category_Settings::FULL_CONTENT ), $GLOBALS['test_term_meta'], 'Disabling an unselected category succeeds without changes' );
 	foreach ( array( 0, -1, 999 ) as $invalid_id ) {
 		\check_same( false, $target_settings->is_enabled( $invalid_id ), 'Invalid or missing category is not a target' );
 	}

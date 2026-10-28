@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const ts = require('typescript');
 let render;
 let postType = 'post';
-let meta = { _rubymaco_conversion_override: 'inherit', other: 'keep' };
+let meta = { _rubymaco_conversion_scope: 'inherit', other: 'keep' };
 let saving = false;
 const edits = [];
 const wordpress = {
@@ -31,8 +31,8 @@ const compiled = ts.transpileModule(source, { compilerOptions: {
 vm.runInNewContext(compiled, {
 	exports: {},
 	window: { rubymacoPostSettings: {
-		metaKey: '_rubymaco_conversion_override',
-		options: ['inherit', 'enabled', 'disabled'].map(value => ({ value, label: value })),
+		metaKey: '_rubymaco_conversion_scope',
+		options: ['inherit', 'full_content', 'none'].map(value => ({ value, label: value })),
 		label: 'conversion', help: 'help',
 	} },
 	require: (name) => {
@@ -43,32 +43,32 @@ vm.runInNewContext(compiled, {
 });
 for (const type of ['post', 'page']) {
 	postType = type;
-	for (const value of ['inherit', 'enabled', 'disabled']) {
-		meta = { _rubymaco_conversion_override: value, other: 'keep' };
+	for (const value of ['inherit', 'full_content', 'none']) {
+		meta = { _rubymaco_conversion_scope: value, other: 'keep' };
 		const control = render().props.children.props;
 		assert.equal(control.selected, value);
-		control.onChange('disabled');
-		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_override: 'disabled' } }));
-		control.onChange('enabled');
-		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_override: 'enabled' } }));
+		control.onChange('none');
+		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_scope: 'none' } }));
+		control.onChange('full_content');
+		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_scope: 'full_content' } }));
 		// 継承に戻すときは null を送り、保存時に REST API がメタを削除する.
 		control.onChange('inherit');
-		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_override: null } }));
+		assert.equal(JSON.stringify(edits.at(-1)), JSON.stringify({ meta: { _rubymaco_conversion_scope: null } }));
 		assert.equal(meta.other, 'keep');
 	}
 }
 const before = edits.length;
 saving = true;
 assert.equal(render().props.children.props.disabled, true);
-render().props.children.props.onChange('enabled');
+render().props.children.props.onChange('full_content');
 assert.equal(edits.length, before);
 saving = false;
 render().props.children.props.onChange('invalid');
 assert.equal(edits.length, before);
-meta = { _rubymaco_conversion_override: 'invalid' };
+meta = { _rubymaco_conversion_scope: 'invalid' };
 assert.equal(render().props.children.props.selected, 'inherit');
 for (const missing of [null, undefined, '']) {
-	meta = { _rubymaco_conversion_override: missing };
+	meta = { _rubymaco_conversion_scope: missing };
 	assert.equal(render().props.children.props.selected, 'inherit', 'deleted or missing meta inherits');
 }
 meta = {};

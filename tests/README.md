@@ -82,15 +82,15 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 ### 変換対象の判定（v1.3.0 開発中）
 
-`Conversion_Target_Policy::resolve()` は、全体の `Apply_Mode`、投稿別指定
-（`null`: 継承、`true`: 有効、`false`: 無効）、カテゴリ一致の真偽値を受け取ります。
-DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立しています。
+`Conversion_Target_Policy::resolve()` は、全体の `Apply_Mode`、投稿別に指定された変換範囲
+（`null`: 継承、または `NONE`・`SELECTED_AREAS`・`FULL_CONTENT`）、カテゴリ一致の真偽値を受け取ります。
+DB や投稿 ID を参照しない純粋な判定です。定義外の値は継承として扱います。
 
-1. 投稿別の無効指定 → `NONE`（ブロック・ショートコードも変換しない）。
-2. 投稿別の有効指定 → `FULL_CONTENT`。
-3. 全体が全文変換 → `FULL_CONTENT`。
-4. 対象カテゴリに一致 → `FULL_CONTENT`。
-5. その他 → `SELECTED_AREAS`（ブロック・ショートコードのみ。なければ無変換）。
+1. 投稿別の指定がある → その範囲（`none` はブロック・ショートコードも変換しない）。
+   現在エディタで選べるのは `full_content` と `none`。`selected_areas` は将来の拡張用。
+2. 全体が全文変換 → `FULL_CONTENT`。
+3. 対象カテゴリに一致 → `FULL_CONTENT`。
+4. その他 → `SELECTED_AREAS`（ブロック・ショートコードのみ。なければ無変換）。
 
 カテゴリ一致は、選択カテゴリ自身またはその子孫に一つでも所属する場合です。
 投稿 ID が不明な入口では投稿別指定を継承、カテゴリ一致を false とし、
@@ -98,8 +98,9 @@ DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立�
 
 `unit/conversion-target-policy.php` で全12通りと、判定状態を持ち越さないことを検証します。
 投稿別設定の取得は `Post_Conversion_Override_Resolver::get( $post_id )` で行います。
-メタキーは `_rubymaco_conversion_override`、保存値は `inherit`・`enabled`・
-`disabled` です。未保存や不正値は継承となり、読み取り時の補正保存はしません。
+メタキーは `_rubymaco_conversion_scope`、保存値は判定結果と同じ `full_content`・`none` です。
+継承の場合はメタを保存しません（エディタは `null` を送って削除します。REST API とエディタ上の表現は `inherit`）。
+未保存や不正値は継承となり、読み取り時の補正保存はしません。
 投稿と固定ページで同じ取得方法を使います。ID 不明時は 0 を渡します。
 
 `Category_Target_Matcher::matches( $post_id )` は、所属カテゴリと WordPress の
@@ -149,9 +150,9 @@ DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立�
 
 ### 変換対象の保存・取得
 
-- `Target_Category_Settings` は、カテゴリごとの指定をタームメタ `_rubymaco_category_full_content` に保存します。
-  指定する場合は `1` を保存し、外す場合はメタを削除します。
-  `is_enabled()` はカテゴリ自身の明示指定だけを返し、`1` 以外の保存値は未指定として扱います。補正保存はしません。
+- `Target_Category_Settings` は、カテゴリごとの指定をタームメタ `_rubymaco_conversion_scope` に保存します。
+  キーと値は投稿別設定と同じ名前を使い、指定する場合は `full_content` を保存し、外す場合はメタを削除します。
+  `is_enabled()` はカテゴリ自身の明示指定だけを返し、`full_content` 以外の保存値は未指定として扱います。補正保存はしません。
   `save()` は `manage_categories` 権限とカテゴリの存在を確認してから保存し、保存後の値も照合します。
   カテゴリを削除すると、メタも WordPress が削除します。エクスポート・インポートではカテゴリと一緒に移ります。
   HTTP から呼び出す際の nonce 確認は通信層の責務です。

@@ -40,28 +40,27 @@ final class Conversion_Target_Policy {
 	/**
 	 * 投稿別指定、全体設定、カテゴリの順に判定する。
 	 *
-	 * 投稿別指定が未保存の場合は null を渡す。false は明示的な無効指定。
+	 * 投稿別指定が未保存の場合は null を渡す。指定がある場合は、その範囲をそのまま返す。
+	 * 定義外の値は未保存として扱う。
 	 * カテゴリ一致は、選択カテゴリまたはその子孫に一つでも所属する場合に true。
 	 * 投稿 ID を特定できない呼び出し元は null と false を渡し、
 	 * 全体設定と明示された範囲による従来の動作を維持する。
 	 *
-	 * @param Apply_Mode $apply_mode 全体の適用モード.
-	 * @param bool|null  $post_override true は全文変換、false は完全無効、null は継承.
-	 * @param bool       $category_matches 対象カテゴリに一致するか.
+	 * @param Apply_Mode  $apply_mode 全体の適用モード.
+	 * @param string|null $post_scope 投稿別に指定された NONE、SELECTED_AREAS、FULL_CONTENT。null は継承.
+	 * @param bool        $category_matches 対象カテゴリに一致するか.
 	 * @return string NONE、SELECTED_AREAS、FULL_CONTENT のいずれか.
 	 */
 	public function resolve(
 		Apply_Mode $apply_mode,
-		?bool $post_override,
+		?string $post_scope,
 		bool $category_matches
 	): string {
-		if ( false === $post_override ) {
-			return self::NONE;
+		if ( in_array( $post_scope, array( self::NONE, self::SELECTED_AREAS, self::FULL_CONTENT ), true ) ) {
+			return $post_scope;
 		}
 
-		if ( true === $post_override
-			|| $apply_mode->equals( Apply_Mode::all() )
-			|| $category_matches ) {
+		if ( $apply_mode->equals( Apply_Mode::all() ) || $category_matches ) {
 			return self::FULL_CONTENT;
 		}
 

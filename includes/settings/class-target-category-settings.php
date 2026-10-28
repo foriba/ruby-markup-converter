@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Settings;
 
+use Foriba\RubyMarkupConverter\Service\Conversion_Target_Policy;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -21,18 +23,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Target_Category_Settings {
 	/**
-	 * 全文変換の対象であることを示すタームメタのキー。
+	 * カテゴリ別の変換範囲のタームメタのキー。投稿別設定の投稿メタと同じ名前を使う。
 	 *
 	 * @var string
 	 */
-	public const META_KEY = '_rubymaco_category_full_content';
+	public const META_KEY = '_rubymaco_conversion_scope';
 
 	/**
-	 * 対象として指定されている場合の保存値。未指定の場合はメタを削除する。
+	 * 本文全体を変換する保存値。現在カテゴリで指定できるのはこの値だけで、未指定の場合はメタを削除する。
 	 *
 	 * @var string
 	 */
-	public const ENABLED = '1';
+	public const FULL_CONTENT = Conversion_Target_Policy::FULL_CONTENT;
 
 	/**
 	 * カテゴリ自身が明示的に対象として指定されているかを返す。
@@ -43,7 +45,7 @@ final class Target_Category_Settings {
 	 * @return bool 指定されている場合に true.
 	 */
 	public function is_enabled( int $term_id ): bool {
-		return 0 < $term_id && self::ENABLED === get_term_meta( $term_id, self::META_KEY, true );
+		return 0 < $term_id && self::FULL_CONTENT === get_term_meta( $term_id, self::META_KEY, true );
 	}
 
 	/**
@@ -65,7 +67,7 @@ final class Target_Category_Settings {
 			throw new \InvalidArgumentException( 'Unknown or invalid category ID.' );
 		}
 		if ( $enabled ) {
-			update_term_meta( $term_id, self::META_KEY, self::ENABLED );
+			update_term_meta( $term_id, self::META_KEY, self::FULL_CONTENT );
 		} else {
 			delete_term_meta( $term_id, self::META_KEY );
 		}

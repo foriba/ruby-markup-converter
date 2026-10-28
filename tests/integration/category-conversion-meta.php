@@ -41,7 +41,7 @@ try {
 	\check_same( true, $category_meta_args['single'], 'Single category meta value' );
 	\check_same( '', $category_meta_args['default'], 'Missing category meta is not a target' );
 	\check_same( false, $category_meta_args['show_in_rest'], 'Category meta is not exposed in REST' );
-	\check_same( Target_Category_Settings::ENABLED, call_user_func( $category_meta_args['sanitize_callback'], Target_Category_Settings::ENABLED ), 'Sanitizer preserves enabled value' );
+	\check_same( Target_Category_Settings::FULL_CONTENT, call_user_func( $category_meta_args['sanitize_callback'], Target_Category_Settings::FULL_CONTENT ), 'Sanitizer preserves enabled value' );
 	foreach ( array( '', '0', 'true', true, 1, array(), null ) as $invalid ) {
 		\check_same( '', call_user_func( $category_meta_args['sanitize_callback'], $invalid ), 'Direct PHP invalid value is not a target' );
 	}

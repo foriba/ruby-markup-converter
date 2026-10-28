@@ -75,6 +75,6 @@ final class Category_Conversion_Meta {
 	 * @return string 指定値、またはそれ以外の場合は空文字.
 	 */
 	public function sanitize( $value ): string {
-		return Target_Category_Settings::ENABLED === $value ? Target_Category_Settings::ENABLED : '';
+		return Target_Category_Settings::FULL_CONTENT === $value ? Target_Category_Settings::FULL_CONTENT : '';
 	}
 }
