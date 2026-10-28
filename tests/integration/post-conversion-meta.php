@@ -7,7 +7,7 @@
 
 namespace Foriba\RubyMarkupConverter\Integration;
 
-use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Override_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Scope_Resolver;
 
 /**
  * メタ登録内容を記録する。
@@ -18,7 +18,7 @@ use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Override_Resolver;
  * @return bool 登録結果.
  */
 function register_post_meta( $post_type, $key, $args ) {
-	\check_same( Post_Conversion_Override_Resolver::META_KEY, $key, 'Meta key registration' );
+	\check_same( Post_Conversion_Scope_Resolver::META_KEY, $key, 'Meta key registration' );
 	$GLOBALS['test_conversion_meta'][ $post_type ] = $args;
 	return true;
 }
@@ -68,7 +68,7 @@ try {
 		}
 		foreach ( array( array( 7, 10, true ), array( 0, 10, false ), array( 8, 10, false ), array( 7, 20, false ), array( 7, 0, false ) ) as $permission_case ) {
 			list( $test_user_id, $test_post_id, $expected_permission ) = $permission_case;
-			\check_same( $expected_permission, call_user_func( $meta_args['auth_callback'], false, Post_Conversion_Override_Resolver::META_KEY, $test_post_id, $test_user_id ), 'Post-specific permission' );
+			\check_same( $expected_permission, call_user_func( $meta_args['auth_callback'], false, Post_Conversion_Scope_Resolver::META_KEY, $test_post_id, $test_user_id ), 'Post-specific permission' );
 		}
 	}
 } finally {

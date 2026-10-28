@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Settings;
 
-use Foriba\RubyMarkupConverter\Service\Conversion_Target_Policy;
+use Foriba\RubyMarkupConverter\Service\Conversion_Scope_Policy;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,6 +25,8 @@ final class Target_Category_Settings {
 	/**
 	 * カテゴリ別の変換範囲のタームメタのキー。投稿別設定の投稿メタと同じ名前を使う。
 	 *
+	 * 互換性維持のため、メタキーは変更不可。
+	 *
 	 * @var string
 	 */
 	public const META_KEY = '_rubymaco_conversion_scope';
@@ -32,9 +34,11 @@ final class Target_Category_Settings {
 	/**
 	 * 本文全体を変換する保存値。現在カテゴリで指定できるのはこの値だけで、未指定の場合はメタを削除する。
 	 *
+	 * 互換性維持のため、保存値は変更不可。
+	 *
 	 * @var string
 	 */
-	public const FULL_CONTENT = Conversion_Target_Policy::FULL_CONTENT;
+	public const FULL_CONTENT = Conversion_Scope_Policy::FULL_CONTENT;
 
 	/**
 	 * カテゴリ自身が明示的に対象として指定されているかを返す。

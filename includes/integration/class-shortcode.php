@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Integration;
 
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
-use Foriba\RubyMarkupConverter\Service\Conversion_Target_Policy;
-use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
+use Foriba\RubyMarkupConverter\Service\Conversion_Scope_Policy;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Scope_Resolver;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -33,26 +33,28 @@ final class Shortcode {
 	/**
 	 * 変換範囲の取得元。
 	 *
-	 * @var Conversion_Target_Resolver
+	 * @var Conversion_Scope_Resolver
 	 */
-	private Conversion_Target_Resolver $conversion_target_resolver;
+	private Conversion_Scope_Resolver $conversion_scope_resolver;
 
 	/**
 	 * 変換サービスを受け取る。設定の取得や登録は行わない。
 	 *
-	 * @param Markup_Conversion_Service  $markup_conversion_service 記法の変換サービス.
-	 * @param Conversion_Target_Resolver $conversion_target_resolver 変換範囲の取得元.
+	 * @param Markup_Conversion_Service $markup_conversion_service 記法の変換サービス.
+	 * @param Conversion_Scope_Resolver $conversion_scope_resolver 変換範囲の取得元.
 	 */
 	public function __construct(
 		Markup_Conversion_Service $markup_conversion_service,
-		Conversion_Target_Resolver $conversion_target_resolver
+		Conversion_Scope_Resolver $conversion_scope_resolver
 	) {
-		$this->markup_conversion_service  = $markup_conversion_service;
-		$this->conversion_target_resolver = $conversion_target_resolver;
+		$this->markup_conversion_service = $markup_conversion_service;
+		$this->conversion_scope_resolver = $conversion_scope_resolver;
 	}
 
 	/**
 	 * ショートコード rubymaco を登録する。
+	 *
+	 * 互換性維持のため、ショートコード名（投稿本文に保存）は変更不可。
 	 *
 	 * 同じインスタンスで再登録しても同じコールバックで上書きされる。
 	 */
@@ -80,7 +82,7 @@ final class Shortcode {
 		unset( $atts );
 
 		$content = do_shortcode( (string) $content );
-		if ( Conversion_Target_Policy::NONE === $this->conversion_target_resolver->get( Post_Context::current_id() ) ) {
+		if ( Conversion_Scope_Policy::NONE === $this->conversion_scope_resolver->get( Post_Context::current_id() ) ) {
 			return $content;
 		}
 		return $this->markup_conversion_service->convert( $content );

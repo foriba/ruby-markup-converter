@@ -64,7 +64,7 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 
 - `integration/settings-service.php`: 設定値取得の形式、初期値、不正値、全解除、読み取り時に保存しないこと。
 
-- `integration/post-content-filter.php`: 本文フィルタークラスの遅延登録・適用モード・変換・重複登録。
+- `integration/post-content-filter.php`: 本文フィルタークラスの遅延登録・変換モード・変換・重複登録。
 
 - `integration/bootstrap.php`: 起動時のフック・ショートコード登録、優先度、引数数、再起動時の重複。
 
@@ -78,26 +78,50 @@ PHP の警告もテスト失敗として扱います。テストは CLI 専用�
 不具合修正時は、修正前には失敗するケースを該当ファイルへ追加してください。
 `check_same()` は厳密比較を行います。
 
+## 保存される名前（互換性）
+
+次の名前と値（文字列そのもの）はデータベースや投稿本文に保存されるため、公開後は変更しません。
+変更しないのは保存される文字列だけで、それを表す定数名・クラス名・メソッド名は変更してかまいません。
+定義箇所のコメントにも、変更しない文字列と、変更してよいものを記載しています。
+
+| 対象 | 名前・値 | 定義箇所 | 保存開始 |
+|---|---|---|---|
+| option 名 | `rubymaco_enabled_markup_rules`・`rubymaco_bouten_style`・`rubymaco_apply_mode`・`rubymaco_bouten_renderer` | `Option_Keys` | v1.0.0 |
+| 変換モードの保存値 | `all`（`ALL`）・`shortcode`（`SELECTED`） | `Conversion_Mode` | v1.0.0 |
+| 傍点スタイルの保存値 | `dot`・`sesame` | `Bouten_Style` | v1.0.0 |
+| 傍点描画方式の保存値 | `text_emphasis`・`custom` | `Bouten_Rendering_Method` | v1.0.0 |
+| 記法 ID | `ruby_double_angle`・`ruby_parenthesis`・`ruby_rb`・`ruby_double_underscore`・`ruby_mediawiki`・`bouten_double_bracket` | `Markup_Rule_Registry` | v1.0.0 |
+| ショートコード名 | `rubymaco` | `Shortcode` | v1.0.0 |
+| ブロック名と保存 HTML | `rubymaco/content` | `Blocks`・`editor/src/content` | v1.1.0 |
+| 投稿メタ・タームメタのキー | `_rubymaco_conversion_scope` | `Post_Conversion_Scope_Resolver`・`Target_Category_Settings` | v1.3.0 |
+| 変換範囲の保存値 | `full_content`（投稿・カテゴリ）・`none`（投稿）。継承・未指定は保存しない | 同上 | v1.3.0 |
+
+`rubymaco_apply_mode` と `rubymaco_bouten_renderer` は旧称の option 名のまま使い、
+定数名（`Option_Keys::CONVERSION_MODE`・`Option_Keys::BOUTEN_RENDERING_METHOD`）だけを現在の名前にしています。
+設定 REST API の項目名（`apply_mode` など）も option 名に合わせています。
+
 ## 安全性と対象範囲
 
 ### 変換対象の判定（v1.3.0 開発中）
 
-`Conversion_Target_Policy::resolve()` は、全体の `Apply_Mode`、投稿別に指定された変換範囲
-（`null`: 継承、または `NONE`・`SELECTED_AREAS`・`FULL_CONTENT`）、カテゴリ一致の真偽値を受け取ります。
-DB や投稿 ID を参照しない純粋な判定です。定義外の値は継承として扱います。
+用語は、サイト全体の方針を「変換モード」（`Conversion_Mode`: `ALL`・`SELECTED`）、
+投稿ごとの判定結果を「変換範囲」（`Conversion_Scope_Policy`: `FULL_CONTENT`・`BLOCKS_AND_SHORTCODES`・`NONE`）と呼び分けます。
+
+`Conversion_Scope_Policy::resolve()` は、全体の `Conversion_Mode`、投稿別に指定された変換範囲
+（`null`: 継承、または `FULL_CONTENT`・`NONE`）、カテゴリ一致の真偽値を受け取ります。
+DB や投稿 ID を参照しない純粋な判定です。それ以外の値（判定結果専用の `BLOCKS_AND_SHORTCODES` を含む）は継承として扱います。
 
 1. 投稿別の指定がある → その範囲（`none` はブロック・ショートコードも変換しない）。
-   現在エディタで選べるのは `full_content` と `none`。`selected_areas` は将来の拡張用。
-2. 全体が全文変換 → `FULL_CONTENT`。
+2. 変換モードが `ALL` → `FULL_CONTENT`。
 3. 対象カテゴリに一致 → `FULL_CONTENT`。
-4. その他 → `SELECTED_AREAS`（ブロック・ショートコードのみ。なければ無変換）。
+4. その他 → `BLOCKS_AND_SHORTCODES`（ブロック・ショートコードのみ。なければ無変換）。
 
 カテゴリ一致は、選択カテゴリ自身またはその子孫に一つでも所属する場合です。
 投稿 ID が不明な入口では投稿別指定を継承、カテゴリ一致を false とし、
 別の投稿やカテゴリの ID を推測して利用しません。
 
-`unit/conversion-target-policy.php` で全12通りと、判定状態を持ち越さないことを検証します。
-投稿別設定の取得は `Post_Conversion_Override_Resolver::get( $post_id )` で行います。
+`unit/conversion-scope-policy.php` で全12通りと、判定状態を持ち越さないことを検証します。
+投稿別設定の取得は `Post_Conversion_Scope_Resolver::get( $post_id )` で行います。
 メタキーは `_rubymaco_conversion_scope`、保存値は判定結果と同じ `full_content`・`none` です。
 継承の場合はメタを保存しません（エディタは `null` を送って削除します。REST API とエディタ上の表現は `inherit`）。
 未保存や不正値は継承となり、読み取り時の補正保存はしません。
@@ -109,12 +133,12 @@ DB や投稿 ID を参照しない純粋な判定です。定義外の値は継�
 子の選択で親や兄弟は対象になりません。
 対象未選択、カテゴリなし、取得エラーは不一致です。取得結果を独自にキャッシュしません。
 
-`integration/post-conversion-override.php` と `integration/category-target-matcher.php`
+`integration/post-conversion-scope.php` と `integration/category-target-matcher.php`
 で、取得 API の引数、未保存・不正値、子孫・兄弟・複数所属、メタの一括読み込み、エラー、変更追従を検証します。
 投稿メタ・タームメタ・カテゴリ取得 API は代替実装なので、実 DB や WordPress 自体の階層探索は検証対象外です。
 ### 変換入口への接続
 
-`Conversion_Target_Resolver::get( $post_id )` が設定取得と共通判定を接続します。
+`Conversion_Scope_Resolver::get( $post_id )` が設定取得と共通判定を接続します。
 投稿別指定または全体設定で決まる場合は、カテゴリ照会を省略します。
 
 - 本文フィルターは全モードで登録し、本文ごとに FULL_CONTENT の場合だけ変換します。
@@ -133,7 +157,7 @@ DB や投稿 ID を参照しない純粋な判定です。定義外の値は継�
   各投稿の文脈が確定する前に外側の投稿設定で変換しないようにします。
   他のプラグイン独自の投稿表示処理には、その実装に応じた文脈設定が必要です。
 
-`integration/conversion-target-entries.php` は全12通りを三つの入口で検証し、
+`integration/conversion-scope-entries.php` は全12通りを三つの入口で検証し、
 固定ページ、異なるブロック文脈、文脈なし、設定変更、二重変換防止、別投稿の保護を確認します。
 ブロックの文脈と描画順序はテスト用に構成しています。実際の Query Loop・投稿本文ブロック、
 認証済みの実 DB 設定、テーマ固有のフィルターは実画面でも確認してください。

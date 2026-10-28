@@ -6,7 +6,7 @@
  */
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
-use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Override_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Scope_Resolver;
 use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
 
 /**
@@ -94,7 +94,7 @@ function test_expected_uninstall_deletions( array $site_ids ) {
 		foreach ( Option_Keys::values() as $key ) {
 			$expected['options'][] = array( $site_id, $key );
 		}
-		$expected['meta'][]     = array( $site_id, Post_Conversion_Override_Resolver::META_KEY );
+		$expected['meta'][]     = array( $site_id, Post_Conversion_Scope_Resolver::META_KEY );
 		$expected['metadata'][] = array( $site_id, 'term', 0, Target_Category_Settings::META_KEY, '', true );
 	}
 	return $expected;

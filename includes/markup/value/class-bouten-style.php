@@ -21,12 +21,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Bouten_Style {
 	/**
-	 * 保存値 dot。
+	 * 点の傍点スタイル値。
+	 *
+	 * 互換性維持のため、保存値 'dot' は変更不可。
 	 */
 	public const DOT = 'dot';
 
 	/**
-	 * 保存値 sesame。
+	 * ゴマ点の傍点スタイル値。
+	 *
+	 * 互換性維持のため、保存値 'sesame' は変更不可。
 	 */
 	public const SESAME = 'sesame';
 

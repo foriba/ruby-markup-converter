@@ -6,12 +6,12 @@
  */
 
 use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
-use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Scope_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 
 $GLOBALS['test_options'] = array();
-$post_content_filter     = new Post_Content_Filter( Markup_Conversion_Service::create_default(), Conversion_Target_Resolver::create_default() );
+$post_content_filter     = new Post_Content_Filter( Markup_Conversion_Service::create_default(), Conversion_Scope_Resolver::create_default() );
 $init_callback           = array( $post_content_filter, 'register_content_filter' );
 $content_callback        = array( $post_content_filter, 'filter_content' );
 check_same( false, has_filter( 'init', $init_callback ), 'constructor does not register init' );
@@ -24,13 +24,13 @@ $post_content_filter->register_hooks();
 check_same( $init_count, count( $GLOBALS['wp_filter']['init']->callbacks[10] ), 'repeated registration does not duplicate init' );
 
 foreach ( array( null, 'shortcode', 'all', 'unknown', false, array() ) as $apply_mode ) {
-	$GLOBALS['test_options'] = null === $apply_mode ? array() : array( Option_Keys::APPLY_MODE => $apply_mode );
+	$GLOBALS['test_options'] = null === $apply_mode ? array() : array( Option_Keys::CONVERSION_MODE => $apply_mode );
 	remove_filter( 'the_content', $content_callback, 8 );
 	call_user_func( $init_callback );
 	check_same( 8, has_filter( 'the_content', $content_callback ), 'hook registered regardless of mode' );
 }
 
-$GLOBALS['test_options'] = array( Option_Keys::APPLY_MODE => 'all' );
+$GLOBALS['test_options'] = array( Option_Keys::CONVERSION_MODE => 'all' );
 call_user_func( $init_callback );
 $content_count = count( $GLOBALS['wp_filter']['the_content']->callbacks[8] );
 call_user_func( $init_callback );

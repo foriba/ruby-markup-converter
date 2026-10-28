@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Resolver;
 
-use Foriba\RubyMarkupConverter\Service\Conversion_Target_Policy;
+use Foriba\RubyMarkupConverter\Service\Conversion_Scope_Policy;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -18,22 +18,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * 投稿メタから、投稿別に指定された変換範囲を取得する。
  *
- * 保存値は Conversion_Target_Policy の判定結果と同じ名前を使う。未指定はメタを保存しない。
+ * 保存値は Conversion_Scope_Policy の判定結果と同じ名前を使う。未指定はメタを保存しない。
  * 投稿 ID をグローバル変数から推測せず、保存や権限判定も行わない。
  * メタの登録と保存時の権限確認は Post_Conversion_Meta が担当する。
  */
-final class Post_Conversion_Override_Resolver {
-	/** 投稿別の変換範囲のメタキー。カテゴリ別設定のタームメタと同じ名前を使う。 */
+final class Post_Conversion_Scope_Resolver {
+	/**
+	 * 投稿別の変換範囲のメタキー。カテゴリ別設定のタームメタと同じ名前を使う。
+	 *
+	 * 互換性維持のため、メタキーは変更不可。
+	 */
 	public const META_KEY = '_rubymaco_conversion_scope';
 
 	/** 全体設定とカテゴリ設定に従う状態。保存せず、REST API とエディタでの未指定の表現に使う。 */
 	public const INHERIT = 'inherit';
 
-	/** 本文全体を変換する保存値。 */
-	public const FULL_CONTENT = Conversion_Target_Policy::FULL_CONTENT;
+	/**
+	 * 本文全体を変換する保存値。
+	 *
+	 * 互換性維持のため、保存値は変更不可。
+	 */
+	public const FULL_CONTENT = Conversion_Scope_Policy::FULL_CONTENT;
 
-	/** ブロック・ショートコードを含めて変換しない保存値。 */
-	public const NONE = Conversion_Target_Policy::NONE;
+	/**
+	 * ブロック・ショートコードを含めて変換しない保存値。
+	 *
+	 * 互換性維持のため、保存値は変更不可。
+	 */
+	public const NONE = Conversion_Scope_Policy::NONE;
 
 	/**
 	 * 指定投稿の設定を取得する。

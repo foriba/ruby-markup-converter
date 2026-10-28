@@ -11,8 +11,8 @@ namespace Foriba\RubyMarkupConverter\Admin;
 
 use Foriba\RubyMarkupConverter\Settings\Settings_Identifiers;
 use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
-use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Mode_Resolver;
+use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -82,7 +82,7 @@ final class Admin_Category_Controller {
 		echo esc_html__( 'Convert the full text of posts in this category and its descendants.', 'ruby-markup-converter' );
 		echo '</label><p class="description" id="rubymaco-category-description">';
 		echo esc_html__( 'Leaving this unchecked does not disable conversion inherited from a parent category or full-content mode. A post-specific override takes precedence.', 'ruby-markup-converter' );
-		if ( ( new Apply_Mode_Resolver() )->get()->equals( Apply_Mode::all() ) ) {
+		if ( ( new Conversion_Mode_Resolver() )->get()->equals( Conversion_Mode::all() ) ) {
 			echo ' ' . esc_html__( 'Full-content mode already includes all categories. This selection is retained for other modes.', 'ruby-markup-converter' );
 		} elseif ( $this->has_enabled_ancestor( $term_id ) ) {
 			echo ' ' . esc_html__( 'This category is already included by a selected parent category.', 'ruby-markup-converter' );

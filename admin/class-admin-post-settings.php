@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Admin;
 
 use Foriba\RubyMarkupConverter\Plugin_Info;
-use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Override_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Scope_Resolver;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -68,20 +68,20 @@ final class Admin_Post_Settings {
 			'rubymaco-post-settings',
 			'window.rubymacoPostSettings = ' . wp_json_encode(
 				array(
-					'metaKey' => Post_Conversion_Override_Resolver::META_KEY,
+					'metaKey' => Post_Conversion_Scope_Resolver::META_KEY,
 					'options' => array(
 						array(
-							'value' => Post_Conversion_Override_Resolver::INHERIT,
+							'value' => Post_Conversion_Scope_Resolver::INHERIT,
 							'label' => __( 'Follow global and category settings', 'ruby-markup-converter' ),
 						),
 						array(
-							'value' => Post_Conversion_Override_Resolver::FULL_CONTENT,
+							'value' => Post_Conversion_Scope_Resolver::FULL_CONTENT,
 							'label' => 'page' === $post->post_type
 								? __( 'Convert the full text of this page', 'ruby-markup-converter' )
 								: __( 'Convert the full text of this post', 'ruby-markup-converter' ),
 						),
 						array(
-							'value' => Post_Conversion_Override_Resolver::NONE,
+							'value' => Post_Conversion_Scope_Resolver::NONE,
 							'label' => 'page' === $post->post_type
 								? __( 'Do not convert this page', 'ruby-markup-converter' )
 								: __( 'Do not convert this post', 'ruby-markup-converter' ),

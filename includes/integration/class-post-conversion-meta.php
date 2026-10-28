@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Integration;
 
-use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Override_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Scope_Resolver;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -36,18 +36,18 @@ final class Post_Conversion_Meta {
 		foreach ( array( 'post', 'page' ) as $post_type ) {
 			register_post_meta(
 				$post_type,
-				Post_Conversion_Override_Resolver::META_KEY,
+				Post_Conversion_Scope_Resolver::META_KEY,
 				array(
 					'type'              => 'string',
 					'single'            => true,
-					'default'           => Post_Conversion_Override_Resolver::INHERIT,
+					'default'           => Post_Conversion_Scope_Resolver::INHERIT,
 					'show_in_rest'      => array(
 						'schema' => array(
 							'type'    => 'string',
 							'enum'    => array(
-								Post_Conversion_Override_Resolver::INHERIT,
-								Post_Conversion_Override_Resolver::FULL_CONTENT,
-								Post_Conversion_Override_Resolver::NONE,
+								Post_Conversion_Scope_Resolver::INHERIT,
+								Post_Conversion_Scope_Resolver::FULL_CONTENT,
+								Post_Conversion_Scope_Resolver::NONE,
 							),
 							'context' => array( 'edit' ),
 						),
@@ -75,7 +75,7 @@ final class Post_Conversion_Meta {
 		int $user_id
 	): bool {
 		unset( $allowed );
-		return Post_Conversion_Override_Resolver::META_KEY === $meta_key
+		return Post_Conversion_Scope_Resolver::META_KEY === $meta_key
 			&& 0 < $post_id
 			&& user_can( $user_id, 'edit_post', $post_id );
 	}
@@ -90,13 +90,13 @@ final class Post_Conversion_Meta {
 		if ( in_array(
 			$value,
 			array(
-				Post_Conversion_Override_Resolver::FULL_CONTENT,
-				Post_Conversion_Override_Resolver::NONE,
+				Post_Conversion_Scope_Resolver::FULL_CONTENT,
+				Post_Conversion_Scope_Resolver::NONE,
 			),
 			true
 		) ) {
 			return $value;
 		}
-		return Post_Conversion_Override_Resolver::INHERIT;
+		return Post_Conversion_Scope_Resolver::INHERIT;
 	}
 }

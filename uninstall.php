@@ -10,7 +10,7 @@
 declare(strict_types=1);
 
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
-use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Override_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Post_Conversion_Scope_Resolver;
 use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
@@ -19,7 +19,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 // 実行用 vendor/ がない場合でも削除できるよう、キーを定義するクラスだけを直接読み込む.
 require_once __DIR__ . '/includes/settings/class-option-keys.php';
-require_once __DIR__ . '/includes/resolver/class-post-conversion-override-resolver.php';
+require_once __DIR__ . '/includes/resolver/class-post-conversion-scope-resolver.php';
 require_once __DIR__ . '/includes/settings/class-target-category-settings.php';
 
 /**
@@ -29,7 +29,7 @@ $rubymaco_delete_site_data = static function (): void {
 	foreach ( Option_Keys::values() as $option_key ) {
 		delete_option( $option_key );
 	}
-	delete_post_meta_by_key( Post_Conversion_Override_Resolver::META_KEY );
+	delete_post_meta_by_key( Post_Conversion_Scope_Resolver::META_KEY );
 	delete_metadata( 'term', 0, Target_Category_Settings::META_KEY, '', true );
 };
 

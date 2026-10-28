@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Foriba\RubyMarkupConverter\Settings;
 
 use Foriba\RubyMarkupConverter\Markup\Rules\Markup_Rule_Registry;
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Style;
 use Foriba\RubyMarkupConverter\Markup\Value\Bouten_Rendering_Method;
 
@@ -95,9 +95,9 @@ final class Settings_Definitions {
 	}
 
 	/**
-	 * 適用モードの定義一覧を返す。
+	 * 変換モードの定義一覧を返す。
 	 *
-	 * 配列キーは保存値として使用する適用モードID。
+	 * 配列キーは保存値として使用する変換モードID。
 	 *
 	 * @return array<string, array{
 	 *     label:string,
@@ -106,7 +106,7 @@ final class Settings_Definitions {
 	 */
 	public function get_apply_modes(): array {
 		return array(
-			Apply_Mode::SELECTED_AREAS => array(
+			Conversion_Mode::SELECTED => array(
 				'label'       => __( 'Apply Only Within Selected Areas', 'ruby-markup-converter' ), // ja-jp: '指定範囲内のみ適用'.
 				'description' => __(
 					'Converts markup within Ruby Markup Converter blocks. Markup inside manually written [rubymaco]...[/rubymaco] shortcodes is also converted.',
@@ -114,7 +114,7 @@ final class Settings_Definitions {
 					'ruby-markup-converter'
 				),
 			),
-			Apply_Mode::ALL            => array(
+			Conversion_Mode::ALL      => array(
 				'label'       => __( 'Apply to Entire Post Content', 'ruby-markup-converter' ), // ja-jp: '投稿本文全体に適用'.
 				'description' => __(
 					'Automatically converts markup throughout the post content without placing it inside Ruby Markup Converter blocks. This is more convenient, but unintended text may also be converted and long posts may take more processing.',

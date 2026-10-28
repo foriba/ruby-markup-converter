@@ -27,7 +27,7 @@ try {
 	check_same( $page_data, json_decode( json_encode( $page_data, JSON_THROW_ON_ERROR ), true ), 'page data JSON round trip' );
 	check_same( array(), $GLOBALS['test_options'], 'page data does not save defaults' );
 	$GLOBALS['test_options'] = array(
-		Option_Keys::APPLY_MODE           => 'all',
+		Option_Keys::CONVERSION_MODE      => 'all',
 		Option_Keys::ENABLED_MARKUP_RULES => array(),
 	);
 	$page_changed            = $page_data_provider->get();

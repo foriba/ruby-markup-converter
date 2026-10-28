@@ -16,13 +16,13 @@ namespace Foriba\RubyMarkupConverter\Resolver;
  * @return mixed 保存値または空文字.
  */
 function get_post_meta( $post_id, $key, $single ) {
-	\check_same( Post_Conversion_Override_Resolver::META_KEY, $key, 'Override meta key' );
+	\check_same( Post_Conversion_Scope_Resolver::META_KEY, $key, 'Override meta key' );
 	\check_same( true, $single, 'Override reads a single value' );
 	$GLOBALS['test_override_reads'][] = $post_id;
 	return $GLOBALS['test_override_meta'][ $post_id ] ?? '';
 }
 
-$override_resolver              = new Post_Conversion_Override_Resolver();
+$override_resolver              = new Post_Conversion_Scope_Resolver();
 $GLOBALS['test_override_meta']  = array(
 	10 => 'full_content',
 	20 => 'none',

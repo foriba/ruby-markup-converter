@@ -10,7 +10,7 @@ use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 use Foriba\RubyMarkupConverter\Settings\Settings_Service;
 
-use Foriba\RubyMarkupConverter\Resolver\Apply_Mode_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Mode_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Style_Resolver;
 use Foriba\RubyMarkupConverter\Resolver\Bouten_Rendering_Method_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
@@ -30,9 +30,9 @@ $ruby    = '<ruby class="rubymaco-ruby" data-rt="かんじ">漢字<rp>（</rp><r
 
 check_same( 'rubymaco_bouten_style', Option_Keys::BOUTEN_STYLE, 'style key' );
 check_same( 'rubymaco_bouten_renderer', Option_Keys::BOUTEN_RENDERING_METHOD, 'method key' );
-check_same( 'rubymaco_apply_mode', Option_Keys::APPLY_MODE, 'apply mode key' );
+check_same( 'rubymaco_apply_mode', Option_Keys::CONVERSION_MODE, 'apply mode key' );
 foreach ( array(
-	array( Option_Keys::APPLY_MODE, new Apply_Mode_Resolver(), array( 'shortcode', 'all' ), 'shortcode' ),
+	array( Option_Keys::CONVERSION_MODE, new Conversion_Mode_Resolver(), array( 'shortcode', 'all' ), 'shortcode' ),
 	array( Option_Keys::BOUTEN_STYLE, new Bouten_Style_Resolver(), array( 'dot', 'sesame' ), 'dot' ),
 	array( Option_Keys::BOUTEN_RENDERING_METHOD, new Bouten_Rendering_Method_Resolver(), array( 'text_emphasis', 'custom' ), 'text_emphasis' ),
 ) as [$key, $resolver, $valid, $default] ) {
@@ -56,7 +56,7 @@ check_same( $ruby, do_shortcode( '[rubymaco]漢字《かんじ》[/rubymaco]' ),
 check_same( '漢字《かんじ》', call_user_func( $registered_content_callback, '漢字《かんじ》' ), 'selected areas bypass full content' );
 // phpcs:ignore WordPress.NamingConventions.ValidHookName -- WordPress の動的フック名にはブロック名のスラッシュが含まれる。
 check_same( $ruby, apply_filters( 'render_block_rubymaco/content', '漢字《かんじ》', array() ), 'block' );
-$GLOBALS['test_options'][ Option_Keys::APPLY_MODE ] = 'all';
+$GLOBALS['test_options'][ Option_Keys::CONVERSION_MODE ] = 'all';
 // phpcs:ignore WordPress.NamingConventions.ValidHookName -- WordPress の動的フック名にはブロック名のスラッシュが含まれる。
 check_same( $ruby, apply_filters( 'render_block_rubymaco/content', '漢字《かんじ》', array() ), 'all mode also supports standalone block rendering' );
 $view = Settings_Service::create_default()->get();
@@ -64,7 +64,7 @@ check_same( array( 'ruby_double_angle', 'bouten_double_bracket' ), $view['enable
 $GLOBALS['test_options'] = array();
 
 foreach ( array( 'shortcode', 'all', 'unknown', null, false, array() ) as $apply_mode ) {
-	$GLOBALS['test_options'] = array( Option_Keys::APPLY_MODE => $apply_mode );
+	$GLOBALS['test_options'] = array( Option_Keys::CONVERSION_MODE => $apply_mode );
 	$expected_mode           = 'all' === $apply_mode ? 'all' : 'shortcode';
 	check_same( $expected_mode, Settings_Service::create_default()->get()['apply_mode'], 'display resolved apply mode' );
 	remove_filter( 'the_content', $registered_content_callback, 8 );

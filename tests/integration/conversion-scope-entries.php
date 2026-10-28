@@ -10,14 +10,14 @@ use Foriba\RubyMarkupConverter\Integration\Blocks;
 use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Post_Context;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
-use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Scope_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
 use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
 
 require_once ABSPATH . WPINC . '/class-wp-post.php';
 require_once ABSPATH . WPINC . '/class-wp-block.php';
-$entry_resolver                     = Conversion_Target_Resolver::create_default();
+$entry_resolver                     = Conversion_Scope_Resolver::create_default();
 $entry_converter                    = Markup_Conversion_Service::create_default();
 $entry_filter                       = new Post_Content_Filter( $entry_converter, $entry_resolver );
 $entry_blocks                       = new Blocks( $entry_converter, $entry_resolver, dirname( __DIR__, 2 ) );
@@ -60,13 +60,13 @@ try {
 	) as $entry_case ) {
 		list( $override, $entry_mode, $category, $full, $area ) = $entry_case;
 		$GLOBALS['test_override_meta'][10]                      = $override;
-		$GLOBALS['test_options']                                = array( Option_Keys::APPLY_MODE => $entry_mode );
+		$GLOBALS['test_options']                                = array( Option_Keys::CONVERSION_MODE => $entry_mode );
 		$GLOBALS['test_term_meta']                              = $category ? array( 1 => Target_Category_Settings::FULL_CONTENT ) : array();
 		check_same( $full ? $entry_html : $entry_source, $entry_filter->filter_content( $entry_source ), 'Full content priority' );
 		check_same( $area ? $entry_html : $entry_source, $entry_blocks->render_content_block( $entry_source, array(), $context_block ), 'Block priority' );
 		check_same( $area ? $entry_html : $entry_source, do_shortcode( '[rubymaco]' . $entry_source . '[/rubymaco]' ), 'Shortcode priority and delimiters removed' );
 	}
-	$GLOBALS['test_options']       = array( Option_Keys::APPLY_MODE => 'all' );
+	$GLOBALS['test_options']       = array( Option_Keys::CONVERSION_MODE => 'all' );
 	$GLOBALS['test_override_meta'] = array(
 		10 => 'full_content',
 		20 => 'none',
@@ -106,7 +106,7 @@ try {
 	$context_block->context = array( 'postId' => 'invalid' );
 	check_same( 0, Post_Context::block_id( $context_block ), 'Malformed explicit block context is not guessed' );
 	$GLOBALS['post']         = new WP_Post( (object) array( 'ID' => 10 ) );
-	$GLOBALS['test_options'] = array( Option_Keys::APPLY_MODE => 'all' );
+	$GLOBALS['test_options'] = array( Option_Keys::CONVERSION_MODE => 'all' );
 	$nested                  = '<div class="wp-block-post-content">' . $entry_source . '</div>';
 	check_same( $entry_html . $nested, $entry_blocks->render_content_block( $entry_source . $nested, array() ), 'Outer explicit area preserves another post boundary' );
 	foreach ( array( 'wp-block-query', 'wp-block-post-template' ) as $boundary_class ) {

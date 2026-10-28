@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Integration;
 
-use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
-use Foriba\RubyMarkupConverter\Service\Conversion_Target_Policy;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Scope_Resolver;
+use Foriba\RubyMarkupConverter\Service\Conversion_Scope_Policy;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -40,25 +40,25 @@ final class Blocks {
 	/**
 	 * 投稿ごとの変換範囲の取得元。
 	 *
-	 * @var Conversion_Target_Resolver
+	 * @var Conversion_Scope_Resolver
 	 */
-	private Conversion_Target_Resolver $conversion_target_resolver;
+	private Conversion_Scope_Resolver $conversion_scope_resolver;
 
 	/**
 	 * 必要な依存を受け取る。設定の取得やフック登録は行わない。
 	 *
-	 * @param Markup_Conversion_Service  $markup_conversion_service 記法の変換サービス.
-	 * @param Conversion_Target_Resolver $conversion_target_resolver 変換範囲の取得元.
-	 * @param string                     $plugin_directory          プラグインのディレクトリ.
+	 * @param Markup_Conversion_Service $markup_conversion_service 記法の変換サービス.
+	 * @param Conversion_Scope_Resolver $conversion_scope_resolver 変換範囲の取得元.
+	 * @param string                    $plugin_directory          プラグインのディレクトリ.
 	 */
 	public function __construct(
 		Markup_Conversion_Service $markup_conversion_service,
-		Conversion_Target_Resolver $conversion_target_resolver,
+		Conversion_Scope_Resolver $conversion_scope_resolver,
 		string $plugin_directory
 	) {
-		$this->markup_conversion_service  = $markup_conversion_service;
-		$this->conversion_target_resolver = $conversion_target_resolver;
-		$this->plugin_directory           = rtrim( $plugin_directory, '/\\' ) . '/';
+		$this->markup_conversion_service = $markup_conversion_service;
+		$this->conversion_scope_resolver = $conversion_scope_resolver;
+		$this->plugin_directory          = rtrim( $plugin_directory, '/\\' ) . '/';
 	}
 
 	/**
@@ -79,6 +79,8 @@ final class Blocks {
 
 	/**
 	 * ビルド済みのメタデータからブロックを登録する。
+	 *
+	 * 互換性維持のため、ブロック名と save() が出力する HTML（投稿本文に保存）は変更不可。
 	 */
 	public function register_blocks(): void {
 		wp_register_block_types_from_metadata_collection(
@@ -105,7 +107,7 @@ final class Blocks {
 	): string {
 		unset( $block );
 
-		return Conversion_Target_Policy::NONE === $this->conversion_target_resolver->get( Post_Context::block_id( $instance ) )
+		return Conversion_Scope_Policy::NONE === $this->conversion_scope_resolver->get( Post_Context::block_id( $instance ) )
 			? $block_content
 			: $this->markup_conversion_service->convert( $block_content );
 	}

@@ -7,7 +7,7 @@
 
 namespace Foriba\RubyMarkupConverter\Service;
 
-use Foriba\RubyMarkupConverter\Markup\Value\Apply_Mode;
+use Foriba\RubyMarkupConverter\Markup\Value\Conversion_Mode;
 use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
 
 /**
@@ -50,7 +50,7 @@ function update_termmeta_cache( $term_ids ) {
 
 require_once ABSPATH . WPINC . '/class-wp-error.php';
 $category_matcher                   = new Category_Target_Matcher( new Target_Category_Settings() );
-$target_policy                      = new Conversion_Target_Policy();
+$target_policy                      = new Conversion_Scope_Policy();
 $GLOBALS['test_category_reads']     = array();
 $GLOBALS['test_term_meta_primes']   = array();
 $GLOBALS['test_category_ancestors'] = array(
@@ -103,8 +103,8 @@ try {
 	\check_same( array(), $GLOBALS['test_term_meta_primes'], 'No meta query without categories' );
 	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::FULL_CONTENT );
 	$category_matches          = $category_matcher->matches( 40 );
-	\check_same( Conversion_Target_Policy::FULL_CONTENT, $target_policy->resolve( Apply_Mode::selected_areas(), null, $category_matches ), 'Descendant enables full conversion' );
-	\check_same( Conversion_Target_Policy::NONE, $target_policy->resolve( Apply_Mode::all(), Conversion_Target_Policy::NONE, $category_matches ), 'Post disable wins over category and global mode' );
+	\check_same( Conversion_Scope_Policy::FULL_CONTENT, $target_policy->resolve( Conversion_Mode::selected(), null, $category_matches ), 'Descendant enables full conversion' );
+	\check_same( Conversion_Scope_Policy::NONE, $target_policy->resolve( Conversion_Mode::all(), Conversion_Scope_Policy::NONE, $category_matches ), 'Post disable wins over category and global mode' );
 	$GLOBALS['test_category_terms'][40] = array();
 	\check_same( false, $category_matcher->matches( 40 ), 'Changed membership is not cached' );
 	$GLOBALS['test_category_terms'][40] = array( (object) array( 'term_id' => 4 ) );

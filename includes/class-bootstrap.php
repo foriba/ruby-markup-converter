@@ -15,7 +15,7 @@ use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
 use Foriba\RubyMarkupConverter\Integration\Post_Conversion_Meta;
 use Foriba\RubyMarkupConverter\Integration\Category_Conversion_Meta;
-use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
+use Foriba\RubyMarkupConverter\Resolver\Conversion_Scope_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Admin\Admin_REST_Controller;
 use Foriba\RubyMarkupConverter\Admin\Admin_Page_Data;
@@ -69,25 +69,25 @@ final class Bootstrap {
 			return;
 		}
 
-		$conversion_target_resolver = Conversion_Target_Resolver::create_default();
+		$conversion_scope_resolver = Conversion_Scope_Resolver::create_default();
 
 		// 投稿ごとに変換範囲を判定する本文フィルターを登録する.
 		( new Post_Content_Filter(
 			Markup_Conversion_Service::create_default(),
-			$conversion_target_resolver
+			$conversion_scope_resolver
 		) )->register_hooks();
 
 		// 独自ブロックの登録と、ブロック内の記法変換をフックに接続する.
 		( new Blocks(
 			Markup_Conversion_Service::create_default(),
-			$conversion_target_resolver,
+			$conversion_scope_resolver,
 			$this->plugin_info->get_directory_path()
 		) )->register_hooks();
 
 		// [rubymaco] 内の記法を変換するショートコードを登録する.
 		( new Shortcode(
 			Markup_Conversion_Service::create_default(),
-			$conversion_target_resolver
+			$conversion_scope_resolver
 		) )->register_hooks();
 
 		// 公開画面でルビ・傍点用 CSS を読み込むフックを登録する.

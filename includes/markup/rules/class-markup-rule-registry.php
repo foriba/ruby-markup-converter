@@ -158,6 +158,7 @@ final class Markup_Rule_Registry {
 	 *
 	 * 配列の順序は設定画面の表示順と変換の適用順を兼ねる。
 	 * 表示文言は呼び出し時点のロケールで翻訳する。
+	 * 互換性維持のため、記法 ID（option に保存）は変更不可。
 	 *
 	 * @return Markup_Rule[] 定義順の記法一覧。
 	 */

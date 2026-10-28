@@ -155,7 +155,7 @@ try {
 	\check_same( false, false !== strpos( $category_html, 'checked=' ), 'inherited selection not stored as explicit check' );
 	$category_controller->save_edited_category( 1 );
 	\check_same( array(), $GLOBALS['test_term_meta'], 'last category can be unchecked' );
-	$GLOBALS['test_options'][ Option_Keys::APPLY_MODE ] = 'all';
+	$GLOBALS['test_options'][ Option_Keys::CONVERSION_MODE ] = 'all';
 	ob_start();
 	$category_controller->render_add_field();
 	$category_html = ob_get_clean();
