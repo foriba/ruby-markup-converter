@@ -88,27 +88,31 @@ $GLOBALS['test_admin_capabilities']  = array(
 	'manage_categories' => true,
 	'manage_options'    => false,
 );
-$GLOBALS['test_option_writer']       = static function ( $key, $value ) {
-	$GLOBALS['test_options'][ $key ] = $value;
-	return true;
-};
+$GLOBALS['test_term_meta']           = array();
 $category_controller                 = new Admin_Category_Controller( new Target_Category_Settings() );
 try {
 	\check_same( true, isset( $GLOBALS['wp_filter']['category_add_form_fields'] ), 'category add hook registered' );
 	\check_same( true, isset( $GLOBALS['wp_filter']['category_edit_form_fields'] ), 'category edit hook registered' );
-	$GLOBALS['test_options'][ Option_Keys::TARGET_CATEGORY_IDS ] = array( 1 );
-	$_POST = array(
+	$GLOBALS['test_term_meta'] = array( 1 => Target_Category_Settings::ENABLED );
+	$_POST                     = array(
 		'rubymaco_category_nonce'   => 'rubymaco_category_0',
 		'rubymaco_category_enabled' => '1',
 	);
 	$category_controller->save_created_category( 2 );
-	\check_same( array( 1, 2 ), ( new Target_Category_Settings() )->get(), 'editor adds category without replacing others' );
+	\check_same(
+		array(
+			1 => Target_Category_Settings::ENABLED,
+			2 => Target_Category_Settings::ENABLED,
+		),
+		$GLOBALS['test_term_meta'],
+		'editor adds category without replacing others'
+	);
 	$_POST = array(
 		'rubymaco_category_nonce'   => 'rubymaco_category_2',
 		'rubymaco_category_enabled' => '0',
 	);
 	$category_controller->save_edited_category( 2 );
-	\check_same( array( 1 ), ( new Target_Category_Settings() )->get(), 'explicit unchecked removes only edited category' );
+	\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'explicit unchecked removes only edited category' );
 	foreach ( array(
 		array(),
 		array( 'rubymaco_category_enabled' => '0' ),
@@ -127,7 +131,7 @@ try {
 	) as $invalid_post ) {
 		$_POST = $invalid_post;
 		$category_controller->save_edited_category( 1 );
-		\check_same( array( 1 ), ( new Target_Category_Settings() )->get(), 'missing, wrong nonce, quick edit and malformed input preserve selection' );
+		\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'missing, wrong nonce, quick edit and malformed input preserve selection' );
 	}
 	$_POST                              = array(
 		'rubymaco_category_nonce'   => 'rubymaco_category_1',
@@ -135,7 +139,7 @@ try {
 	);
 	$GLOBALS['test_admin_capabilities'] = array();
 	$category_controller->save_edited_category( 1 );
-	\check_same( array( 1 ), ( new Target_Category_Settings() )->get(), 'unauthorized request preserves selection' );
+	\check_same( array( 1 => Target_Category_Settings::ENABLED ), $GLOBALS['test_term_meta'], 'unauthorized request preserves selection' );
 	$GLOBALS['test_admin_capabilities'] = array( 'manage_categories' => true );
 	ob_start();
 	$category_controller->render_edit_field(
@@ -150,7 +154,7 @@ try {
 	\check_same( true, false !== strpos( $category_html, 'selected parent category' ), 'inherited category explained' );
 	\check_same( false, false !== strpos( $category_html, 'checked=' ), 'inherited selection not stored as explicit check' );
 	$category_controller->save_edited_category( 1 );
-	\check_same( array(), ( new Target_Category_Settings() )->get(), 'last category can be unchecked' );
+	\check_same( array(), $GLOBALS['test_term_meta'], 'last category can be unchecked' );
 	$GLOBALS['test_options'][ Option_Keys::APPLY_MODE ] = 'all';
 	ob_start();
 	$category_controller->render_add_field();
@@ -162,7 +166,7 @@ try {
 	$category_controller->render_add_field();
 	\check_same( '', ob_get_clean(), 'unauthorized user has no field' );
 	$GLOBALS['test_admin_capabilities'] = array( 'manage_categories' => true );
-	$GLOBALS['test_option_writer']      = static function () {
+	$GLOBALS['test_term_meta_writer']   = static function () {
 		return false;
 	};
 	$_POST                              = array(
@@ -177,7 +181,8 @@ try {
 	}
 	\check_same( true, $reported, 'failed setting write reports that category itself was saved' );
 } finally {
-	$_POST                   = $post_before;
-	$GLOBALS['test_options'] = $category_before;
-	unset( $GLOBALS['test_existing_categories'], $GLOBALS['test_target_admin'], $GLOBALS['test_admin_capabilities'], $GLOBALS['test_option_writer'] );
+	$_POST                     = $post_before;
+	$GLOBALS['test_options']   = $category_before;
+	$GLOBALS['test_term_meta'] = array();
+	unset( $GLOBALS['test_existing_categories'], $GLOBALS['test_target_admin'], $GLOBALS['test_admin_capabilities'], $GLOBALS['test_term_meta_writer'] );
 }

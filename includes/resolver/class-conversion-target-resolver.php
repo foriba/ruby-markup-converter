@@ -37,13 +37,6 @@ final class Conversion_Target_Resolver {
 	private Post_Conversion_Override_Resolver $post_conversion_override_resolver;
 
 	/**
-	 * 対象カテゴリの取得元。
-	 *
-	 * @var Target_Category_Settings
-	 */
-	private Target_Category_Settings $target_category_settings;
-
-	/**
 	 * カテゴリ判定。
 	 *
 	 * @var Category_Target_Matcher
@@ -66,8 +59,7 @@ final class Conversion_Target_Resolver {
 		return new self(
 			new Apply_Mode_Resolver(),
 			new Post_Conversion_Override_Resolver(),
-			new Target_Category_Settings(),
-			new Category_Target_Matcher(),
+			new Category_Target_Matcher( new Target_Category_Settings() ),
 			new Conversion_Target_Policy()
 		);
 	}
@@ -77,20 +69,17 @@ final class Conversion_Target_Resolver {
 	 *
 	 * @param Apply_Mode_Resolver               $apply_mode_resolver 全体設定.
 	 * @param Post_Conversion_Override_Resolver $post_conversion_override_resolver 投稿別設定.
-	 * @param Target_Category_Settings          $target_category_settings カテゴリ設定.
 	 * @param Category_Target_Matcher           $category_target_matcher カテゴリ判定.
 	 * @param Conversion_Target_Policy          $conversion_target_policy 優先順位.
 	 */
 	public function __construct(
 		Apply_Mode_Resolver $apply_mode_resolver,
 		Post_Conversion_Override_Resolver $post_conversion_override_resolver,
-		Target_Category_Settings $target_category_settings,
 		Category_Target_Matcher $category_target_matcher,
 		Conversion_Target_Policy $conversion_target_policy
 	) {
 		$this->apply_mode_resolver               = $apply_mode_resolver;
 		$this->post_conversion_override_resolver = $post_conversion_override_resolver;
-		$this->target_category_settings          = $target_category_settings;
 		$this->category_target_matcher           = $category_target_matcher;
 		$this->conversion_target_policy          = $conversion_target_policy;
 	}
@@ -109,7 +98,7 @@ final class Conversion_Target_Resolver {
 		$mode     = $this->apply_mode_resolver->get();
 		$matches  = false;
 		if ( null === $override && ! $mode->equals( Apply_Mode::all() ) && 0 < $post_id ) {
-			$matches = $this->category_target_matcher->matches( $post_id, $this->target_category_settings->get() );
+			$matches = $this->category_target_matcher->matches( $post_id );
 		}
 		return $this->conversion_target_policy->resolve( $mode, $override, $matches );
 	}

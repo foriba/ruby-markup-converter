@@ -1,6 +1,6 @@
 <?php
 /**
- * 対象カテゴリ設定の取得・検証・保存。
+ * 対象カテゴリ設定の取得・保存。
  *
  * @package RubyMarkupConverter
  */
@@ -14,91 +14,63 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * カテゴリ ID を重複のない昇順の整数配列として保存する。
+ * カテゴリごとの全文変換の指定を、そのカテゴリのタームメタとして保存する。
  *
+ * カテゴリの削除時はメタも WordPress が削除し、エクスポート・インポートではカテゴリと一緒に移る。
  * HTTP 層の nonce 確認は呼び出し側で行う。既存の4項目の保存とは独立する。
  */
 final class Target_Category_Settings {
 	/**
-	 * 現在存在するカテゴリだけを返す。補正保存は行わない。
+	 * 全文変換の対象であることを示すタームメタのキー。
 	 *
-	 * @return int[] 未保存・不正値は空配列.
+	 * @var string
 	 */
-	public function get(): array {
-		$value = get_option( Option_Keys::TARGET_CATEGORY_IDS, array() );
-		if ( ! is_array( $value ) ) {
-			return array();
-		}
-		$ids = array();
-		foreach ( $value as $id ) {
-			if ( is_int( $id ) && 0 < $id && $this->exists( $id ) ) {
-				$ids[] = $id;
-			}
-		}
-		return $this->canonicalize( $ids );
+	public const META_KEY = '_rubymaco_category_full_content';
+
+	/**
+	 * 対象として指定されている場合の保存値。未指定の場合はメタを削除する。
+	 *
+	 * @var string
+	 */
+	public const ENABLED = '1';
+
+	/**
+	 * カテゴリ自身が明示的に対象として指定されているかを返す。
+	 *
+	 * 親カテゴリからの継承は含めない。補正保存は行わない。
+	 *
+	 * @param int $term_id カテゴリ ID。0 以下は未指定として扱う.
+	 * @return bool 指定されている場合に true.
+	 */
+	public function is_enabled( int $term_id ): bool {
+		return 0 < $term_id && self::ENABLED === get_term_meta( $term_id, self::META_KEY, true );
 	}
 
 	/**
-	 * 保存要求を厳密に検証する。
+	 * カテゴリ管理権限とカテゴリの存在を確認してから、指定を保存する。
 	 *
-	 * @param mixed $value 正の整数のリスト。空配列は全解除.
-	 * @return int[] 検証済みのカテゴリ ID.
-	 * @throws \InvalidArgumentException 型違い、非リスト、存在しないカテゴリの場合.
-	 */
-	public function validate( $value ): array {
-		if ( ! is_array( $value ) || array_values( $value ) !== $value ) {
-			throw new \InvalidArgumentException( 'Category IDs must be a list.' );
-		}
-		foreach ( $value as $id ) {
-			if ( ! is_int( $id ) || 0 >= $id || ! $this->exists( $id ) ) {
-				throw new \InvalidArgumentException( 'Unknown or invalid category ID.' );
-			}
-		}
-		return $this->canonicalize( $value );
-	}
-
-	/**
-	 * カテゴリ管理権限を確認し、全入力を検証してから保存する。
+	 * 指定を外す場合はメタを削除し、他のカテゴリの指定は変更しない。
 	 *
-	 * 不正な入力の場合は validate() の InvalidArgumentException をそのまま返す。
-	 *
-	 * @param mixed $value カテゴリ ID リスト.
-	 * @return int[] 保存した値.
+	 * @param int  $term_id 保存対象のカテゴリ ID.
+	 * @param bool $enabled 対象として指定する場合に true.
+	 * @throws \InvalidArgumentException カテゴリ ID が不正、または存在しない場合.
 	 * @throws \RuntimeException 権限不足または保存失敗の場合.
 	 * @phpstan-throws \InvalidArgumentException|\RuntimeException
 	 */
-	public function save( $value ): array {
+	public function save( int $term_id, bool $enabled ): void {
 		if ( ! current_user_can( Settings_Identifiers::CATEGORY_CAPABILITY ) ) {
 			throw new \RuntimeException( 'Not allowed to update conversion targets.' );
 		}
-		$ids = $this->validate( $value );
-		update_option( Option_Keys::TARGET_CATEGORY_IDS, $ids );
-		if ( get_option( Option_Keys::TARGET_CATEGORY_IDS ) !== $ids ) {
+		if ( 0 >= $term_id || ! get_term( $term_id, 'category' ) instanceof \WP_Term ) {
+			throw new \InvalidArgumentException( 'Unknown or invalid category ID.' );
+		}
+		if ( $enabled ) {
+			update_term_meta( $term_id, self::META_KEY, self::ENABLED );
+		} else {
+			delete_term_meta( $term_id, self::META_KEY );
+		}
+		if ( $this->is_enabled( $term_id ) !== $enabled ) {
 			throw new \RuntimeException( 'Unable to save conversion targets.' );
 		}
-		return $ids;
-	}
-
-	/**
-	 * カテゴリの存在を category タクソノミー内で確認する。
-	 *
-	 * @param int $id カテゴリ ID.
-	 * @return bool 存在する場合に true.
-	 */
-	private function exists( int $id ): bool {
-		$term = get_term( $id, 'category' );
-		return $term instanceof \WP_Term;
-	}
-
-	/**
-	 * 重複と順序の違いを取り除く。
-	 *
-	 * @param int[] $ids 検証済み ID.
-	 * @return int[] 重複のない昇順リスト.
-	 */
-	private function canonicalize( array $ids ): array {
-		$ids = array_values( array_unique( $ids ) );
-		sort( $ids, SORT_NUMERIC );
-		return $ids;
 	}
 }

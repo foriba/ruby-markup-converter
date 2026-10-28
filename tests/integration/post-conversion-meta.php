@@ -24,14 +24,18 @@ function register_post_meta( $post_type, $key, $args ) {
 }
 
 /**
- * 対象ユーザーの投稿編集権限を代替する。
+ * 対象ユーザーの投稿編集権限とカテゴリ管理権限を代替する。
  *
- * @param int    $user_id ユーザー ID.
- * @param string $capability 権限.
- * @param int    $object_id 投稿 ID.
- * @return bool 編集可能か.
+ * @param int      $user_id ユーザー ID.
+ * @param string   $capability 権限.
+ * @param int|null $object_id 投稿 ID。カテゴリ管理権限では指定しない.
+ * @return bool 権限がある場合に true.
  */
-function user_can( $user_id, $capability, $object_id ) {
+function user_can( $user_id, $capability, $object_id = null ) {
+	if ( 'manage_categories' === $capability ) {
+		\check_same( null, $object_id, 'Category meta checks a general capability' );
+		return 7 === $user_id;
+	}
 	\check_same( 'edit_post', $capability, 'Meta checks specific post edit capability' );
 	return 7 === $user_id && 10 === $object_id;
 }

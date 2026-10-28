@@ -102,14 +102,15 @@ DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立�
 `disabled` です。未保存や不正値は継承となり、読み取り時の補正保存はしません。
 投稿と固定ページで同じ取得方法を使います。ID 不明時は 0 を渡します。
 
-`Category_Target_Matcher::matches( $post_id, $selected_category_ids )` は、
-所属カテゴリと WordPress の `get_ancestors()` が返す祖先一覧を照合します。
-選択 ID は正規化済みの正の整数配列を渡します。子の選択で親や兄弟は対象になりません。
+`Category_Target_Matcher::matches( $post_id )` は、所属カテゴリと WordPress の
+`get_ancestors()` が返す祖先のうち、いずれかが対象として指定されているかを判定します。
+照合の前に、所属カテゴリと祖先のタームメタを `update_termmeta_cache()` でまとめて読み込みます。
+子の選択で親や兄弟は対象になりません。
 対象未選択、カテゴリなし、取得エラーは不一致です。取得結果を独自にキャッシュしません。
 
 `integration/post-conversion-override.php` と `integration/category-target-matcher.php`
-で、取得 API の引数、未保存・不正値、子孫・兄弟・複数所属、エラー、変更追従を検証します。
-投稿メタ・カテゴリ取得 API は代替実装なので、実 DB や WordPress 自体の階層探索は検証対象外です。
+で、取得 API の引数、未保存・不正値、子孫・兄弟・複数所属、メタの一括読み込み、エラー、変更追従を検証します。
+投稿メタ・タームメタ・カテゴリ取得 API は代替実装なので、実 DB や WordPress 自体の階層探索は検証対象外です。
 ### 変換入口への接続
 
 `Conversion_Target_Resolver::get( $post_id )` が設定取得と共通判定を接続します。
@@ -148,12 +149,14 @@ DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立�
 
 ### 変換対象の保存・取得
 
-- `Target_Category_Settings` は `rubymaco_target_category_ids` を読み書きします。
-  `get()` は正の整数かつ現存するカテゴリだけを返し、補正保存はしません。
-  `validate()` は正の整数のリストを要求し、存在しないカテゴリ・型違い・連想配列を拒否します。
-  重複は除去して昇順にします。空配列は全解除です。
-  `save()` は `manage_categories` 権限を確認してから検証・保存し、保存後の値も照合します。
+- `Target_Category_Settings` は、カテゴリごとの指定をタームメタ `_rubymaco_category_full_content` に保存します。
+  指定する場合は `1` を保存し、外す場合はメタを削除します。
+  `is_enabled()` はカテゴリ自身の明示指定だけを返し、`1` 以外の保存値は未指定として扱います。補正保存はしません。
+  `save()` は `manage_categories` 権限とカテゴリの存在を確認してから保存し、保存後の値も照合します。
+  カテゴリを削除すると、メタも WordPress が削除します。エクスポート・インポートではカテゴリと一緒に移ります。
   HTTP から呼び出す際の nonce 確認は通信層の責務です。
+- `Category_Conversion_Meta` は `init` で category のタームメタを登録します。
+  型・初期値・保存値の補正・`manage_categories` による変更権限を宣言し、REST API には公開しません。
 - 既存の設定用 REST API は4項目の契約を維持しています。
   カテゴリ選択は標準のカテゴリー追加・更新時に保存します。専用 REST API は設けません。
   選択解除はそのカテゴリーの明示指定だけを外し、他のカテゴリーの選択は維持します。
@@ -166,17 +169,19 @@ DB や投稿 ID を参照しない純粋な判定で、保存形式とは独立�
   認証・nonce・保存処理は WordPress に委譲します。投稿タイプの custom-fields 対応が必要です。
   PHP から直接メタを更新するコードの権限確認は呼び出し側の責務です。
 - 未保存は継承です。無効化しただけでは保存データは削除しません。
-  アンインストール時には対象カテゴリ設定とプラグイン専用の投稿メタを削除します。
+  アンインストール時には、プラグイン専用の投稿メタとタームメタを全カテゴリから削除します。
 
-`integration/target-category-settings.php` は空配列・不正入力・権限・保存失敗を検証します。
+`integration/target-category-settings.php` は指定・解除・不正入力・定義外の保存値・権限・保存失敗を検証します。
+`integration/term-meta-stub.php` は、タームメタ API とカテゴリ存在確認の代替処理を各テストに提供します。
 `integration/category-admin.php` は標準画面のフック、追加・更新・全解除、
 nonce・権限・不正入力、継承表示を検証します。認証・DB は代替実装です。
 実画面では追加・更新後の再表示、親カテゴリー配下の投稿の変換、
 クイック編集後も選択が維持されることを確認してください。
 `integration/post-conversion-meta.php` はメタ登録引数・投稿別権限・WordPress の実 REST スキーマ検証を確認します。
+`integration/category-conversion-meta.php` はタームメタの登録引数・権限・保存値の補正を確認します。
 `integration/uninstall.php` は削除するキーを記録して検証します。
 これらは DB・権限・登録 API の代替処理を使うため、実 HTTP の認証・nonce と投稿メタ保存は
-実環境で別途確認してください。既存投稿への一括書き込みは行いません。
+実環境で別途確認してください。既存の投稿やカテゴリへの一括書き込みは行いません。
 
 ### 複数ルールの現行仕様
 

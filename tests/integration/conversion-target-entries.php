@@ -13,25 +13,26 @@ use Foriba\RubyMarkupConverter\Integration\Shortcode;
 use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Settings\Option_Keys;
+use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
 
 require_once ABSPATH . WPINC . '/class-wp-post.php';
 require_once ABSPATH . WPINC . '/class-wp-block.php';
-$entry_resolver                      = Conversion_Target_Resolver::create_default();
-$entry_converter                     = Markup_Conversion_Service::create_default();
-$entry_filter                        = new Post_Content_Filter( $entry_converter, $entry_resolver );
-$entry_blocks                        = new Blocks( $entry_converter, $entry_resolver, dirname( __DIR__, 2 ) );
-$entry_shortcode                     = new Shortcode( $entry_converter, $entry_resolver );
-$entry_options_before                = $GLOBALS['test_options'];
-$entry_post_before                   = $GLOBALS['post'] ?? null;
-$entry_shortcode_before              = $GLOBALS['shortcode_tags']['rubymaco'];
-$entry_source                        = '漢字《かんじ》';
-$entry_html                          = '<ruby class="rubymaco-ruby" data-rt="かんじ">漢字<rp>（</rp><rt>かんじ</rt><rp>）</rp></ruby>';
-$GLOBALS['test_override_reads']      = array();
-$GLOBALS['test_category_reads']      = array();
-$GLOBALS['test_existing_categories'] = array( 1 );
-$GLOBALS['test_category_ancestors']  = array( 2 => array( 1 ) );
-$GLOBALS['test_category_terms']      = array( 10 => array( (object) array( 'term_id' => 2 ) ) );
-$GLOBALS['test_override_meta']       = array();
+$entry_resolver                     = Conversion_Target_Resolver::create_default();
+$entry_converter                    = Markup_Conversion_Service::create_default();
+$entry_filter                       = new Post_Content_Filter( $entry_converter, $entry_resolver );
+$entry_blocks                       = new Blocks( $entry_converter, $entry_resolver, dirname( __DIR__, 2 ) );
+$entry_shortcode                    = new Shortcode( $entry_converter, $entry_resolver );
+$entry_options_before               = $GLOBALS['test_options'];
+$entry_post_before                  = $GLOBALS['post'] ?? null;
+$entry_shortcode_before             = $GLOBALS['shortcode_tags']['rubymaco'];
+$entry_source                       = '漢字《かんじ》';
+$entry_html                         = '<ruby class="rubymaco-ruby" data-rt="かんじ">漢字<rp>（</rp><rt>かんじ</rt><rp>）</rp></ruby>';
+$GLOBALS['test_override_reads']     = array();
+$GLOBALS['test_category_reads']     = array();
+$GLOBALS['test_term_meta']          = array();
+$GLOBALS['test_category_ancestors'] = array( 2 => array( 1 ) );
+$GLOBALS['test_category_terms']     = array( 10 => array( (object) array( 'term_id' => 2 ) ) );
+$GLOBALS['test_override_meta']      = array();
 // コンストラクターの登録処理とは独立して、ブロックの公開文脈を検証する.
 $context_block          = ( new ReflectionClass( WP_Block::class ) )->newInstanceWithoutConstructor();
 $context_block->context = array( 'postId' => 10 );
@@ -59,10 +60,8 @@ try {
 	) as $entry_case ) {
 		list( $override, $entry_mode, $category, $full, $area ) = $entry_case;
 		$GLOBALS['test_override_meta'][10]                      = $override;
-		$GLOBALS['test_options']                                = array(
-			Option_Keys::APPLY_MODE          => $entry_mode,
-			Option_Keys::TARGET_CATEGORY_IDS => $category ? array( 1 ) : array(),
-		);
+		$GLOBALS['test_options']                                = array( Option_Keys::APPLY_MODE => $entry_mode );
+		$GLOBALS['test_term_meta']                              = $category ? array( 1 => Target_Category_Settings::ENABLED ) : array();
 		check_same( $full ? $entry_html : $entry_source, $entry_filter->filter_content( $entry_source ), 'Full content priority' );
 		check_same( $area ? $entry_html : $entry_source, $entry_blocks->render_content_block( $entry_source, array(), $context_block ), 'Block priority' );
 		check_same( $area ? $entry_html : $entry_source, do_shortcode( '[rubymaco]' . $entry_source . '[/rubymaco]' ), 'Shortcode priority and delimiters removed' );
@@ -147,5 +146,6 @@ try {
 	$GLOBALS['post']         = $entry_post_before;
 	$GLOBALS['test_options'] = $entry_options_before;
 	add_shortcode( 'rubymaco', $entry_shortcode_before );
-	unset( $GLOBALS['test_override_reads'], $GLOBALS['test_category_reads'], $GLOBALS['test_existing_categories'], $GLOBALS['test_category_ancestors'], $GLOBALS['test_category_terms'], $GLOBALS['test_override_meta'] );
+	$GLOBALS['test_term_meta'] = array();
+	unset( $GLOBALS['test_override_reads'], $GLOBALS['test_category_reads'], $GLOBALS['test_category_ancestors'], $GLOBALS['test_category_terms'], $GLOBALS['test_override_meta'] );
 }

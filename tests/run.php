@@ -44,6 +44,7 @@ try {
 	$test_wp_version = require __DIR__ . '/bootstrap.php';
 	require __DIR__ . '/unit/conversion-target-policy.php';
 	require __DIR__ . '/integration/post-conversion-override.php';
+	require __DIR__ . '/integration/term-meta-stub.php';
 	require __DIR__ . '/integration/category-target-matcher.php';
 	foreach ( array( 'unit/autoload.php', 'unit/plugin-info.php', 'integration/bootstrap.php', 'unit/values.php', 'integration/conversion.php', 'integration/multiple-rules.php', 'integration/settings.php', 'integration/settings-service.php', 'integration/settings-definitions.php', 'integration/settings-page-data.php', 'integration/post-content-filter.php', 'integration/blocks.php', 'integration/shortcode.php', 'integration/frontend-assets.php', 'integration/settings-rest.php', 'integration/admin-app.php' ) as $file ) {
 		require __DIR__ . '/' . $file;
@@ -51,6 +52,7 @@ try {
 	require __DIR__ . '/integration/target-category-settings.php';
 	require __DIR__ . '/integration/category-admin.php';
 	require __DIR__ . '/integration/post-conversion-meta.php';
+	require __DIR__ . '/integration/category-conversion-meta.php';
 	require __DIR__ . '/integration/post-settings.php';
 	require __DIR__ . '/integration/conversion-target-entries.php';
 	require __DIR__ . '/integration/uninstall.php';

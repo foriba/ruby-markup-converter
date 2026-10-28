@@ -74,21 +74,38 @@ final class Admin_Category_Controller {
 	 * @param int $term_id 既存カテゴリー ID。新規追加は 0.
 	 */
 	private function render_field( int $term_id ): void {
-		$ids = $this->target_category_settings->get();
 		wp_nonce_field( 'rubymaco_category_' . $term_id, 'rubymaco_category_nonce', false );
 		echo '<input type="hidden" name="rubymaco_category_enabled" value="0">';
 		echo '<label for="rubymaco-category-enabled"><input type="checkbox" id="rubymaco-category-enabled" name="rubymaco_category_enabled" value="1" aria-describedby="rubymaco-category-description" ';
-		checked( in_array( $term_id, $ids, true ) );
+		checked( $this->target_category_settings->is_enabled( $term_id ) );
 		echo '> ';
 		echo esc_html__( 'Convert the full text of posts in this category and its descendants.', 'ruby-markup-converter' );
 		echo '</label><p class="description" id="rubymaco-category-description">';
 		echo esc_html__( 'Leaving this unchecked does not disable conversion inherited from a parent category or full-content mode. A post-specific override takes precedence.', 'ruby-markup-converter' );
 		if ( ( new Apply_Mode_Resolver() )->get()->equals( Apply_Mode::all() ) ) {
 			echo ' ' . esc_html__( 'Full-content mode already includes all categories. This selection is retained for other modes.', 'ruby-markup-converter' );
-		} elseif ( 0 < $term_id && array_intersect( $ids, get_ancestors( $term_id, 'category', 'taxonomy' ) ) ) {
+		} elseif ( $this->has_enabled_ancestor( $term_id ) ) {
 			echo ' ' . esc_html__( 'This category is already included by a selected parent category.', 'ruby-markup-converter' );
 		}
 		echo '</p>';
+	}
+
+	/**
+	 * 祖先のカテゴリーのいずれかが対象として指定されているかを返す。
+	 *
+	 * @param int $term_id 既存カテゴリー ID。新規追加は 0.
+	 * @return bool 指定された祖先がある場合に true.
+	 */
+	private function has_enabled_ancestor( int $term_id ): bool {
+		if ( 0 >= $term_id ) {
+			return false;
+		}
+		foreach ( get_ancestors( $term_id, 'category', 'taxonomy' ) as $ancestor_id ) {
+			if ( $this->target_category_settings->is_enabled( $ancestor_id ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -127,12 +144,8 @@ final class Admin_Category_Controller {
 		) {
 			return;
 		}
-		$ids = array_values( array_diff( $this->target_category_settings->get(), array( $term_id ) ) );
-		if ( '1' === $_POST['rubymaco_category_enabled'] ) {
-			$ids[] = $term_id;
-		}
 		try {
-			$this->target_category_settings->save( $ids );
+			$this->target_category_settings->save( $term_id, '1' === $_POST['rubymaco_category_enabled'] );
 		} catch ( \InvalidArgumentException | \RuntimeException $error ) {
 			wp_die( esc_html__( 'The category was saved, but its Ruby Markup Converter setting could not be saved. Please reopen the category and try again.', 'ruby-markup-converter' ) );
 		}

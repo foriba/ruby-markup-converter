@@ -1,6 +1,6 @@
 <?php
 /**
- * 投稿の所属カテゴリと選択カテゴリの一致を判定する。
+ * 投稿の所属カテゴリと対象カテゴリの一致を判定する。
  *
  * @package RubyMarkupConverter
  */
@@ -9,40 +9,45 @@ declare(strict_types=1);
 
 namespace Foriba\RubyMarkupConverter\Service;
 
+use Foriba\RubyMarkupConverter\Settings\Target_Category_Settings;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * 選択カテゴリ自身とその子孫を対象とする。
+ * 対象として指定されたカテゴリ自身とその子孫を対象とする。
  *
  * 全体設定や投稿別指定の優先順位は判定しない。結果は保持せず、
  * 投稿・カテゴリの変更を次回呼び出しに反映する。
  */
 final class Category_Target_Matcher {
 	/**
-	 * 所属カテゴリの一つでも対象カテゴリまたはその子孫なら一致とする。
+	 * カテゴリごとの指定の取得元。
 	 *
-	 * 不明な投稿 ID、空の対象一覧、カテゴリなし、取得エラーは不一致。
-	 * ID 一覧は保存・入力境界で正規化した正の整数を渡す。
-	 * 念のため不正な要素は無視し、文字列や負数を別の ID に変換しない。
-	 *
-	 * @param int     $post_id 対象の投稿 ID.
-	 * @param mixed[] $selected_category_ids 選択カテゴリの ID 一覧。正の整数以外は無視する.
-	 * @return bool 自身または祖先のカテゴリが選択されている場合に true.
+	 * @var Target_Category_Settings
 	 */
-	public function matches( int $post_id, array $selected_category_ids ): bool {
-		if ( 0 >= $post_id ) {
-			return false;
-		}
+	private Target_Category_Settings $target_category_settings;
 
-		$selected = array();
-		foreach ( $selected_category_ids as $category_id ) {
-			if ( is_int( $category_id ) && 0 < $category_id ) {
-				$selected[ $category_id ] = true;
-			}
-		}
-		if ( array() === $selected ) {
+	/**
+	 * 指定の取得元を受け取る。
+	 *
+	 * @param Target_Category_Settings $target_category_settings カテゴリ設定.
+	 */
+	public function __construct( Target_Category_Settings $target_category_settings ) {
+		$this->target_category_settings = $target_category_settings;
+	}
+
+	/**
+	 * 所属カテゴリの一つでも、自身または祖先が対象として指定されていれば一致とする。
+	 *
+	 * 不明な投稿 ID、カテゴリなし、取得エラーは不一致。
+	 *
+	 * @param int $post_id 対象の投稿 ID.
+	 * @return bool 自身または祖先のカテゴリが指定されている場合に true.
+	 */
+	public function matches( int $post_id ): bool {
+		if ( 0 >= $post_id ) {
 			return false;
 		}
 
@@ -51,15 +56,23 @@ final class Category_Target_Matcher {
 			return false;
 		}
 
+		$term_ids = array();
 		foreach ( $terms as $term ) {
-			if ( isset( $selected[ $term->term_id ] ) ) {
-				return true;
-			}
-
+			$term_ids[] = $term->term_id;
 			foreach ( get_ancestors( $term->term_id, 'category', 'taxonomy' ) as $ancestor_id ) {
-				if ( isset( $selected[ $ancestor_id ] ) ) {
-					return true;
-				}
+				$term_ids[] = $ancestor_id;
+			}
+		}
+		$term_ids = array_values( array_unique( $term_ids ) );
+		if ( array() === $term_ids ) {
+			return false;
+		}
+
+		// 所属カテゴリと祖先のメタを、未取得の分だけまとめて読み込む.
+		update_termmeta_cache( $term_ids );
+		foreach ( $term_ids as $term_id ) {
+			if ( $this->target_category_settings->is_enabled( $term_id ) ) {
+				return true;
 			}
 		}
 

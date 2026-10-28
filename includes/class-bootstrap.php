@@ -14,6 +14,7 @@ use Foriba\RubyMarkupConverter\Integration\Frontend_Assets;
 use Foriba\RubyMarkupConverter\Integration\Post_Content_Filter;
 use Foriba\RubyMarkupConverter\Integration\Shortcode;
 use Foriba\RubyMarkupConverter\Integration\Post_Conversion_Meta;
+use Foriba\RubyMarkupConverter\Integration\Category_Conversion_Meta;
 use Foriba\RubyMarkupConverter\Resolver\Conversion_Target_Resolver;
 use Foriba\RubyMarkupConverter\Service\Markup_Conversion_Service;
 use Foriba\RubyMarkupConverter\Admin\Admin_REST_Controller;
@@ -97,6 +98,9 @@ final class Bootstrap {
 
 		// 投稿別設定を標準の投稿メタ REST API に登録する.
 		( new Post_Conversion_Meta() )->register_hooks();
+
+		// カテゴリ別設定をタームメタとして登録する.
+		( new Category_Conversion_Meta() )->register_hooks();
 
 		// 標準カテゴリー画面の表示・保存を登録する.
 		( new Admin_Category_Controller( new Target_Category_Settings() ) )->register_hooks();

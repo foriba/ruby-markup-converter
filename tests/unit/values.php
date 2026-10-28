@@ -114,7 +114,7 @@ check_same( 'rubymaco_bouten_style', Option_Keys::BOUTEN_STYLE, 'bouten style st
 check_same( 'rubymaco_apply_mode', Option_Keys::APPLY_MODE, 'apply mode storage key' );
 check_same( 'rubymaco_bouten_renderer', Option_Keys::BOUTEN_RENDERING_METHOD, 'rendering method storage key' );
 check_same(
-	array( 'rubymaco_enabled_markup_rules', 'rubymaco_bouten_style', 'rubymaco_apply_mode', 'rubymaco_bouten_renderer', 'rubymaco_target_category_ids' ),
+	array( 'rubymaco_enabled_markup_rules', 'rubymaco_bouten_style', 'rubymaco_apply_mode', 'rubymaco_bouten_renderer' ),
 	Option_Keys::values(),
 	'option key list preserves compatibility'
 );
