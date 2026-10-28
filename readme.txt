@@ -102,6 +102,7 @@ Uninstalling the plugin removes its saved settings but does not delete or modify
 - Fixed some kanji, such as 𠮟 and 﨑, not being recognized as base text in ruby notation without an explicit base text.
 - Fixed shortcodes nested inside [rubymaco]...[/rubymaco] not being processed.
 - Fixed settings failing to save after the settings screen had been left open for a long time.
+- Improved conversion performance, especially for long posts.
 - Fixed typos and improved overall stability.
 
 = 1.2.0 =
